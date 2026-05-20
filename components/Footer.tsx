@@ -9,8 +9,16 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 import { FiChevronRight, FiMail, FiMapPin, FiPhone } from "react-icons/fi";
-import { brand } from "@/lib/brand";
 import Image from "next/image";
+
+import {
+  contactAddressPlain,
+  contactEmailDisplay,
+  contactEmailHref,
+  contactPhoneDisplay,
+  contactPhoneHref,
+} from "@/lib/contact";
+import { brand } from "@/lib/brand";
 
 const GOLD = brand.goldFooterBar;
 
@@ -24,7 +32,7 @@ const servicesLinks = [
 const companyLinks = [
   { label: "About Us", href: "/#about" },
   { label: "Gallery", href: "/gallery" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact" },
   { label: "Blog", href: "/blogs" },
 ] as const;
 
@@ -98,23 +106,21 @@ export default function Footer() {
             <ul className="mt-5 space-y-4 text-[15px] leading-relaxed text-neutral-600">
               <li className="flex gap-3">
                 <FiMapPin className="mt-0.5 shrink-0 text-lg" style={{ color: GOLD }} />
-                <span>
-                  LGF Left side, D–768, opp. market no-2, Block D, Chittaranjan Park, New Delhi 110019
-                </span>
+                <span>{contactAddressPlain}</span>
               </li>
               <li className="flex items-center gap-3">
                 <FiPhone className="shrink-0 text-lg" style={{ color: GOLD }} />
-                <a href="tel:+919717505326" className="text-neutral-600 no-underline hover:underline">
-                  +91 9717505326
+                <a href={`tel:${contactPhoneHref}`} className="text-neutral-600 no-underline hover:underline">
+                  {contactPhoneDisplay}
                 </a>
               </li>
               <li className="flex items-start gap-3">
                 <FiMail className="mt-0.5 shrink-0 text-lg" style={{ color: GOLD }} />
                 <a
-                  href="mailto:physiopilates.12082022@gmail.com"
+                  href={`mailto:${contactEmailHref}`}
                   className="break-all text-neutral-600 no-underline hover:underline"
                 >
-                  physiopilates.12082022@gmail.com
+                  {contactEmailDisplay}
                 </a>
               </li>
             </ul>

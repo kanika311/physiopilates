@@ -24,7 +24,7 @@ const ROUTES: NavLink[] = [
   { label: "Courses", href: "/courses", pathnameMatch: "/courses" },
   { label: "Gallery", href: "/gallery", pathnameMatch: "/gallery" },
   { label: "Blogs", href: "/blogs", pathnameMatch: "/blogs" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Contact", href: "/contact", pathnameMatch: "/contact" },
 ];
 
 function navScrollSolid(y: number, innerH: number, prevSolid: boolean) {
