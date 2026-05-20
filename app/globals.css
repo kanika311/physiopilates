@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+  /* Avoid layout jump when scrollbar appears — stops fixed header / hero from “doubling” on scroll */
+  scrollbar-gutter: stable;
+}
+
+body {
+  overflow-x: hidden;
+}
