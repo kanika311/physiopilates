@@ -33,7 +33,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={montserrat.variable}>
       <body
         className={`${montserrat.className} ${playfair.variable} bg-white text-neutral-900 antialiased`}
       >

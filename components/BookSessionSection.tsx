@@ -4,35 +4,46 @@ import Image from "next/image";
 import Link from "next/link";
 import { brand } from "@/lib/brand";
 
-export default function BookSessionSection() {
+type BookSessionSectionProps = {
+  /** Anchor for in-page links */
+  id?: string;
+};
+
+/**
+ * Split aside: studio image + “Rebuild · Recover · Rise” CTA —
+ * Used on `/about` after Mission & Vision.
+ */
+export default function BookSessionSection({ id = "aside-book-session" }: BookSessionSectionProps) {
+  const serif = 'font-[family-name:var(--font-playfair),Georgia,"Times New Roman",serif]';
+
   return (
-    <section className="px-4 py-16 md:py-24" style={{ backgroundColor: brand.cream }}>
+    <section id={id} className="px-4 py-14 md:py-20 lg:py-24" style={{ backgroundColor: brand.cream }}>
       <div className="mx-auto max-w-6xl">
         <div
-          className="flex flex-col overflow-hidden rounded-[2.5rem] shadow-[0_28px_70px_-20px_rgba(0,0,0,0.15)] md:flex-row"
+          className="flex flex-col overflow-hidden rounded-[2.5rem] border border-black/[0.045] shadow-[0_28px_70px_-20px_rgba(0,0,0,0.14)] ring-1 ring-black/[0.02] md:flex-row"
           style={{ backgroundColor: brand.creamWarm }}
         >
-          <div className="relative min-h-[280px] w-full overflow-hidden rounded-t-[2.5rem] md:min-h-[420px] md:w-1/2 md:rounded-l-[2.5rem] md:rounded-tr-none">
+          <div className="relative aspect-[16/11] min-h-[240px] w-full shrink-0 overflow-hidden md:aspect-auto md:min-h-[420px] md:w-1/2 md:min-w-0 md:rounded-l-[2.5rem] md:rounded-tr-none">
             <Image
-              src="/section-book-cta.png"
+              src="/index3.webp"
               alt="Physio Pilates studio sessions on reformer equipment"
               fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover object-center"
+              sizes="(max-width:768px) 100vw,50vw"
             />
             <div
-              className="pointer-events-none absolute inset-0 bg-amber-900/25 mix-blend-multiply"
+              className="pointer-events-none absolute inset-0 bg-amber-900/22 mix-blend-multiply md:rounded-bl-[inherit]"
               aria-hidden
             />
             <div
-              className="pointer-events-none absolute inset-0 rounded-t-[2.5rem] bg-[#fcd34d]/10 md:rounded-bl-[2.5rem] md:rounded-tr-none"
+              className="pointer-events-none absolute inset-0 bg-[#fcd34d]/10 md:rounded-bl-[inherit]"
               aria-hidden
             />
           </div>
 
-          <div className="flex w-full flex-col justify-center gap-8 px-8 py-12 md:w-1/2 md:p-14 lg:p-16">
+          <div className="flex w-full min-w-0 flex-col justify-center gap-8 px-8 py-11 md:w-1/2 md:px-12 md:py-14 lg:px-14 lg:py-16">
             <h2
-              className="text-3xl font-bold leading-tight md:text-[2.85rem]"
+              className={`${serif} text-left text-[1.95rem] font-bold leading-[1.12] tracking-tight sm:text-[2.35rem] md:text-[2.65rem]`}
               style={{ color: brand.goldHeadingWarm }}
             >
               Rebuild&nbsp;
@@ -42,21 +53,21 @@ export default function BookSessionSection() {
               &nbsp;Rise
             </h2>
 
-            <p className="text-lg leading-relaxed md:text-xl" style={{ color: brand.textWarmGray }}>
-              Heal your body with expert physiotherapy sessions crafted for you. Empower your
-              movement, restore balance, and experience a golden path to recovery.
+            <p className="text-left font-[family-name:var(--font-montserrat),sans-serif] text-[16px] font-medium leading-relaxed text-neutral-600 md:text-[17px]">
+              Heal your body with expert physiotherapy sessions crafted for you. Empower your movement, restore
+              balance, and experience a golden path to recovery.
             </p>
 
-            <div>
+            <div className="pt-1">
               <Link
-                href="#contact"
-                className="inline-block rounded-full px-10 py-4 text-[15px] font-semibold text-white shadow-md transition-[filter] hover:brightness-110"
+                href="/contact"
+                className="inline-flex rounded-full px-11 py-3.5 text-[15px] font-semibold text-white shadow-md transition-[filter] hover:brightness-110 sm:py-4"
                 style={{ backgroundColor: brand.goldButton }}
               >
                 Book Your Session
               </Link>
               <div
-                className="mt-5 h-0.5 w-24 rounded-full"
+                className="mt-6 h-[3px] w-28 rounded-full"
                 style={{ backgroundColor: brand.goldHeadingWarm }}
                 aria-hidden
               />

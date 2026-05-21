@@ -3,11 +3,11 @@ import { FiClock, FiMail, FiMapPin, FiPhone } from "react-icons/fi";
 import {
   contactAddressPlain,
   contactEmailDisplay,
-  contactEmailHref,
   contactPhoneDisplay,
   contactPhoneHref,
   openingHoursLines,
 } from "@/lib/contact";
+import MailtoLink from "@/components/MailtoLink";
 import { brand } from "@/lib/brand";
 
 const ICON_WRAP = "mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full bg-[#f5f0e6]";
@@ -35,12 +35,10 @@ export default function ContactInformationSection() {
           <span className={ICON_WRAP} aria-hidden>
             <FiMail className="text-xl" style={{ color: brand.gold }} />
           </span>
-          <a
-            href={`mailto:${contactEmailHref}`}
-            className="break-all pt-2 font-medium text-neutral-800 no-underline hover:underline"
-          >
-            {contactEmailDisplay}
-          </a>
+          <MailtoLink
+            email={contactEmailDisplay}
+            className="min-w-0 pt-2 text-[15px] font-semibold leading-snug text-neutral-800 no-underline hover:underline sm:text-base"
+          />
         </li>
         <li className="flex gap-4">
           <span className={ICON_WRAP} aria-hidden>

@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 import { brand } from "@/lib/brand";
 
@@ -88,7 +87,8 @@ export default function ServiceGallerySlider({
           />
         </header>
 
-        <div className="relative mt-12 md:mt-14">
+        {/* Autoplay only — no prev/next arrow controls (same for Pilates, Yoga, Physio, Therapy galleries). */}
+        <div className="mt-12 md:mt-14">
           <div className={grouped ? "overflow-hidden" : "overflow-hidden rounded-2xl bg-neutral-200 shadow-[0_12px_40px_-24px_rgba(0,0,0,0.22)]"}>
             <div
               className="flex transition-transform duration-500 ease-out motion-reduce:transition-none"
@@ -141,27 +141,6 @@ export default function ServiceGallerySlider({
                 ))}
             </div>
           </div>
-
-          {count > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={() => go(-1)}
-                className="absolute left-0 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-black/45 text-white shadow-md backdrop-blur-sm transition hover:bg-black/60 md:-left-1 md:size-11 lg:left-[-0.65rem]"
-                aria-label="Previous slide"
-              >
-                <FiChevronLeft className="size-6" aria-hidden />
-              </button>
-              <button
-                type="button"
-                onClick={() => go(1)}
-                className="absolute right-0 top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full border border-white/40 bg-black/45 text-white shadow-md backdrop-blur-sm transition hover:bg-black/60 md:-right-1 md:size-11 lg:right-[-0.65rem]"
-                aria-label="Next slide"
-              >
-                <FiChevronRight className="size-6" aria-hidden />
-              </button>
-            </>
-          )}
         </div>
 
         {count > 1 && (

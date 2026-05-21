@@ -1,17 +1,21 @@
 import HeroSection from "@/components/HeroSection";
-import OurStorySection from "@/components/OurStorySection";
-import PhilosophySection from "@/components/PhilosophySection";
-import MissionVisionSection from "@/components/MissionVisionSection";
-import BookSessionSection from "@/components/BookSessionSection";
+import HomeAboutIntro from "@/components/home/HomeAboutIntro";
+import HomeCertificationsSection from "@/components/home/HomeCertificationsSection";
+import HomeContactStrip from "@/components/home/HomeContactStrip";
+import HomeServicesSection from "@/components/home/HomeServicesSection";
+import HomeTestimonialsSection from "@/components/home/HomeTestimonialsSection";
+import HomeWorkGallerySection from "@/components/home/HomeWorkGallerySection";
 
 export default function Home() {
   return (
     <>
       <HeroSection />
-      <OurStorySection />
-      <PhilosophySection />
-      <MissionVisionSection />
-      <BookSessionSection />
+      <HomeAboutIntro />
+      <HomeServicesSection />
+      <HomeCertificationsSection />
+      <HomeTestimonialsSection />
+      <HomeWorkGallerySection />
+      <HomeContactStrip />
     </>
   );
 }

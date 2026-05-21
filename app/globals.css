@@ -4,8 +4,61 @@ html {
   scroll-behavior: smooth;
   /* Avoid layout jump when scrollbar appears — stops fixed header / hero from “doubling” on scroll */
   scrollbar-gutter: stable;
+  /* Anchors landing below fixed navbar (About, Contact, etc.) */
+  scroll-padding-top: clamp(4.75rem, 14vw, 7rem);
 }
 
 body {
   overflow-x: hidden;
+  color: rgb(38 38 38);
+  line-height: 1.625;
+  letter-spacing: 0.012em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Calmer headings + bodies sitewide (Montserrat comes from layout <body>) */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+  letter-spacing: -0.01em;
+}
+
+p {
+  text-wrap: pretty;
+}
+
+::selection {
+  background-color: rgba(72 207 203 / 0.22);
+  color: inherit;
+}
+
+/* Hero carousel: teal bar fills left → right over each autoplay interval */
+@keyframes heroSlideAutoplayProgress {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+.hero-slide-autoplay-progress {
+  transform-origin: left;
+  animation-name: heroSlideAutoplayProgress;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-slide-autoplay-progress {
+    animation: none;
+    transform: scaleX(0.35);
+    opacity: 0.5;
+  }
 }
