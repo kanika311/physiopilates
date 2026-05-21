@@ -141,7 +141,7 @@ export default function Navbar() {
             style={{ color: aboutActive ? GOLD : undefined }}
           >
             About
-            <FiChevronDown className="ml-1 size-4 opacity-90 shrink-0" aria-hidden />
+           
           </Link>
           {ROUTES.map(({ label, href, pathnameMatch }) => {
             const active = routeActive(pathname, pathnameMatch);

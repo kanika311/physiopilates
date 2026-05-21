@@ -1,66 +1,81 @@
-import AboutImageCollage from "@/components/AboutImageCollage";
+import Image from "next/image";
 import { brand } from "@/lib/brand";
 
-const SERIF = 'var(--font-playfair), "Georgia", serif';
+const GOLD = brand.goldHeading;
 
-const MINT_PAGE = "#f0f9f9";
-
-/** `/about` — matches home intro layout + overlapping image collage (reference design) */
+/**
+ * `/about` — single hero photo + “Our Journey Toward Wellness” story cards (original layout).
+ */
 export default function OurStorySection() {
-  const GOLD = brand.goldHeading;
-  const body = brand.textBody;
-
   return (
-    <section id="our-story" className="px-4 py-16 md:py-24" style={{ backgroundColor: MINT_PAGE }}>
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
-        <div>
-          <div className="inline-flex items-center gap-2 rounded-full border border-white/85 bg-white/70 px-4 py-1.5 shadow-sm backdrop-blur-sm">
-            <span className="size-1.5 shrink-0 rounded-full" style={{ backgroundColor: GOLD }} aria-hidden />
-            <span className="text-[10px] font-semibold uppercase tracking-[0.24em]" style={{ color: GOLD }}>
-              About us
-            </span>
-          </div>
+    <section id="our-story" className="relative z-10 bg-[#f7f8f9] px-4 pb-20 pt-20 sm:pt-24 md:pb-28 lg:pt-28">
+      <div className="mx-auto max-w-6xl">
+        <div
+          className="overflow-hidden rounded-[2rem] bg-white px-6 py-10 shadow-[0_22px_60px_-12px_rgba(0,0,0,0.12)] md:rounded-[2.5rem] md:px-10 md:py-14 lg:px-14"
+          style={{ boxShadow: "0 24px 64px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.02)" }}
+        >
+          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+            {/* Photo — left on large screens */}
+            <div className="relative order-2 lg:order-1">
+              <div className="relative mx-auto aspect-[4/5] max-w-md overflow-hidden rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.18)] lg:mx-0">
+                <Image
+                  src="/index1.webp"
+                  alt="Physio Pilates team celebrating certification"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 1024px) 90vw, 45vw"
+                  priority
+                />
+              </div>
+            </div>
 
-          <h2
-            className="mt-7 text-[1.85rem] font-bold leading-tight tracking-tight sm:text-[2.15rem] md:text-[2.45rem]"
-            style={{ fontFamily: SERIF, color: GOLD }}
-          >
-            Physio • Pilates • Wellness Redefined
-          </h2>
+            {/* Copy — right on large screens */}
+            <div className="order-1 lg:order-2">
+              <div
+                className="inline-flex items-center gap-2 rounded-full px-4 py-1.5"
+                style={{ backgroundColor: "rgba(179,147,89,0.12)" }}
+              >
+                <span className="size-1.5 shrink-0 rounded-full" style={{ backgroundColor: GOLD }} aria-hidden />
+                <span
+                  className="text-[10px] font-semibold uppercase tracking-[0.2em] sm:text-[11px]"
+                  style={{ color: GOLD }}
+                >
+                  OUR STORY
+                </span>
+              </div>
 
-          <div
-            className="mt-8 rounded-[1.35rem] border border-neutral-100/90 bg-white p-6 shadow-[0_22px_50px_-24px_rgba(0,0,0,0.14)] sm:rounded-[1.5rem] sm:p-7"
-          >
-            <p className="text-[15px] leading-relaxed md:text-[16px]" style={{ color: body }}>
-              Welcome to Physio Pilates —{" "}
-              <em className="font-normal italic text-neutral-700">
-                &ldquo;The only centre in Delhi which provides combination of physiotherapy and pilates for the
-                treatment.&rdquo;
-              </em>
-            </p>
-          </div>
+              <h2
+                className="mt-5 text-3xl font-bold tracking-tight sm:text-4xl md:text-[2.65rem] md:leading-tight"
+                style={{ color: GOLD }}
+              >
+                Our Journey Toward Wellness
+              </h2>
 
-          <p className="mt-6 text-[15px] leading-relaxed md:text-[16px]" style={{ color: body }}>
-            We specialize in{" "}
-            <strong className="font-semibold text-neutral-800">
-              Physiotherapy, Pilates, Yoga, Dry Needling &amp; Cupping Therapy
-            </strong>
-            , offering personalised recovery &amp; posture correction programs.
-          </p>
-
-          <div
-            className="mt-6 rounded-[1.35rem] border border-neutral-100/90 bg-white p-6 shadow-[0_22px_50px_-24px_rgba(0,0,0,0.14)] sm:rounded-[1.5rem] sm:p-7"
-          >
-            <p className="text-[15px] leading-relaxed md:text-[16px]" style={{ color: body }}>
-              With expert care, we help you{" "}
-              <strong className="font-semibold" style={{ color: GOLD }}>
-                feel better, move better &amp; live better.
-              </strong>
-            </p>
+              <div className="mt-8 space-y-5">
+                <p
+                  className="rounded-2xl border border-neutral-100/80 bg-neutral-50/90 p-6 text-[15px] leading-relaxed md:text-[16px]"
+                  style={{ color: brand.textBody }}
+                >
+                  Built on the belief that healing begins with harmony,{" "}
+                  <span className="font-semibold" style={{ color: brand.tealAccent }}>
+                    Physio Pilates
+                  </span>{" "}
+                  was founded to bridge the science of physiotherapy with the mindfulness of Pilates. Our goal has
+                  always been simple — to help people reconnect with their bodies through movement that restores and
+                  empowers.
+                </p>
+                <p
+                  className="rounded-2xl border border-neutral-100/80 bg-neutral-50/90 p-6 text-[15px] leading-relaxed md:text-[16px]"
+                  style={{ color: brand.textBody }}
+                >
+                  Each session is designed as therapy in motion — personalised, restorative, and grounded in compassion.
+                  Whether it&apos;s recovery after injury, posture correction, or overall body conditioning, our team
+                  ensures every experience supports your complete wellness.
+                </p>
+              </div>
+            </div>
           </div>
         </div>
-
-        <AboutImageCollage />
       </div>
     </section>
   );

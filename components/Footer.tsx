@@ -112,7 +112,7 @@ export default function Footer() {
               <li className="flex gap-3 sm:gap-4">
                 <FiMapPin className="mt-0.5 shrink-0 text-lg" style={{ color: GOLD }} aria-hidden />
                 <address className="min-w-0 flex-1 not-italic leading-relaxed [overflow-wrap:anywhere]">
-                  <span className="font-normal tracking-[0.01em] text-[14px] text-neutral-600 sm:text-[15px]">
+                  <span className="font-semibold tracking-[0.01em] text-[14px] text-neutral-900 sm:text-[15px]">
                     {contactAddressPlain}
                   </span>
                 </address>
@@ -130,7 +130,7 @@ export default function Footer() {
                 <FiMail className="mt-0.5 shrink-0 text-lg" style={{ color: GOLD }} aria-hidden />
                 <MailtoLink
                   email={contactEmailDisplay}
-                  className="min-w-0 flex-1 text-[14px] font-semibold leading-snug text-neutral-900 underline underline-offset-4 decoration-neutral-400/80 transition-colors hover:text-neutral-950 hover:decoration-neutral-500 sm:text-[15px]"
+                  className="min-w-0 flex-1 md:text-[14px] font-semibold leading-snug text-neutral-900 underline underline-offset-4 decoration-neutral-400/80 transition-colors hover:text-neutral-950 hover:decoration-neutral-500 sm:text-[15px]"
                 />
               </li>
             </ul>
