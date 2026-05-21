@@ -13,7 +13,7 @@ export default function YogaHero() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/index2.jpg"
+          src="/yog1.jpg"
           alt="Yoga practice outdoors at dusk — silhouette in tree pose by the shore"
           fill
           priority

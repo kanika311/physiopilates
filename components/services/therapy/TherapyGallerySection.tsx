@@ -5,29 +5,29 @@ import ServiceGallerySlider from "@/components/ServiceGallerySlider";
 const THERAPY_SLIDE_GROUPS = [
   [
     {
-      src: "/phy2.jpg",
+      src: "/therapy2.jpg",
       alt: "Therapist placing dry needling or stimulation pads along the patient's back",
     },
     {
-      src: "/phy5.jpg",
+      src: "/therapy3.jpg",
       alt: "Cupping therapy — glass cups applied along the spine for release",
     },
     {
-      src: "/phy6.jpg",
+      src: "/therpay4.jpg",
       alt: "Multiple cupping jars creating gentle suction on upper back tissues",
     },
   ],
   [
     {
-      src: "/phy5.jpg",
+      src: "/therapy5.jpg",
       alt: "Cup therapy positioned for upper-back fascia release",
     },
     {
-      src: "/phy6.jpg",
+      src: "/therapy2.jpg",
       alt: "Integrated cup therapy along the kinetic chain",
     },
     {
-      src: "/phy2.jpg",
+      src: "/therapy2.jpg",
       alt: "Dry needling and clinical soft-tissue intervention",
     },
   ],

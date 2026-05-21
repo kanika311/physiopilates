@@ -75,7 +75,7 @@ export default function CoursesOverviewSection() {
 
         <div className="order-1 lg:order-2">
           <div className="relative mx-auto aspect-[4/5] max-w-xl overflow-hidden rounded-[2rem] shadow-[0_28px_64px_-28px_rgba(0,0,0,0.22)] lg:aspect-[592/656] lg:max-w-none">
-            <Image src="/phy5.jpg" alt="Hands-on Pilates teacher mentoring in the studio" fill className="object-cover object-center" sizes="(max-width: 1024px) 100vw, 50vw" priority />
+            <Image src="/courses2.jpg" alt="Hands-on Pilates teacher mentoring in the studio" fill className="object-cover object-center" sizes="(max-width: 1024px) 100vw, 50vw" priority />
           </div>
         </div>
       </div>

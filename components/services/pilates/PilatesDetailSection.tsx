@@ -12,10 +12,10 @@ const CANVAS = "#ffffff";
 const levels = ["Beginner", "Intermediate", "Expert"] as const;
 
 const bullets = [
-  "Low-impact sequences that deepen core stability, lengthen the spine, and improve everyday posture.",
-  "Reformer and mat options so you progress safely whether you're returning from injury or training for athletic performance.",
-  "Breath-led pacing that reduces tension, sharpens concentration, and makes each session restorative — not frantic.",
-  "Small-group and individual attention so every exercise is coached, scaled, and recorded against your mobility goals.",
+  "Focus on developing a strong, stable core through controlled breathing and precise movement.",
+  "Rehabilitation-based Pilates designed for pain management, injury prevention, and improved mobility.",
+  "Enhances coordination, posture, and balance while promoting relaxation and body awareness.",
+  "Suitable for all ages and fitness levels — from beginners to professional athletes.",
 ];
 
 export default function PilatesDetailSection() {
@@ -23,12 +23,12 @@ export default function PilatesDetailSection() {
     <section className="bg-white px-4 py-16 md:py-24 lg:py-28" style={{ backgroundColor: CANVAS }}>
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
         <div>
-          <div className="relative aspect-video w-full max-h-[340px] overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.16)] sm:max-h-none sm:aspect-[16/10] lg:max-h-[420px]">
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.18)] sm:max-h-none lg:mx-0 lg:max-h-[420px]">
             <Image
-              src="/index2.jpg"
-              alt="Pilates reformer session in studio"
+              src="/pilate1.webp"
+              alt="Physiotherapy treatment session focusing on leg and knee rehabilitation"
               fill
-              className="object-cover object-[center_40%]"
+              className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
           </div>
@@ -50,20 +50,19 @@ export default function PilatesDetailSection() {
           </div>
         </div>
 
-        <div className="pt-1 lg:pt-6">
-          <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl md:text-[2.35rem] md:leading-tight">
+        <div >
+          <h2 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-4xl md:text-[2.35rem] md:leading-tight">
             Pilates
           </h2>
-          <p className="mt-6 text-[16px] leading-relaxed md:text-[17px]" style={{ color: brand.textMuted }}>
-            Pilates empowers you to move with control and confidence. Layers of mindful repetition build
-            deep strength — so you carry better alignment into work, workouts, and the rest of your week.
+          <p className="mt-2 text-[16px] leading-relaxed md:text-[17px]" style={{ color: brand.textMuted }}>
+          Pilates is a low-impact, full-body workout that enhances flexibility, strengthens core muscles, and improves posture. Our classes are guided by trained instructors who ensure each session aligns your body and mind for optimal performance and balance.
           </p>
 
-          <ul className="mt-8 space-y-5 border-l-[3px] pl-7" style={{ borderColor: "rgba(176,151,98,0.4)" }}>
+          <ul className="mt-2 space-y-5 border-l-[3px] pl-7" style={{ borderColor: "rgba(176,151,98,0.4)" }}>
             {bullets.map((text) => (
               <li
                 key={text}
-                className="relative text-[15px] leading-relaxed md:text-[16px]"
+                className="relative text-[15px] leading-relaxed md:text-[15px]"
                 style={{ color: brand.textBody }}
               >
                 <span className="absolute -left-7 top-2.5 block size-1.5 shrink-0 rounded-full bg-neutral-600" aria-hidden />
@@ -74,7 +73,7 @@ export default function PilatesDetailSection() {
 
           <Link
             href="#pilates-gallery"
-            className="mt-12 inline-flex rounded-full px-10 py-3.5 text-[15px] font-semibold text-white shadow-md transition-[filter] hover:brightness-[1.05]"
+            className="mt-4 inline-flex rounded-full px-10 py-3.5 text-[15px] font-semibold text-white shadow-md transition-[filter] hover:brightness-[1.05]"
             style={{ backgroundColor: GOLD }}
           >
             Learn More

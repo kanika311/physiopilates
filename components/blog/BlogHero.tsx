@@ -12,7 +12,7 @@ type Props =
 export default function BlogHero(props: Props) {
   const isListing = props.variant === "listing";
 
-  const imageSrc = isListing ? "/phy4.jpg" : props.imageSrc;
+  const imageSrc = isListing ? "/Blog.jpg" : props.imageSrc;
   const imageAlt = isListing
     ? "Therapy session — expert hands guiding recovery"
     : props.imageAlt;

@@ -204,17 +204,17 @@ export default function Navbar() {
               />
               <div
                 id="mobile-nav-panel"
-                className="fixed bottom-0 right-0 top-[calc(4.85rem+env(safe-area-inset-top,0px))] z-[510] flex w-[min(21rem,calc(100vw-12px))] flex-col overflow-hidden border-l border-black/[0.08] bg-[#f8f8f8] shadow-[-14px_0_36px_rgba(0,0,0,0.14)] sm:top-[calc(6.75rem+env(safe-area-inset-top,0px))]"
+                className="fixed inset-x-0 bottom-0 top-[calc(4.85rem+env(safe-area-inset-top,0px))] z-[510] flex w-full max-w-none flex-col overflow-hidden border-t border-black/[0.08] bg-[#f8f8f8] shadow-[0_-12px_40px_-12px_rgba(0,0,0,0.12)] sm:top-[calc(6.75rem+env(safe-area-inset-top,0px))]"
                 role="dialog"
                 aria-modal="true"
                 aria-label="Site navigation"
               >
                 {/* Single compact row — main close control stays in navbar */}
-                <div className="shrink-0 border-b border-black/[0.06] px-4 pb-2 pt-2">
+                {/* <div className="shrink-0 border-b border-black/[0.06] px-4 pb-2 pt-2">
                   <p className="text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-neutral-500">
                     Navigate
                   </p>
-                </div>
+                </div> */}
                 <nav className="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto overscroll-contain px-3 py-2 pb-[max(1rem,env(safe-area-inset-bottom,0px))]">
                   <Link
                     href="/about"

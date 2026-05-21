@@ -11,19 +11,19 @@ const TEAL = brand.teal;
 const accordionItems = [
   {
     q: "Why are we different?",
-    a: "Curriculum merges clinical physiotherapy literacy with Pilates pedagogy — not generic weekend certificates. You train to coach clients with pain histories, athletic goals, and everyday fatigue.",
+    a: "We combine physiotherapy and Pilates-based rehabilitation to create a holistic experience that restores both your physical and mental balance.",
   },
   {
     q: "Why trust our training?",
-    a: "Mentors review your teaching progressively. Each module ladders toward observable outcomes rather than cramming manuals you rarely reopen.",
+    a: "All programs are guided by internationally certified trainers with 10+ years of practical clinical and teaching experience.",
   },
   {
     q: "Why choose our instructors?",
-    a: "Lead faculty still treats clients weekly. Feedback reflects what actually works when theory meets tired, determined humans.",
+    a: "Our team includes physiotherapists and movement experts who provide personalized mentorship and real-time feedback.",
   },
   {
     q: "Why join our community?",
-    a: "Alumni jams, anatomy refreshers, and hiring intros mean graduation does not feel like goodbye — your cohort stays part of your professional compass.",
+    a: "Connect with over 500+ passionate learners and professionals who share your dedication to wellness and healing.",
   },
 ] as const;
 
@@ -41,20 +41,27 @@ export default function CoursesWhySection() {
     setOpenIdx((cur) => (cur === idx ? -1 : idx));
   };
 
+  /** Extra bottom space so fixed Chat/Call FABs (~z-95) do not cover accordion or highlight cards */
+  const fabClear =
+    "pb-[max(9.5rem,calc(env(safe-area-inset-bottom,0px)+8.75rem))] md:pb-[max(8.75rem,calc(env(safe-area-inset-bottom,0px)+8rem))] lg:pb-28";
+
   return (
-    <section className="px-4 py-16 md:py-24 lg:py-28" style={{ backgroundColor: "#fdfbf6" }}>
-      <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
-        <div>
+    <section
+      className={`px-4 pt-16 sm:px-6 md:pt-24 lg:px-8 lg:pt-28 ${fabClear}`}
+      style={{ backgroundColor: "#fdfbf6" }}
+    >
+      <div className="mx-auto grid max-w-6xl gap-10 sm:gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
+        <div className="min-w-0">
           <p className="text-[11px] font-semibold uppercase tracking-[0.26em]" style={{ color: GOLD_HEAD }}>
             • Why choose us
           </p>
           <h2
-            className="mt-5 font-[family-name:var(--font-playfair)] text-[2rem] font-bold leading-tight text-neutral-900 sm:text-4xl md:text-[2.25rem]"
+            className="mt-5 font-[family-name:var(--font-playfair)] text-[clamp(1.625rem,4.85vw,2.375rem)] font-bold leading-[1.12] tracking-tight text-neutral-900"
             style={{ color: GOLD_HEAD }}
           >
             Experience the Difference with Our Approach
           </h2>
-          <p className="mt-6 max-w-xl text-[16px] leading-relaxed text-neutral-600">
+          <p className="mt-6 max-w-xl text-pretty text-[15px] leading-relaxed text-neutral-600 sm:text-base">
             Teaching blends structured science with humane pacing — mentorship over memorisation so instructors leave
             ready to uplift every body seated in front of them.
           </p>
@@ -83,9 +90,9 @@ export default function CoursesWhySection() {
                     aria-expanded={expanded}
                     aria-controls={`course-faq-panel-${idx}`}
                     id={`course-faq-${idx}`}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-[15px] font-semibold text-neutral-800 transition hover:bg-white/70"
+                    className="flex w-full min-w-0 items-center justify-between gap-3 px-4 py-4 text-left text-[14px] font-semibold text-neutral-800 transition hover:bg-white/70 sm:gap-4 sm:px-5 sm:text-[15px]"
                   >
-                    {item.q}
+                    <span className="min-w-0 flex-1 pr-1">{item.q}</span>
                     <span
                       style={{ color: TEAL }}
                       className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-neutral-100"
@@ -98,7 +105,7 @@ export default function CoursesWhySection() {
                       id={`course-faq-panel-${idx}`}
                       role="region"
                       aria-labelledby={`course-faq-${idx}`}
-                      className="px-5 pb-5 pt-0 text-[14px] leading-relaxed text-neutral-600 md:text-[15px]"
+                      className="px-4 pb-5 pt-0 text-[14px] leading-relaxed text-neutral-600 sm:px-5 md:text-[15px]"
                     >
                       {item.a}
                     </div>
@@ -109,11 +116,11 @@ export default function CoursesWhySection() {
           </div>
         </div>
 
-        <div>
-          <div className="relative overflow-hidden rounded-[2rem] shadow-[0_24px_60px_-32px_rgba(0,0,0,0.2)]">
-            <div className="relative aspect-video w-full min-h-[280px] sm:min-h-[320px] lg:aspect-[572/418] lg:max-h-[440px]">
+        <div className="min-w-0">
+          <div className="relative overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_-32px_rgba(0,0,0,0.2)] sm:rounded-[2rem]">
+            <div className="relative aspect-[4/3] w-full min-h-[220px] sm:aspect-video sm:min-h-[260px] md:min-h-[300px] lg:aspect-[572/418] lg:max-h-[440px]">
               <Image
-                src="/index3.webp"
+                src="/courses3.jpg"
                 alt="Instructor practising mindful movement outdoors"
                 fill
                 className="object-cover object-[center_30%]"
@@ -121,18 +128,18 @@ export default function CoursesWhySection() {
               />
             </div>
             <div
-              className="pointer-events-none absolute bottom-6 left-6 max-w-[min(260px,calc(100%-3rem))] rounded-2xl px-5 py-3.5 text-[13px] font-semibold leading-snug text-white shadow-lg md:bottom-8 md:left-8 md:text-sm"
+              className="pointer-events-none absolute bottom-4 left-4 max-w-[min(248px,calc(100%-1.25rem))] rounded-xl px-4 py-3 text-[12px] font-semibold leading-snug text-white shadow-lg sm:bottom-6 sm:left-6 sm:max-w-[min(260px,calc(100%-3rem))] sm:rounded-2xl sm:px-5 sm:py-3.5 sm:text-[13px] md:bottom-8 md:left-8 md:text-sm"
               style={{ backgroundColor: TEAL }}
             >
               Trusted by 500+ students and 30+ certified trainers.
             </div>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-3 sm:gap-4">
+          <div className="mt-8 grid grid-cols-2 gap-2.5 max-[360px]:grid-cols-1 sm:gap-4">
             {highlights.map((label) => (
               <div
                 key={label}
-                className="flex items-center gap-3 rounded-xl border border-neutral-200/70 bg-neutral-50/80 px-4 py-3.5 text-[13px] font-medium text-neutral-700 sm:text-sm"
+                className="flex min-w-0 items-center gap-3 rounded-xl border border-neutral-200/70 bg-neutral-50/80 px-4 py-3.5 text-[13px] font-medium text-neutral-700 sm:text-sm"
               >
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-teal-200" style={{ color: TEAL }}>
                   <FiCheck className="size-4" aria-hidden />

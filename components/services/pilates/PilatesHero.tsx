@@ -13,7 +13,7 @@ export default function PilatesHero() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/index1.webp"
+          src="/pilate1.webp"
           alt="Client practising Pilates on a reformer machine"
           fill
           priority

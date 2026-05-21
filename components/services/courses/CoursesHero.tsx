@@ -15,7 +15,7 @@ export default function CoursesHero() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/index1.webp"
+          src="/courses1.webp"
           alt="Teacher training workshop — movement and Pilates education"
           fill
           priority

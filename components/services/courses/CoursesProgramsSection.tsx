@@ -20,7 +20,7 @@ type Program = {
 const programs: readonly Program[] = [
   {
     title: "200-Hour Pilates Teacher Training",
-    image: "/index2.jpg",
+    image: "/courses2.jpg",
     imageAlt: "Group Pilates teacher training studio session",
     duration: "8 Weeks • Beginner to Intermediate",
     description:

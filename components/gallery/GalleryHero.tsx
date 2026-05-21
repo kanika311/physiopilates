@@ -13,7 +13,7 @@ export default function GalleryHero() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/phy4.jpg"
+          src="/therapy1.jpg"
           alt="Therapy session atmosphere — calm clinical setting"
           fill
           priority

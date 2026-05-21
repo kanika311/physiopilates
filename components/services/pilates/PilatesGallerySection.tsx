@@ -3,13 +3,13 @@ import ServiceGallerySlider from "@/components/ServiceGallerySlider";
 /** Rows of three images per slide — cycles every 2.5s via `autoplayMs`. */
 const PILATES_SLIDE_GROUPS = [
   [
-    { src: "/index2.jpg", alt: "Pilates reformer plank and core conditioning" },
-    { src: "/index1.webp", alt: "Pilates small-group session on reformers" },
-    { src: "/index3.webp", alt: "Pilates equipment session in studio" },
+    { src: "/pilate1.webp", alt: "Pilates reformer plank and core conditioning" },
+    { src: "/pilate2.jpg", alt: "Pilates small-group session on reformers" },
+    { src: "/pilate3.webp", alt: "Pilates equipment session in studio" },
   ],
   [
-    { src: "/index1.webp", alt: "Mindful Pilates movement on the reformer" },
-    { src: "/index3.webp", alt: "Studio Pilates — strength and control" },
+    { src: "/pilate4.webp", alt: "Mindful Pilates movement on the reformer" },
+    { src: "/pilate5.jpg", alt: "Studio Pilates — strength and control" },
     { src: "/index2.jpg", alt: "Reformer Pilates — athletic conditioning" },
   ],
   [

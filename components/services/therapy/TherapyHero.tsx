@@ -13,7 +13,7 @@ export default function TherapyHero() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/phy4.jpg"
+          src="/therapy1.jpg"
           alt="Dry needling therapy — precision treatment for muscle tension"
           fill
           priority

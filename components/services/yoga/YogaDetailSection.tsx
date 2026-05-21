@@ -11,10 +11,10 @@ const CANVAS = "#f9f9f9";
 const levels = ["Beginner", "Intermediate", "Expert"] as const;
 
 const bullets = [
-  "Guided flows that weave Hatha foundations with rhythmic Vinyasa — strength and stillness in the same breath cycle.",
-  "Pranayama and gentle mobility drills to soften anxiety, widen lung capacity, and settle the nervous system.",
-  "Sequences that progressively open hips, hamstrings, and thoracic spine so flexibility feels earned — not forced.",
-  "Small class sizes where alignment cues land clearly and every practitioner feels seen, paced, and safe.",
+  "Guided sessions including Hatha, Vinyasa, and restorative yoga styles suited to all levels.",
+  "Incorporates breathing techniques (Pranayama) and meditation to promote relaxation and focus.",
+  "Helps improve flexibility, stability, and muscle tone while reducing anxiety and fatigue.",
+  "Experience the benefits of holistic healing through movement, breath, and mindfulness.",
 ];
 
 export default function YogaDetailSection() {
@@ -22,16 +22,16 @@ export default function YogaDetailSection() {
     <section className="px-4 py-16 md:py-24 lg:py-28" style={{ backgroundColor: CANVAS }}>
       <div className="mx-auto grid max-w-6xl gap-12 lg:grid-cols-2 lg:gap-16 lg:items-start">
         <div>
-          <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.16)] sm:aspect-video sm:max-h-[420px] lg:aspect-[16/11] lg:max-h-[440px]">
+        <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] shadow-[0_24px_60px_-20px_rgba(0,0,0,0.18)] sm:max-h-none lg:mx-0 lg:max-h-[420px]">
             <Image
-              src="/index3.webp"
-              alt="Peaceful yoga practice — mindfulness and posture in natural light"
+              src="/yog1.jpg"
+              alt="Physiotherapy treatment session focusing on leg and knee rehabilitation"
               fill
-              className="object-cover object-[center_45%]"
+              className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
           </div>
-          <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
+          <div className="mt-2 flex flex-wrap gap-3 sm:gap-4">
             {levels.map((level) => (
               <div
                 key={level}
@@ -49,20 +49,19 @@ export default function YogaDetailSection() {
           </div>
         </div>
 
-        <div className="pt-1 lg:pt-6">
-          <h2 className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl md:text-[2.35rem] md:leading-tight">
+        <div >
+          <h2 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-4xl md:text-[2.35rem] md:leading-tight">
             Yoga
           </h2>
-          <p className="mt-6 text-[16px] leading-relaxed md:text-[17px]" style={{ color: brand.textMuted }}>
-            Our yoga sessions combine traditional practices with Physio Pilates philosophy — honouring lineage while
-            meeting modern schedules, bodies, and stress loads with compassion.
+          <p className="mt-2 text-[16px] leading-relaxed md:text-[16px]" style={{ color: brand.textMuted }}>
+          Our yoga sessions combine traditional practices with modern science to bring balance to your body, mind, and spirit. From beginners seeking flexibility to advanced practitioners looking for mindfulness, each class helps you cultivate inner peace and physical strength.
           </p>
 
-          <ul className="mt-8 space-y-5 border-l-[3px] pl-7" style={{ borderColor: "rgba(176,148,100,0.45)" }}>
+          <ul className="mt-2 space-y-5 border-l-[3px] pl-7" style={{ borderColor: "rgba(176,148,100,0.45)" }}>
             {bullets.map((text) => (
               <li
                 key={text}
-                className="relative text-[15px] leading-relaxed md:text-[16px]"
+                className="relative text-[15px] leading-relaxed md:text-[15px]"
                 style={{ color: brand.textBody }}
               >
                 <span className="absolute -left-7 top-2.5 block size-1.5 shrink-0 rounded-full bg-neutral-600" aria-hidden />
@@ -73,7 +72,7 @@ export default function YogaDetailSection() {
 
           <Link
             href="#yoga-gallery"
-            className="mt-12 inline-flex rounded-full px-10 py-3.5 text-[15px] font-semibold text-white shadow-md transition-[filter] hover:brightness-[1.05]"
+            className="mt-4 inline-flex rounded-full px-10 py-3.5 text-[15px] font-semibold text-white shadow-md transition-[filter] hover:brightness-[1.05]"
             style={{ backgroundColor: GOLD }}
           >
             Learn More
