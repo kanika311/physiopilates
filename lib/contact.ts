@@ -6,6 +6,9 @@ export const contactAddressPlain =
 export const contactPhoneDisplay = "+91 9717505326";
 export const contactPhoneHref = "+919717505326";
 
+/** Opens WhatsApp chat with clinic number (FAB + hero shortcuts). */
+export const contactWhatsAppUrl = `https://wa.me/${contactPhoneHref.replace(/\D/g, "")}`;
+
 export const contactEmailDisplay = "physiopilates.12082022@gmail.com";
 export const contactEmailHref = contactEmailDisplay;
 

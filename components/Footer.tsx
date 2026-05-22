@@ -46,10 +46,10 @@ type SocialItem = {
 };
 
 const socialLinks: SocialItem[] = [
-  { Icon: FaInstagram, href: "#", label: "Instagram" },
-  { Icon: FaFacebookF, href: "#", label: "Facebook" },
-  { Icon: FaLinkedinIn, href: "#", label: "LinkedIn" },
-  { Icon: FaYoutube, href: "#", label: "YouTube" },
+  { Icon: FaInstagram, href: "https://www.instagram.com/pphysiopilates?igsh=aTN1c3VzNndrdDJ5", label: "Instagram" },
+  { Icon: FaFacebookF, href: "https://www.facebook.com/pphysiopilates/", label: "Facebook" },
+  { Icon: FaLinkedinIn, href: "https://www.linkedin.com/in/dr-surbhi-silori-pt-471630b4?utm_source=share_via&utm_content=profile&utm_medium=member_android", label: "LinkedIn" },
+  { Icon: FaYoutube, href: "https://youtube.com/@physiopilates6321?si=w8CytJCQKXfD-P-f", label: "YouTube" },
 ];
 
 export default function Footer() {
@@ -140,6 +140,8 @@ export default function Footer() {
                 <a
                   key={label}
                   href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={label}
                   className="flex size-11 min-h-11 min-w-11 shrink-0 items-center justify-center rounded-full border border-neutral-200 transition-colors hover:bg-neutral-100 active:scale-[0.98] sm:size-10 sm:min-h-10 sm:min-w-10"
                   style={{ color: GOLD }}

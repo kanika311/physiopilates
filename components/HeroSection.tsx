@@ -5,18 +5,17 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { brand } from "@/lib/brand";
-
 const GOLD = brand.gold;
 const TEAL = brand.tealAccent;
 
 const AUTOPLAY_MS = 2500;
 
-/** Fits narrow phones — no clipping; scales up md+ */
+/** Desktop = centered carousel; phones = one column (~90% width), no inner scroll — type scales down to fit. */
 const HERO_TITLE_CLASS =
-  "mx-auto mt-6 max-w-[min(100%,21rem)] text-balance text-[clamp(1.35rem,4.85vw,1.9rem)] font-bold leading-[1.16] tracking-tight text-white sm:mt-8 sm:max-w-5xl sm:text-5xl sm:leading-[1.12] md:text-6xl lg:text-7xl lg:leading-[1.08] [text-shadow:_0_2px_20px_rgb(0_0_0_/_45%)]";
+  "mt-2 w-full text-left md:text-center max-md:mt-2 max-md:text-[clamp(1.45rem,5.45vw,2.2rem)] max-md:leading-[1.08] break-words text-balance font-bold tracking-tight text-white [overflow-wrap:anywhere] md:mx-auto md:mt-6 md:max-w-5xl md:text-5xl md:leading-[1.12] lg:text-6xl lg:text-7xl lg:leading-[1.08] [text-shadow:_0_2px_20px_rgb(0_0_0_/_45%)]";
 
 const HERO_SUBTITLE_CLASS =
-  "mx-auto mt-6 max-w-[min(100%,22rem)] text-balance px-1 text-[0.9375rem] font-light italic leading-relaxed text-white/95 sm:mt-8 sm:max-w-3xl sm:px-2 sm:text-lg md:text-xl [text-shadow:_0_1px_12px_rgb(0_0_0_/_40%)]";
+  "mt-2.5 w-full text-left md:text-center max-md:mt-2.5 max-md:text-[clamp(0.78125rem,3.55vw,0.9rem)] max-md:leading-[1.45] max-md:font-normal max-md:not-italic break-words text-balance text-white/95 [overflow-wrap:anywhere] md:mx-auto md:mt-6 md:max-w-3xl md:italic md:font-light md:text-lg lg:text-xl [text-shadow:_0_1px_12px_rgb(0_0_0_/_40%)]";
 
 type HeroSlide = {
   src: string;
@@ -66,13 +65,13 @@ const HERO_SLIDES: HeroSlide[] = [
     badge: "YOGA & WELLNESS",
     title: (
       <>
-        <span className="text-white">Move with </span>
-        <span style={{ color: TEAL }}>Mindful Yoga</span>
+        <span className="text-white">Yoga For </span>
+        <span style={{ color: GOLD }}>Body & Mind</span>
       </>
     ),
     subtitle:
-      "Restore flexibility, breath, and calm with guided yoga sessions alongside expert physiotherapy care.",
-    cta: { label: "Explore Yoga", href: "/yoga" },
+      "Enhance flexibility, balance and inner peace with our guided yoga sessions for all levels.",
+    cta: { label: "Start Your Yoga Journey", href: "/yoga" },
     imageClass: "object-cover object-[center_28%] sm:object-center",
   },
   {
@@ -112,10 +111,11 @@ const HERO_SLIDES: HeroSlide[] = [
 
 /** First screen = full viewport height; min height keeps touch targets readable on short windows */
 const heroSectionClasses =
-  "relative isolate h-[100svh] min-h-[520px] w-full max-w-[100vw] overflow-hidden";
+  "relative isolate h-[100svh] min-h-[520px] w-full max-w-full overflow-hidden";
 
 export default function HeroSection() {
   const count = HERO_SLIDES.length;
+  const slideFlexBasis = `${100 / count}%`;
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -132,7 +132,10 @@ export default function HeroSection() {
         <div className="absolute inset-0 overflow-hidden">
           <div
             className="flex h-full w-full transition-transform duration-500 ease-out motion-reduce:transition-none"
-            style={{ transform: `translateX(-${index * 100}%)` }}
+            style={{
+              width: `${count * 100}%`,
+              transform: `translateX(calc(-${index} * (100% / ${count})))`,
+            }}
             role="region"
             aria-roledescription="carousel"
             aria-label="Homepage hero"
@@ -140,7 +143,8 @@ export default function HeroSection() {
             {HERO_SLIDES.map((slide, i) => (
               <div
                 key={slide.src + String(i)}
-                className="relative h-full min-w-full shrink-0"
+                className="relative box-border h-full min-h-0 max-w-none shrink-0 grow-0 overflow-hidden"
+                style={{ flex: `0 0 ${slideFlexBasis}` }}
                 aria-hidden={i !== index}
               >
                 <div className="absolute inset-0 z-0">
@@ -155,53 +159,96 @@ export default function HeroSection() {
                 </div>
                 <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/65 via-black/55 to-black/62" aria-hidden />
 
-                <div className="relative z-10 flex h-full flex-col pt-[clamp(5.75rem,18vw,9rem)] text-center md:pt-[min(22vh,7.5rem)]">
+                <div className="relative z-10 flex h-full min-h-0 w-full max-w-full min-w-0 flex-col pt-[clamp(5.75rem,18vw,9rem)] max-md:text-left md:text-center md:pt-[min(22vh,7.5rem)]">
                   {/* Space under fixed navbar */}
                   <div className="min-h-[2.75rem] shrink-0 sm:min-h-9" aria-hidden />
 
-                  <div className="flex min-h-0 flex-1 flex-col items-center justify-center px-3 pb-[15rem] pt-3 sm:px-4 md:pb-[15.5rem] lg:pb-44">
-                    {slide.badge ? (
-                      <div
-                        className="inline-flex max-w-[min(100%,18rem)] items-center gap-2 rounded-full border border-white/45 bg-black/40 px-4 py-2 sm:max-w-none sm:gap-2.5 sm:px-5 sm:py-2.5"
-                        role="presentation"
-                      >
-                        <span
-                          className="inline-block size-2 shrink-0 rounded-full"
-                          style={{ backgroundColor: TEAL }}
+                  <div className="flex min-h-0 w-full max-w-full min-w-0 flex-1 flex-col items-start justify-start px-5 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] pt-2 max-md:items-start max-md:pr-[8.75rem] md:items-center md:justify-center md:px-4 md:pb-[clamp(11rem,28svh,15rem)] md:pr-4 md:pt-3 lg:pb-44">
+                    {/* 90% of *content area* (parent already reserves right padding for FAB) — avoid vw caps that shrink to ~50% width */}
+                    <div className="flex min-w-0 w-[90%] max-w-full flex-col self-start md:mx-auto md:w-full md:max-w-none md:items-center">
+                      {slide.badge ? (
+                        <div
+                          className="inline-flex max-w-full items-center gap-2 self-start rounded-full border border-white/45 bg-black/40 px-3 py-1.5 max-md:self-start md:mx-auto sm:gap-2.5 sm:px-5 sm:py-2.5"
+                          role="presentation"
+                        >
+                          <span
+                            className="inline-block size-2 shrink-0 rounded-full"
+                            style={{ backgroundColor: TEAL }}
+                            aria-hidden
+                          />
+                          <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white sm:text-[11px]">
+                            {slide.badge}
+                          </span>
+                        </div>
+                      ) : null}
+
+                      {index === i ? (
+                        <h1 id="hero-heading" className={HERO_TITLE_CLASS}>
+                          {slide.title}
+                        </h1>
+                      ) : (
+                        <p className={HERO_TITLE_CLASS}>{slide.title}</p>
+                      )}
+
+                      <p className={HERO_SUBTITLE_CLASS}>{slide.subtitle}</p>
+
+                      <div className="mt-5 w-full max-md:max-w-full md:mt-10 md:max-w-none">
+                        <Link
+                          href={slide.cta.href}
+                          className="flex w-full items-center justify-center rounded-full px-6 py-3 text-[14px] font-bold leading-tight text-white shadow-lg transition-opacity hover:opacity-92 max-md:min-h-[44px] md:inline-flex md:min-h-0 md:rounded-full md:px-10 md:py-3.5 md:text-[15px] lg:py-4 lg:text-[16px]"
+                          style={{ backgroundColor: GOLD }}
+                        >
+                          {slide.cta.label}
+                        </Link>
+                      </div>
+
+                      {count > 1 && index === i ? (
+                        <div className="mt-5 flex w-full max-w-full min-w-0 flex-col gap-2.5 max-md:items-stretch md:mt-9 md:items-center md:gap-3 lg:mt-10">
+                          <div
+                            className="pointer-events-auto flex w-full shrink-0 flex-wrap items-center justify-center gap-3 px-0 pb-1 sm:gap-4 md:w-auto md:max-w-[92vw] md:rounded-full md:bg-black/30 md:px-4 md:py-2 md:backdrop-blur-sm [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+                            role="tablist"
+                            aria-label="Hero slides"
+                          >
+                            {HERO_SLIDES.map((s, dotI) => (
+                              <button
+                                key={s.src + String(dotI)}
+                                type="button"
+                                role="tab"
+                                aria-selected={dotI === index}
+                                aria-label={`Slide ${dotI + 1} of ${count}`}
+                                onClick={() => setIndex(dotI)}
+                                className={`shrink-0 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none ${
+                                  dotI === index
+                                    ? "h-2.5 w-9 shadow-[0_2px_14px_rgba(0,0,0,0.45)] md:h-3 md:w-10 md:shadow-[0_2px_16px_rgba(192,158,107,0.45)]"
+                                    : "size-3 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.25)] hover:bg-white/95 md:size-3"
+                                }`}
+                                style={dotI === index ? { backgroundColor: GOLD } : undefined}
+                              />
+                            ))}
+                          </div>
+                          <div
+                            className="motion-reduce:opacity-40 pointer-events-none hidden h-1 w-[min(18rem,calc(100vw-3rem))] max-w-full overflow-hidden rounded-full bg-white/22 md:mx-auto md:block md:h-1.5"
+                            aria-hidden
+                          >
+                            <div
+                              key={index}
+                              className="hero-slide-autoplay-progress h-full rounded-full"
+                              style={{
+                                animationDuration: `${AUTOPLAY_MS}ms`,
+                                backgroundColor: TEAL,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      ) : null}
+
+                      <div className="mt-5 hidden justify-center md:mt-9 md:flex md:justify-center lg:mt-11">
+                        <div
+                          className="h-0.5 w-24 rounded-full md:mx-auto sm:h-[3px] sm:w-[7.25rem]"
+                          style={{ background: `linear-gradient(90deg, ${TEAL} 0%, ${GOLD} 100%)` }}
                           aria-hidden
                         />
-                        <span className="text-[9px] font-semibold uppercase tracking-[0.22em] text-white sm:text-[11px]">
-                          {slide.badge}
-                        </span>
                       </div>
-                    ) : null}
-
-                    {index === i ? (
-                      <h1 id="hero-heading" className={HERO_TITLE_CLASS}>
-                        {slide.title}
-                      </h1>
-                    ) : (
-                      <p className={HERO_TITLE_CLASS}>{slide.title}</p>
-                    )}
-
-                    <p className={HERO_SUBTITLE_CLASS}>{slide.subtitle}</p>
-
-                    <div className="mt-8 sm:mt-10">
-                      <Link
-                        href={slide.cta.href}
-                        className="inline-flex rounded-full px-8 py-3 text-[14px] font-bold text-white shadow-lg transition-opacity hover:opacity-92 sm:px-10 sm:py-3.5 sm:text-[15px] md:py-4 md:text-[16px]"
-                        style={{ backgroundColor: GOLD }}
-                      >
-                        {slide.cta.label}
-                      </Link>
-                    </div>
-
-                    <div className="mt-9 md:mt-11">
-                      <div
-                        className="mx-auto h-0.5 w-24 rounded-full sm:h-[3px] sm:w-[7.25rem]"
-                        style={{ background: `linear-gradient(90deg, ${TEAL} 0%, ${GOLD} 100%)` }}
-                        aria-hidden
-                      />
                     </div>
                   </div>
                 </div>
@@ -210,44 +257,6 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {count > 1 && (
-          <div className="pointer-events-none absolute bottom-[calc(7.25rem+env(safe-area-inset-bottom,0px))] left-0 right-0 z-[41] flex flex-col items-center gap-2.5 md:bottom-28 lg:bottom-32">
-            <div
-              className="pointer-events-auto flex max-w-[90vw] items-center gap-2 overflow-x-auto rounded-full bg-black/30 px-3 py-2 backdrop-blur-sm sm:gap-2.5 sm:px-3.5 sm:py-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
-              role="tablist"
-              aria-label="Hero slides"
-            >
-              {HERO_SLIDES.map((slide, i) => (
-                <button
-                  key={slide.src + String(i)}
-                  type="button"
-                  role="tab"
-                  aria-selected={i === index}
-                  aria-label={`Slide ${i + 1} of ${count}`}
-                  onClick={() => setIndex(i)}
-                  className={`size-2 shrink-0 rounded-full transition-all duration-300 sm:size-2.5 ${
-                    i === index
-                      ? "bg-white shadow-[0_0_0_2px_rgb(72_207_203_/_85%)]"
-                      : "bg-white/38 hover:bg-white/55"
-                  }`}
-                />
-              ))}
-            </div>
-            <div
-              className="motion-reduce:opacity-40 pointer-events-none h-1 w-[min(18rem,calc(100vw-3rem))] overflow-hidden rounded-full bg-white/22 sm:h-1.5"
-              aria-hidden
-            >
-              <div
-                key={index}
-                className="hero-slide-autoplay-progress h-full rounded-full"
-                style={{
-                  animationDuration: `${AUTOPLAY_MS}ms`,
-                  backgroundColor: TEAL,
-                }}
-              />
-            </div>
-          </div>
-        )}
       </div>
 
       <p className="sr-only" aria-live="polite">
