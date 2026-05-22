@@ -158,9 +158,7 @@ export default function Footer() {
       >
         <p className="max-w-4xl mx-auto">
           © {new Date().getFullYear()} Physio Pilates. All rights reserved. | Powered by{" "}
-          <a href="https://rankmantra.com" className="underline underline-offset-2 transition-opacity hover:opacity-95">
-            Rankmantra
-          </a>
+          <span className="underline underline-offset-2 font-semibold">JCRM Technology</span>
         </p>
       </div>
     </footer>
