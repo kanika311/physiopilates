@@ -108,14 +108,11 @@ const HERO_SLIDES: HeroSlide[] = [
     imageClass: "object-cover object-[center_22%] sm:object-[center_30%] md:object-center",
   },
 ];
-
-/** First screen = full viewport height; min height keeps touch targets readable on short windows */
 const heroSectionClasses =
   "relative isolate h-[100svh] min-h-[520px] w-full max-w-full overflow-hidden";
 
 export default function HeroSection() {
   const count = HERO_SLIDES.length;
-  const slideFlexBasis = `${100 / count}%`;
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
@@ -131,7 +128,7 @@ export default function HeroSection() {
       <div className="absolute inset-0">
         <div className="absolute inset-0 overflow-hidden">
           <div
-            className="flex h-full w-full transition-transform duration-500 ease-out motion-reduce:transition-none"
+            className="flex h-full transition-transform duration-500 ease-out motion-reduce:transition-none"
             style={{
               width: `${count * 100}%`,
               transform: `translateX(calc(-${index} * (100% / ${count})))`,
@@ -143,8 +140,11 @@ export default function HeroSection() {
             {HERO_SLIDES.map((slide, i) => (
               <div
                 key={slide.src + String(i)}
-                className="relative box-border h-full min-h-0 max-w-none shrink-0 grow-0 overflow-hidden"
-                style={{ flex: `0 0 ${slideFlexBasis}` }}
+                className="relative box-border h-full min-h-0 shrink-0 overflow-hidden"
+                style={{
+                  flex: "none",
+                  width: `${100 / count}%`,
+                }}
                 aria-hidden={i !== index}
               >
                 <div className="absolute inset-0 z-0">
@@ -160,11 +160,11 @@ export default function HeroSection() {
                 <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/65 via-black/55 to-black/62" aria-hidden />
 
                 <div className="relative z-10 flex h-full min-h-0 w-full max-w-full min-w-0 flex-col pt-[clamp(5.75rem,18vw,9rem)] max-md:text-left md:text-center md:pt-[min(22vh,7.5rem)]">
-                  {/* Space under fixed navbar */}
+                  
                   <div className="min-h-[2.75rem] shrink-0 sm:min-h-9" aria-hidden />
 
                   <div className="flex min-h-0 w-full max-w-full min-w-0 flex-1 flex-col items-start justify-start px-5 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] pt-2 max-md:items-start max-md:pr-[8.75rem] md:items-center md:justify-center md:px-4 md:pb-[clamp(11rem,28svh,15rem)] md:pr-4 md:pt-3 lg:pb-44">
-                    {/* 90% of *content area* (parent already reserves right padding for FAB) — avoid vw caps that shrink to ~50% width */}
+                    
                     <div className="flex min-w-0 w-[90%] max-w-full flex-col self-start md:mx-auto md:w-full md:max-w-none md:items-center">
                       {slide.badge ? (
                         <div
@@ -192,10 +192,10 @@ export default function HeroSection() {
 
                       <p className={HERO_SUBTITLE_CLASS}>{slide.subtitle}</p>
 
-                      <div className="mt-5 w-full max-md:max-w-full md:mt-10 md:max-w-none">
+                      <div className="mt-5 flex w-full justify-center md:mt-10">
                         <Link
                           href={slide.cta.href}
-                          className="flex w-full items-center justify-center rounded-full px-6 py-3 text-[14px] font-bold leading-tight text-white shadow-lg transition-opacity hover:opacity-92 max-md:min-h-[44px] md:inline-flex md:min-h-0 md:rounded-full md:px-10 md:py-3.5 md:text-[15px] lg:py-4 lg:text-[16px]"
+                          className="flex w-full items-center justify-center rounded-full px-6 py-3 text-[14px] font-bold leading-tight text-white shadow-lg transition-opacity hover:opacity-92 max-md:min-h-[44px] md:w-auto md:shrink-0 md:min-h-0 md:px-10 md:py-3.5 md:text-[15px] lg:py-4 lg:text-[16px]"
                           style={{ backgroundColor: GOLD }}
                         >
                           {slide.cta.label}
