@@ -12,7 +12,7 @@ const AUTOPLAY_MS = 2500;
 
 /** Desktop = centered carousel; phones = one column (~90% width), no inner scroll — type scales down to fit. */
 const HERO_TITLE_CLASS =
-  "mt-2 w-full text-left md:text-center max-md:mt-2 max-md:text-[clamp(1.45rem,5.45vw,2.2rem)] max-md:leading-[1.08] break-words text-balance font-bold tracking-tight text-white [overflow-wrap:anywhere] md:mx-auto md:mt-6 md:max-w-5xl md:text-5xl md:leading-[1.12] lg:text-6xl lg:text-7xl lg:leading-[1.08] [text-shadow:_0_2px_20px_rgb(0_0_0_/_45%)]";
+  "mt-2 w-full text-48px] text-left md:text-center max-md:mt-2 max-md:text-[clamp(1.45rem,5.45vw,2.2rem)] max-md:leading-[1.08] break-words text-balance font-[600] tracking-tight text-white [overflow-wrap:anywhere] md:mx-auto md:mt-6 md:max-w-5xl md:text-5xl md:leading-[1.12] lg:text-6xl lg:text-7xl lg:leading-[1.08] [text-shadow:_0_2px_20px_rgb(0_0_0_/_45%)]";
 
 const HERO_SUBTITLE_CLASS =
   "mt-2.5 w-full text-left md:text-center max-md:mt-2.5 max-md:text-[clamp(0.78125rem,3.55vw,0.9rem)] max-md:leading-[1.45] max-md:font-normal max-md:not-italic break-words text-balance text-white/95 [overflow-wrap:anywhere] md:mx-auto md:mt-6 md:max-w-3xl md:italic md:font-light md:text-lg lg:text-xl [text-shadow:_0_1px_12px_rgb(0_0_0_/_40%)]";
@@ -89,24 +89,23 @@ const HERO_SLIDES: HeroSlide[] = [
     cta: { label: "View Therapy", href: "/therapy" },
     imageClass: "object-cover object-[center_36%] sm:object-center",
   },
-  {
-    src: "/phy6.jpg",
-    alt: "Physio Pilates — rehabilitation and movement",
-    badge: "ABOUT US",
-    title: (
-      <>
-        <span className="text-white">Building </span>
-        <span style={{ color: GOLD }}>Strength,</span>
-        <span className="text-white"> Balance & </span>
-        <span style={{ color: TEAL }}>Wellness</span>
-        <span className="text-white"> — Together</span>
-      </>
-    ),
-    subtitle:
-      "PhysioPilates — the only centre in Delhi NCR that provides a unique combination of physiotherapy and Pilates for treatment.",
-    cta: { label: "Learn More", href: "/about" },
-    imageClass: "object-cover object-[center_22%] sm:object-[center_30%] md:object-center",
-  },
+  // {
+  //   src: "/phy6.jpg",
+  //   alt: "Physio Pilates — rehabilitation and movement",
+  //   badge: "ABOUT US",
+  //   title: (
+  //     <>
+  //       <span className="text-white">Strength, </span>
+  //       <span style={{ color: GOLD }}>THROUGH</span>
+  //       <span className="text-white"> Balance & </span>
+       
+  //     </>
+  //   ),
+  //   subtitle:
+  //     "PhysioPilates — the only centre in Delhi NCR that provides a unique combination of physiotherapy and Pilates for treatment.",
+  //   cta: { label: "Learn More", href: "/about" },
+  //   imageClass: "object-cover object-[center_22%] sm:object-[center_30%] md:object-center",
+  // },
 ];
 const heroSectionClasses =
   "relative isolate h-[100svh] min-h-[520px] w-full max-w-full overflow-hidden";
@@ -163,9 +162,9 @@ export default function HeroSection() {
                   
                   <div className="min-h-[2.75rem] shrink-0 sm:min-h-9" aria-hidden />
 
-                  <div className="flex min-h-0 w-full max-w-full min-w-0 flex-1 flex-col items-start justify-start px-5 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] pt-2 max-md:items-start max-md:pr-[8.75rem] md:items-center md:justify-center md:px-4 md:pb-[clamp(11rem,28svh,15rem)] md:pr-4 md:pt-3 lg:pb-44">
+                  <div className="flex min-h-0 w-full max-w-full min-w-0 flex-1 flex-col  items-start justify-start px-5 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] pt-2 max-md:items-start  md:items-center md:justify-center md:pb-[clamp(11rem,28svh,15rem)] ">
                     
-                    <div className="flex min-w-0 w-[90%] max-w-full flex-col self-start md:mx-auto md:w-full md:max-w-none md:items-center">
+                    <div className="flex  w-[100%] max-w-full flex-col self-start md:mx-auto md:w-full md:max-w-none md:items-center ">
                       {slide.badge ? (
                         <div
                           className="inline-flex max-w-full items-center gap-2 self-start rounded-full border border-white/45 bg-black/40 px-3 py-1.5 max-md:self-start md:mx-auto sm:gap-2.5 sm:px-5 sm:py-2.5"
@@ -183,7 +182,7 @@ export default function HeroSection() {
                       ) : null}
 
                       {index === i ? (
-                        <h1 id="hero-heading" className={HERO_TITLE_CLASS}>
+                        <h1 id="hero-heading" className='text-[48px] font-[600]  tracking-tight text-white [overflow-wrap:anywhere] [text-shadow:_0_2px_20px_rgb(0_0_0_/_45%)]'>
                           {slide.title}
                         </h1>
                       ) : (
