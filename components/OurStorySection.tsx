@@ -16,15 +16,17 @@ export default function OurStorySection() {
         >
           <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
             {/* Photo — left on large screens */}
-            <div className="relative order-2 lg:order-1">
-              <div className="relative mx-auto aspect-[4/5] max-w-md overflow-hidden rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.18)] lg:mx-0">
+            <div className="relative order-2 min-w-0 lg:order-1">
+              {/* Intrinsic width/height avoids 0-sized fill layout in grid until reflow (broken img until resize/DevTools). */}
+              <div className="relative mx-auto w-full max-w-md overflow-hidden rounded-3xl shadow-[0_20px_50px_-12px_rgba(0,0,0,0.18)] lg:mx-0">
                 <Image
                   src="/index1.webp"
                   alt="Physio Pilates team celebrating certification"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 1024px) 90vw, 45vw"
+                  width={800}
+                  height={1000}
+                  sizes="(max-width: 1024px) min(90vw,448px), 448px"
                   priority
+                  className="h-auto w-full object-cover align-middle"
                 />
               </div>
             </div>
