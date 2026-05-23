@@ -33,9 +33,15 @@ export default function HomeWorkGallerySection() {
           {IMAGES.map((img) => (
             <figure
               key={img.src}
-              className="relative aspect-[4/3] overflow-hidden rounded-[1.15rem] bg-neutral-200 shadow-[0_12px_36px_-20px_rgba(0,0,0,0.2)]"
+              className="group relative aspect-[4/3] overflow-hidden rounded-[1.15rem] bg-neutral-200 shadow-[0_12px_36px_-20px_rgba(0,0,0,0.2)] motion-safe:transition-shadow motion-safe:duration-300 motion-safe:hover:shadow-[0_16px_44px_-18px_rgba(0,0,0,0.24)]"
             >
-              <Image src={img.src} alt={img.alt} fill className="object-cover object-center" sizes="(max-width:768px) 45vw, 30vw" />
+              <Image
+                src={img.src}
+                alt={img.alt}
+                fill
+                className="object-cover object-center motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out motion-safe:group-hover:scale-[1.03]"
+                sizes="(max-width:768px) 45vw, 30vw"
+              />
             </figure>
           ))}
         </div>

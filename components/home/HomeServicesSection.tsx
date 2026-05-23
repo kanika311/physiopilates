@@ -68,7 +68,7 @@ export default function HomeServicesSection() {
           {CARDS.map(({ title, text, href, Icon }) => (
             <article
               key={title}
-              className="flex flex-col rounded-3xl border border-neutral-100 bg-white px-8 py-9 text-left shadow-[0_12px_40px_-28px_rgba(0,0,0,0.15)]"
+              className="flex flex-col rounded-3xl border border-neutral-100 bg-white px-8 py-9 text-left shadow-[0_12px_40px_-28px_rgba(0,0,0,0.15)] motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out motion-safe:hover:-translate-y-1 motion-safe:hover:shadow-[0_18px_48px_-22px_rgba(0,0,0,0.18)]"
             >
               <div
                 className="flex size-14 shrink-0 items-center justify-center rounded-xl text-white shadow-sm"
@@ -80,7 +80,7 @@ export default function HomeServicesSection() {
               <p className="mt-4 flex-1 text-[15px] leading-relaxed text-neutral-600">{text}</p>
               <Link
                 href={href}
-                className="mt-6 inline-flex items-center gap-1 text-[15px] font-semibold transition-opacity hover:opacity-85"
+                className="mt-6 inline-flex items-center gap-1 rounded-sm text-[15px] font-semibold transition-[opacity,transform] duration-200 hover:opacity-90 motion-safe:hover:translate-x-0.5"
                 style={{ color: brand.tealAccent }}
               >
                 Learn More <span aria-hidden>→</span>

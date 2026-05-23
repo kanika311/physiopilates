@@ -1,4 +1,5 @@
 import HeroSection from "@/components/HeroSection";
+import RevealOnScroll from "@/components/RevealOnScroll";
 import HomeAboutIntro from "@/components/home/HomeAboutIntro";
 import HomeCertificationsSection from "@/components/home/HomeCertificationsSection";
 import HomeContactStrip from "@/components/home/HomeContactStrip";
@@ -10,12 +11,24 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <HomeAboutIntro />
-      <HomeServicesSection />
-      <HomeCertificationsSection />
-      <HomeTestimonialsSection />
-      <HomeWorkGallerySection />
-      <HomeContactStrip />
+      <RevealOnScroll>
+        <HomeAboutIntro />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <HomeServicesSection />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <HomeCertificationsSection />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <HomeTestimonialsSection />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <HomeWorkGallerySection />
+      </RevealOnScroll>
+      <RevealOnScroll>
+        <HomeContactStrip />
+      </RevealOnScroll>
     </>
   );
 }

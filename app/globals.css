@@ -62,3 +62,37 @@ p {
     opacity: 0.5;
   }
 }
+
+/* —— Lightweight interactivity (layout & palette unchanged) —— */
+
+/* Scroll-in for home sections (see RevealOnScroll.tsx) */
+.reveal-on-scroll {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-on-scroll:not(.reveal-on-scroll--visible) {
+    opacity: 0;
+    transform: translateY(1rem);
+  }
+
+  .reveal-on-scroll {
+    transition:
+      opacity 0.65s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal-on-scroll.reveal-on-scroll--visible {
+    opacity: 1;
+    transform: none;
+    will-change: auto;
+  }
+}
+
+/* Keyboard focus — subtle teal ring matching brand accents */
+:is(a, button, input, textarea, select, summary):focus-visible {
+  outline: 2px solid rgba(72, 207, 203, 0.55);
+  outline-offset: 3px;
+}
