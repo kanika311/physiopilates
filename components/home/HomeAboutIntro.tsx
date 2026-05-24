@@ -1,4 +1,6 @@
 import AboutImageCollage from "@/components/AboutImageCollage";
+import AnimatedStatCards from "@/components/home/AnimatedStatCards";
+import TrustMarquee from "@/components/home/TrustMarquee";
 import { brand } from "@/lib/brand";
 
 const SERIF = 'var(--font-playfair), "Georgia", serif';
@@ -10,14 +12,14 @@ const BODY = "#4a4a4a";
 const MINT_CARD = "#e8f7f7";
 const MINT_CARD_BORDER = "rgba(73, 207, 203, 0.22)";
 
+const STAT_SPECS = [
+  { label: "Happy Patients", value: 800, suffix: "+" },
+  { label: "Certified Experts", value: 20, suffix: "+" },
+  { label: "Years Experience", value: 10, suffix: "+" },
+] as const;
+
 export default function HomeAboutIntro() {
   const GOLD = brand.goldHeading;
-
-  const stats = [
-    { num: "800+", label: "Happy Patients" },
-    { num: "20+", label: "Certified Experts" },
-    { num: "10+", label: "Years Experience" },
-  ];
 
   return (
     <section id="home-about" className="px-4 py-16 md:py-24" style={{ backgroundColor: PAGE_BG }}>
@@ -74,18 +76,12 @@ export default function HomeAboutIntro() {
             </p>
           </div>
 
-          <div className="mt-10 grid grid-cols-3 gap-3 sm:gap-4">
-            {stats.map(({ num, label }) => (
-              <div
-                key={label}
-                className="rounded-2xl border border-white/90 bg-white/95 px-3 py-4 text-center shadow-[0_14px_34px_-20px_rgba(0,0,0,0.12)] backdrop-blur-[2px] sm:py-5"
-              >
-                <p className="text-xl font-bold sm:text-2xl" style={{ color: GOLD }}>
-                  {num}
-                </p>
-                <p className="mt-1 text-[11px] font-medium leading-tight text-neutral-600 sm:text-xs">{label}</p>
-              </div>
-            ))}
+          <div className="mt-10">
+            <TrustMarquee className="shadow-[0_12px_32px_-24px_rgba(0,0,0,0.12)]" />
+          </div>
+
+          <div className="mt-8">
+            <AnimatedStatCards specs={STAT_SPECS} />
           </div>
         </div>
 

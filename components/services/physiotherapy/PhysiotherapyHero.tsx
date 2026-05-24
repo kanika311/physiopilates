@@ -26,7 +26,7 @@ export default function PhysiotherapyHero() {
         aria-hidden
       />
 
-      <div className="relative z-10 h-24 shrink-0 sm:h-32" />
+      <div className="relative z-10 h-[7rem] shrink-0 sm:h-[8rem]" />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-28 pt-8 text-center md:pb-32">
         <div

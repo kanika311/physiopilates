@@ -11,24 +11,14 @@ export default function Home() {
   return (
     <>
       <HeroSection />
-      <RevealOnScroll>
-        <HomeAboutIntro />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <HomeServicesSection />
-      </RevealOnScroll>
+      <HomeAboutIntro />
+      <HomeServicesSection />
       <RevealOnScroll>
         <HomeCertificationsSection />
       </RevealOnScroll>
-      <RevealOnScroll>
-        <HomeTestimonialsSection />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <HomeWorkGallerySection />
-      </RevealOnScroll>
-      <RevealOnScroll>
-        <HomeContactStrip />
-      </RevealOnScroll>
+      <HomeTestimonialsSection />
+      <HomeWorkGallerySection />
+      <HomeContactStrip />
     </>
   );
 }

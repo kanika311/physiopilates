@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import type { IconType } from "react-icons";
 import {
   FaFacebookF,
@@ -53,6 +54,10 @@ const socialLinks: SocialItem[] = [
 ];
 
 export default function Footer() {
+  const pathname = usePathname() ?? "";
+  /** Contact page already shows address / phone / email above — skip repeating the same block */
+  const isContactPage = pathname === "/contact";
+
   return (
     <footer id="contact" className={`relative ${footerSans}`}>
       <div className="h-1 w-full bg-[#f0ebe3]" aria-hidden />
@@ -106,34 +111,40 @@ export default function Footer() {
 
           <div className="min-w-0">
             <h3 className={`${footerSans} text-base font-semibold leading-snug text-neutral-900 sm:text-[17px]`}>
-              Contact Us
+              {isContactPage ? "Connect with us" : "Contact Us"}
             </h3>
-            <ul className="mt-5 space-y-4 text-[15px] leading-relaxed sm:text-base">
-              <li className="flex gap-3 sm:gap-4">
-                <FiMapPin className="mt-0.5 shrink-0 text-lg" style={{ color: GOLD }} aria-hidden />
-                <address className="min-w-0 flex-1 not-italic leading-relaxed [overflow-wrap:anywhere]">
-                  <span className="font-semibold tracking-[0.01em] text-[14px] text-neutral-900 sm:text-[15px]">
-                    {contactAddressPlain}
-                  </span>
-                </address>
-              </li>
-              <li className="flex min-w-0 items-center gap-3 sm:gap-4">
-                <FiPhone className="shrink-0 text-lg" style={{ color: GOLD }} aria-hidden />
-                <a
-                  href={`tel:${contactPhoneHref}`}
-                  className="min-w-0 font-semibold text-neutral-900 no-underline transition-colors hover:text-neutral-950 hover:underline"
-                >
-                  {contactPhoneDisplay}
-                </a>
-              </li>
-              <li className="flex min-w-0 items-start gap-3 sm:gap-4">
-                <FiMail className="mt-0.5 shrink-0 text-lg" style={{ color: GOLD }} aria-hidden />
-                <MailtoLink
-                  email={contactEmailDisplay}
-                  className="min-w-0 flex-1 md:text-[14px] font-semibold leading-snug text-neutral-900 underline underline-offset-4 decoration-neutral-400/80 transition-colors hover:text-neutral-950 hover:decoration-neutral-500 sm:text-[15px]"
-                />
-              </li>
-            </ul>
+            {isContactPage ? (
+              <p className={`${footerSans} mt-5 max-w-sm text-[15px] font-medium leading-relaxed text-neutral-700 sm:text-base`}>
+                Address, phone, and email are listed in the section above — follow us below for updates and reels.
+              </p>
+            ) : (
+              <ul className="mt-5 space-y-4 text-[15px] leading-relaxed sm:text-base">
+                <li className="flex gap-3 sm:gap-4">
+                  <FiMapPin className="mt-0.5 shrink-0 text-lg" style={{ color: GOLD }} aria-hidden />
+                  <address className="min-w-0 flex-1 not-italic leading-relaxed [overflow-wrap:anywhere]">
+                    <span className="font-semibold tracking-[0.01em] text-[14px] text-neutral-900 sm:text-[15px]">
+                      {contactAddressPlain}
+                    </span>
+                  </address>
+                </li>
+                <li className="flex min-w-0 items-center gap-3 sm:gap-4">
+                  <FiPhone className="shrink-0 text-lg" style={{ color: GOLD }} aria-hidden />
+                  <a
+                    href={`tel:${contactPhoneHref}`}
+                    className="min-w-0 font-semibold text-neutral-900 no-underline transition-colors hover:text-neutral-950 hover:underline"
+                  >
+                    {contactPhoneDisplay}
+                  </a>
+                </li>
+                <li className="flex min-w-0 items-start gap-3 sm:gap-4">
+                  <FiMail className="mt-0.5 shrink-0 text-lg" style={{ color: GOLD }} aria-hidden />
+                  <MailtoLink
+                    email={contactEmailDisplay}
+                    className="min-w-0 flex-1 md:text-[14px] font-semibold leading-snug text-neutral-900 underline underline-offset-4 decoration-neutral-400/80 transition-colors hover:text-neutral-950 hover:decoration-neutral-500 sm:text-[15px]"
+                  />
+                </li>
+              </ul>
+            )}
 
             <div className="mt-8 flex flex-wrap gap-3 sm:gap-4">
               {socialLinks.map(({ Icon, href, label }) => (

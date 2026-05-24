@@ -4,6 +4,7 @@ import { Montserrat, Playfair_Display } from "next/font/google";
 import FloatingActions from "@/components/FloatingActions";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
+import MotionProviders from "@/components/providers/MotionProviders";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -38,7 +39,9 @@ export default function RootLayout({
         className={`${montserrat.className} ${playfair.variable} bg-white text-neutral-900 antialiased`}
       >
         <Navbar />
-        <main>{children}</main>
+        <main>
+          <MotionProviders>{children}</MotionProviders>
+        </main>
         <Footer />
         <FloatingActions />
       </body>

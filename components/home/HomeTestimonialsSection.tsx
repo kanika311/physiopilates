@@ -1,6 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import type { ComponentProps } from "react";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+
 import { brand } from "@/lib/brand";
 
 type T = {
@@ -8,8 +11,7 @@ type T = {
   name: string;
 };
 
-/** Two cards per slide, autoplay, no arrows (dots only). */
-const PAIRS: { left: T; right: T }[] = [
+const PAIRS: readonly { left: T; right: T }[] = [
   {
     left: {
       quote:
@@ -38,25 +40,65 @@ const PAIRS: { left: T; right: T }[] = [
 
 const AUTO_MS = 5000;
 
-function Stars() {
+function BurstStarsBand() {
+  const reduceMotion = useReducedMotion() ?? false;
+  const [burst, setBurst] = useState(reduceMotion);
+  const sentinelRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (reduceMotion) return undefined;
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setBurst(true);
+        observer.disconnect();
+      },
+      { threshold: 0.3 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [reduceMotion]);
+
   return (
-    <div className="mb-5 flex gap-1 text-amber-400" aria-label="Five stars">
-      {Array.from({ length: 5 }).map((_, i) => (
-        <span key={i}>★</span>
-      ))}
+    <div className="mt-11">
+      <div ref={sentinelRef} className="pointer-events-none h-px w-full opacity-0" aria-hidden />
+
+      <div className="flex justify-center gap-2 text-xl text-amber-400 md:text-[1.65rem]" aria-label="Five stars">
+        {[0, 1, 2, 3, 4].map((idx) =>
+          reduceMotion ? (
+            <span key={`star-${idx}`}>★</span>
+          ) : (
+            <motion.span
+              key={`star-${idx}`}
+              initial={{ scale: 0.001 }}
+              animate={
+                burst
+                  ? { scale: [0, 1.2, 1], transition: { duration: 0.54, ease: [0.34, 1.56, 0.64, 1], delay: idx * 0.05 } }
+                  : { scale: 0.001 }
+              }
+            >
+              ★
+            </motion.span>
+          ),
+        )}
+      </div>
     </div>
   );
 }
 
-function Card({ t }: { t: T }) {
+function TestimonialCard({ t, tick }: { t: T; tick: number }) {
+  const GOLD = brand.goldHeading;
+
   return (
-    <article className="flex h-full flex-col rounded-[1.85rem] border border-neutral-100 bg-white p-8 text-left shadow-[0_14px_40px_-26px_rgba(0,0,0,0.15)] md:p-9">
-      <Stars />
-      <p className="flex-1 text-[15px] leading-relaxed text-neutral-700">{t.quote}</p>
+    <article className="flex w-full flex-col rounded-[1.85rem] border border-neutral-100 bg-white p-8 text-left shadow-[0_14px_40px_-26px_rgba(0,0,0,0.15)] md:p-9">
+      <p className="text-[15px] leading-relaxed text-neutral-700">{t.quote}</p>
       <div className="mt-8 flex items-center gap-4 border-t border-neutral-100 pt-6">
         <div
           className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-amber-200/80 bg-amber-50 text-sm font-bold"
-          style={{ color: brand.goldHeading }}
+          style={{ color: GOLD }}
         >
           {t.name
             .split(" ")
@@ -66,22 +108,53 @@ function Card({ t }: { t: T }) {
         </div>
         <span className="font-semibold text-neutral-900">{t.name}</span>
       </div>
+
+      <div className="pointer-events-none mt-9 h-[3px] w-full overflow-hidden rounded-full bg-neutral-100">
+        <motion.span
+          key={`${tick}-${t.name}-bar`}
+          className="block h-full origin-left rounded-full"
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ duration: AUTO_MS / 1000, ease: "linear" }}
+          style={{ backgroundColor: brand.tealAccent }}
+          aria-hidden
+        />
+      </div>
     </article>
   );
 }
 
+function motionCrossfade(reduced: boolean): Pick<
+  ComponentProps<typeof motion.div>,
+  "initial" | "animate" | "exit" | "transition"
+> {
+  if (reduced) {
+    return { initial: false, animate: { opacity: 1 }, exit: { opacity: 1 }, transition: { duration: 0 } };
+  }
+
+  return {
+    initial: { opacity: 0, y: 12 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -10 },
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] },
+  };
+}
+
 export default function HomeTestimonialsSection() {
-  const [i, setI] = useState(0);
+  const [index, setIndex] = useState(0);
+  const reduceMotion = useReducedMotion() ?? false;
   const total = PAIRS.length;
-  const go = useCallback((n: number) => setI((prev) => (prev + n + total) % total), [total]);
+  const pair = PAIRS[index];
+  const [tick, setTick] = useState(0);
 
   useEffect(() => {
-    if (total < 2) return;
-    const t = window.setInterval(() => go(1), AUTO_MS);
-    return () => window.clearInterval(t);
-  }, [go, total]);
-
-  const pair = PAIRS[i];
+    if (total < 2) return undefined;
+    const timer = window.setInterval(() => {
+      setIndex((prev) => (prev + 1) % total);
+      setTick((t) => t + 1);
+    }, AUTO_MS);
+    return () => window.clearInterval(timer);
+  }, [total]);
 
   return (
     <section className="bg-white px-4 py-16 md:py-24">
@@ -96,10 +169,18 @@ export default function HomeTestimonialsSection() {
           Client Stories
         </h2>
 
-        <div className="mx-auto mt-12 grid gap-8 text-left lg:grid-cols-2">
-          <Card t={pair.left} />
-          <Card t={pair.right} />
-        </div>
+        <BurstStarsBand />
+
+        <AnimatePresence mode={reduceMotion ? "sync" : "wait"} initial={false}>
+          <motion.div
+            key={`grid-${index}`}
+            {...motionCrossfade(reduceMotion)}
+            className="relative mx-auto mt-6 grid items-start gap-8 text-left lg:grid-cols-2 lg:gap-12"
+          >
+            <TestimonialCard key={`${index}-${pair.left.name}`} t={pair.left} tick={tick} />
+            <TestimonialCard key={`${index}-${pair.right.name}`} t={pair.right} tick={tick} />
+          </motion.div>
+        </AnimatePresence>
 
         {total > 1 ? (
           <div className="mt-12 flex justify-center gap-2" role="tablist" aria-label="Testimonials pages">
@@ -108,10 +189,13 @@ export default function HomeTestimonialsSection() {
                 key={dot}
                 type="button"
                 role="tab"
-                aria-selected={dot === i}
-                onClick={() => setI(dot)}
-                className={`h-2.5 rounded-full transition-all ${dot === i ? "w-9" : "w-2.5 bg-neutral-300 hover:bg-neutral-400"}`}
-                style={dot === i ? { backgroundColor: brand.goldHeading } : undefined}
+                aria-selected={dot === index}
+                className={`mi-hover h-2.5 rounded-full transition-colors duration-200 motion-reduce:transition-none ${dot === index ? "w-9" : "w-2.5 bg-neutral-300 hover:bg-neutral-400"}`}
+                style={dot === index ? { backgroundColor: brand.goldHeading } : undefined}
+                onClick={() => {
+                  setIndex(dot);
+                  setTick((t) => t + 1);
+                }}
               />
             ))}
           </div>

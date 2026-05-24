@@ -5,7 +5,7 @@ html {
   /* Avoid layout jump when scrollbar appears — stops fixed header / hero from “doubling” on scroll */
   scrollbar-gutter: stable;
   /* Anchors landing below fixed navbar (About, Contact, etc.) */
-  scroll-padding-top: clamp(4.75rem, 14vw, 7rem);
+  scroll-padding-top: clamp(7.75rem, 17vw, 9.75rem);
 }
 
 body {
@@ -95,4 +95,292 @@ p {
 :is(a, button, input, textarea, select, summary):focus-visible {
   outline: 2px solid rgba(72, 207, 203, 0.55);
   outline-offset: 3px;
+}
+
+/* —— Cinematics & micro-interactions (respect prefers-reduced-motion below) —— */
+
+/* Hero Ken Burns background (animated wrapper — image decode/LCP unaffected) */
+@keyframes heroKenBurns {
+  0% {
+    transform: scale(1.08) translate3d(-1.25%, -0.6%, 0);
+  }
+  50% {
+    transform: scale(1.16) translate3d(1.1%, 0.85%, 0);
+  }
+  100% {
+    transform: scale(1.1) translate3d(-0.35%, -0.2%, 0);
+  }
+}
+
+.hero-ken-burns {
+  overflow: hidden;
+}
+
+.hero-ken-burns-inner {
+  will-change: transform;
+  animation-name: heroKenBurns;
+  animation-duration: 28s;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+  animation-iteration-count: infinite;
+}
+
+/* Soft breathing ring behind primary CTA */
+@keyframes ctaBreatheRing {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.35;
+  }
+  50% {
+    transform: scale(1.06);
+    opacity: 0.55;
+  }
+}
+
+.cta-breathe-shell {
+  position: relative;
+  display: inline-flex;
+  isolation: isolate;
+}
+
+.cta-breathe-shell .cta-breathe-ring {
+  position: absolute;
+  inset: -10px;
+  border-radius: 9999px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12) inset;
+  pointer-events: none;
+  animation: ctaBreatheRing 5.4s ease-in-out infinite;
+}
+
+.cta-breathe-shell .cta-breathe-ring.delay {
+  animation-delay: 2.4s;
+  opacity: 0.55;
+}
+
+/* Trust marquee strip */
+@keyframes trustMarqueeX {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+.trust-marquee {
+  position: relative;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, black 6%, black 94%, transparent 100%);
+}
+
+.trust-marquee-track {
+  display: inline-flex;
+  gap: clamp(2.25rem, 6vw, 4rem);
+  white-space: nowrap;
+  will-change: transform;
+  animation: trustMarqueeX 52s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trust-marquee-track {
+    animation: none;
+  }
+}
+
+/* CTA ambient blob stack — SVG layers drift / scale (performant substitute for morphing paths in CSS) */
+@keyframes ctaBlobFloatA {
+  0%,
+  100% {
+    transform: translate3d(-1.75%, -0.5%, 0) rotate(-2deg) scale(1);
+  }
+  50% {
+    transform: translate3d(2%, 2.25%, 0) rotate(2.75deg) scale(1.05);
+  }
+}
+
+@keyframes ctaBlobFloatB {
+  0%,
+  100% {
+    transform: translate3d(2.75%, -1.25%, 0) rotate(2.85deg) scale(1.02);
+    opacity: 0.72;
+  }
+  45% {
+    transform: translate3d(-3.75%, 1%, 0) rotate(-3.05deg) scale(1.085);
+    opacity: 0.88;
+  }
+}
+
+.cta-strip-blob-svg {
+  position: absolute;
+  inset: auto -14% -32% -10%;
+  width: min(920px, 140vw);
+  height: auto;
+  pointer-events: none;
+}
+
+.cta-strip-blob-layer-a {
+  transform-origin: 45% 60%;
+}
+
+.cta-strip-blob-layer-b {
+  transform-origin: 58% 36%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cta-strip-blob-layer-a {
+    animation: ctaBlobFloatA 32s ease-in-out infinite alternate;
+  }
+
+  .cta-strip-blob-layer-b {
+    animation: ctaBlobFloatB 26s ease-in-out infinite alternate;
+  }
+}
+
+/* WhatsApp green notification pulse */
+@keyframes waDotPulse {
+  0%,
+  94% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.55);
+  }
+  97% {
+    transform: scale(1.06);
+    box-shadow: 0 0 0 10px rgba(37, 211, 102, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+}
+
+.wa-live-dot {
+  position: relative;
+}
+
+.wa-live-dot::after {
+  content: "";
+  position: absolute;
+  inset: auto -10px auto auto;
+  width: 9px;
+  height: 9px;
+  border-radius: 999px;
+  background: #25d366;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wa-live-dot::after {
+    animation: waDotPulse 3s ease-out infinite;
+  }
+}
+
+/* Click ripple bursts */
+@keyframes rippleBurst {
+  0% {
+    transform: translate3d(-50%, -50%, 0) scale(0);
+    opacity: 0.32;
+  }
+  65% {
+    opacity: 0.16;
+  }
+  100% {
+    transform: translate3d(-50%, -50%, 0) scale(1);
+    opacity: 0;
+  }
+}
+
+.ripple-parent {
+  position: relative;
+  overflow: hidden;
+}
+
+span.ripple-burst {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.55) 0%, rgba(255, 255, 255, 0) 70%);
+  transform: translate3d(-50%, -50%, 0);
+  animation: rippleBurst 620ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Global button / submit affordances: gentle lift + press + ripple target box */
+@media (prefers-reduced-motion: no-preference) {
+  :is(button, input[type="submit"], input[type="button"]):not(:disabled):not([aria-busy="true"]):not(
+      .no-interactive-motion
+    ):not([role="tab"]):not([data-static-button]) {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    transition:
+      transform 150ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 200ms ease-out,
+      opacity 180ms ease-out,
+      filter 180ms ease-out;
+  }
+
+  :is(button, input[type="submit"], input[type="button"]):not(:disabled):not([aria-busy="true"]):not(
+      .no-interactive-motion
+    ):not([role="tab"]):not([data-static-button]):hover {
+    transform: translateZ(0) scale(1.035);
+    filter: saturate(1.06);
+  }
+
+  :is(button, input[type="submit"], input[type="button"]):not(:disabled):not([aria-busy="true"]):not(
+      .no-interactive-motion
+    ):not([role="tab"]):not([data-static-button]):active {
+    transform: translateZ(0) scale(0.97);
+    transition-duration: 90ms;
+  }
+}
+
+/* Lightweight hover lifts for footer/social SVGs etc. */
+.mi-hover {
+  transition:
+    transform 150ms ease-out,
+    opacity 150ms ease-out;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .mi-hover:hover,
+  .mi-hover:focus-visible {
+    transform: scale(1.05);
+  }
+
+  body:not(.suppress-mi-hover) a:hover svg.mi-svg,
+  body:not(.suppress-mi-hover) button:hover svg.mi-svg {
+    transform: scale(1.05);
+    transition: transform 150ms ease-out;
+  }
+
+  body:not(.suppress-mi-hover) a:hover svg.mi-svg-origin,
+  body:not(.suppress-mi-hover) button:hover svg.mi-svg-origin {
+    transform: scale(1.05);
+    transform-origin: center;
+    transition: transform 150ms ease-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-ken-burns-inner {
+    animation: none;
+    transform: scale(1.05) translate3d(-0.3%, -0.1%, 0);
+  }
+
+  .cta-breathe-shell .cta-breathe-ring {
+    animation: none;
+    opacity: 0.42;
+    transform: scale(1);
+  }
+
+  .wa-live-dot::after {
+    animation: none;
+    box-shadow: none;
+  }
+
+  span.ripple-burst {
+    animation: none;
+    opacity: 0;
+  }
 }

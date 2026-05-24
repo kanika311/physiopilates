@@ -3,42 +3,106 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { motion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { brand } from "@/lib/brand";
+
 const GOLD = brand.gold;
 const TEAL = brand.tealAccent;
 
 const AUTOPLAY_MS = 2500;
 
-/** Desktop = centered carousel; phones = one column (~90% width), no inner scroll — type scales down to fit. */
-const HERO_TITLE_CLASS =
-  "mt-2 w-full text-48px] text-left md:text-center max-md:mt-2 max-md:text-[clamp(1.45rem,5.45vw,2.2rem)] max-md:leading-[1.08] break-words text-balance font-[600] tracking-tight text-white [overflow-wrap:anywhere] md:mx-auto md:mt-6 md:max-w-5xl md:text-5xl md:leading-[1.12] lg:text-6xl lg:text-7xl lg:leading-[1.08] [text-shadow:_0_2px_20px_rgb(0_0_0_/_45%)]";
-
-const HERO_SUBTITLE_CLASS =
-  "mt-2.5 w-full text-left md:text-center max-md:mt-2.5 max-md:text-[clamp(0.78125rem,3.55vw,0.9rem)] max-md:leading-[1.45] max-md:font-normal max-md:not-italic break-words text-balance text-white/95 [overflow-wrap:anywhere] md:mx-auto md:mt-6 md:max-w-3xl md:italic md:font-light md:text-lg lg:text-xl [text-shadow:_0_1px_12px_rgb(0_0_0_/_40%)]";
+type Tone = "white" | "gold" | "teal";
+export type WordsLine = ReadonlyArray<{ text: string; tone: Tone }>;
 
 type HeroSlide = {
   src: string;
   alt: string;
   badge?: string;
-  title: ReactNode;
+  /** Multi-line headings (each inner array renders as one wrapped line). */
+  titleLines: readonly WordsLine[];
   subtitle: string;
   cta: { label: string; href: string };
-  /** Per-slide focal point — keeps subjects visible with object-cover */
   imageClass?: string;
 };
+
+const HERO_SUBTITLE_CLASS =
+  "mt-2.5 w-full text-left md:text-center max-md:mt-2.5 max-md:text-[clamp(0.78125rem,3.55vw,0.9rem)] max-md:leading-[1.45] max-md:font-normal max-md:not-italic break-words text-balance text-white/95 [overflow-wrap:anywhere] md:mx-auto md:mt-6 md:max-w-3xl md:italic md:font-light md:text-lg lg:text-xl [text-shadow:_0_1px_12px_rgb(0_0_0_/_40%)]";
+
+const HERO_TITLE_BASE =
+  "mt-2 w-full text-left md:text-center max-md:mt-2 max-md:text-[clamp(1.45rem,5.45vw,2.2rem)] max-md:leading-[1.08] break-words text-balance font-[600] tracking-tight md:mx-auto md:mt-6 md:max-w-5xl md:text-5xl md:leading-[1.12] lg:text-6xl lg:leading-[1.08] [text-shadow:_0_2px_20px_rgb(0_0_0_/_45%)]";
+
+function toneInline(tone: Tone): React.CSSProperties {
+  switch (tone) {
+    case "gold":
+      return { color: GOLD };
+    case "teal":
+      return { color: TEAL };
+    default:
+      return { color: "white" };
+  }
+}
+
+function renderStaticHeading(lines: readonly WordsLine[]): ReactNode {
+  return lines.map((line, li) => (
+    <span key={li} className="flex w-full flex-wrap justify-start gap-x-2 gap-y-1 md:justify-center">
+      {line.map((w, wi) => (
+        <span key={wi} style={toneInline(w.tone)}>
+          {w.text}
+        </span>
+      ))}
+    </span>
+  ));
+}
+
+function HeroStaggeredHeading({ lines, animKey }: { lines: readonly WordsLine[]; animKey: string }) {
+  const reduced = usePrefersReducedMotion();
+  let global = 0;
+
+  if (reduced) return <>{renderStaticHeading(lines)}</>;
+
+  return (
+    <>
+      {lines.map((line, li) => (
+        <span key={`${animKey}-line-${li}`} className="flex w-full flex-wrap justify-start gap-x-2 gap-y-1 md:justify-center">
+          {line.map((w, wi) => {
+            const delayIndex = global++;
+            return (
+              <motion.span
+                key={`${animKey}-${li}-${wi}-${w.text}`}
+                style={toneInline(w.tone)}
+                initial={{ opacity: 0.001, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  delay: delayIndex * 0.1,
+                  duration: 0.45,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+              >
+                {w.text}
+              </motion.span>
+            );
+          })}
+        </span>
+      ))}
+    </>
+  );
+}
 
 const HERO_SLIDES: HeroSlide[] = [
   {
     src: "/index2.jpg",
     alt: "Pilates reformer training in a bright studio",
     badge: "INSTRUCTOR COURSES",
-    title: (
-      <>
-        <span className="text-white">Become a </span>
-        <span style={{ color: GOLD }}>Certified Trainer</span>
-      </>
-    ),
+    titleLines: [
+      [
+        { text: "Become", tone: "white" },
+        { text: "a", tone: "white" },
+        { text: "Certified", tone: "gold" },
+        { text: "Trainer", tone: "gold" },
+      ],
+    ],
     subtitle:
       "Professional instructor training courses in physiotherapy, Pilates and yoga to build your healthcare career.",
     cta: { label: "Enroll Now", href: "/courses" },
@@ -48,12 +112,13 @@ const HERO_SLIDES: HeroSlide[] = [
     src: "/index1.webp",
     alt: "Clients training strength and balance on Pilates equipment",
     badge: "PILATES",
-    title: (
-      <>
-        <span className="text-white">Strength Through </span>
-        <span style={{ color: TEAL }}>Pilates</span>
-      </>
-    ),
+    titleLines: [
+      [
+        { text: "Strength", tone: "white" },
+        { text: "Through", tone: "white" },
+        { text: "Pilates", tone: "teal" },
+      ],
+    ],
     subtitle:
       "Strengthen your core, improve posture and build a balanced body with personalised Pilates training.",
     cta: { label: "Join Pilates Program", href: "/pilates" },
@@ -63,12 +128,15 @@ const HERO_SLIDES: HeroSlide[] = [
     src: "/index3.webp",
     alt: "Yoga and mindful movement in the studio",
     badge: "YOGA & WELLNESS",
-    title: (
-      <>
-        <span className="text-white">Yoga For </span>
-        <span style={{ color: GOLD }}>Body & Mind</span>
-      </>
-    ),
+    titleLines: [
+      [
+        { text: "Yoga", tone: "white" },
+        { text: "For", tone: "white" },
+        { text: "Body", tone: "gold" },
+        { text: "&", tone: "white" },
+        { text: "Mind", tone: "gold" },
+      ],
+    ],
     subtitle:
       "Enhance flexibility, balance and inner peace with our guided yoga sessions for all levels.",
     cta: { label: "Start Your Yoga Journey", href: "/yoga" },
@@ -78,41 +146,30 @@ const HERO_SLIDES: HeroSlide[] = [
     src: "/phy4.jpg",
     alt: "Therapy and recovery-focused session",
     badge: "THERAPY",
-    title: (
-      <>
-        <span className="text-white">Recover with </span>
-        <span style={{ color: GOLD }}>Expert Care</span>
-      </>
-    ),
+    titleLines: [
+      [
+        { text: "Recover", tone: "white" },
+        { text: "with", tone: "white" },
+        { text: "Expert", tone: "gold" },
+        { text: "Care", tone: "gold" },
+      ],
+    ],
     subtitle:
       "Dry needling, cup therapy, and physiotherapy-led plans to reduce pain and get you moving again.",
     cta: { label: "View Therapy", href: "/therapy" },
     imageClass: "object-cover object-[center_36%] sm:object-center",
   },
-  // {
-  //   src: "/phy6.jpg",
-  //   alt: "Physio Pilates — rehabilitation and movement",
-  //   badge: "ABOUT US",
-  //   title: (
-  //     <>
-  //       <span className="text-white">Strength, </span>
-  //       <span style={{ color: GOLD }}>THROUGH</span>
-  //       <span className="text-white"> Balance & </span>
-       
-  //     </>
-  //   ),
-  //   subtitle:
-  //     "PhysioPilates — the only centre in Delhi NCR that provides a unique combination of physiotherapy and Pilates for treatment.",
-  //   cta: { label: "Learn More", href: "/about" },
-  //   imageClass: "object-cover object-[center_22%] sm:object-[center_30%] md:object-center",
-  // },
 ];
+
 const heroSectionClasses =
   "relative isolate h-[100svh] min-h-[520px] w-full max-w-full overflow-hidden";
 
 export default function HeroSection() {
   const count = HERO_SLIDES.length;
   const [index, setIndex] = useState(0);
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const [parallaxPx, setParallaxPx] = useState(0);
+  const reducesMotion = usePrefersReducedMotion() === true;
 
   useEffect(() => {
     if (count < 2) return;
@@ -122,10 +179,42 @@ export default function HeroSection() {
     return () => window.clearInterval(t);
   }, [count]);
 
+  useEffect(() => {
+    if (reducesMotion) {
+      setParallaxPx(0);
+      return undefined;
+    }
+    let raf = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(raf);
+      raf = window.requestAnimationFrame(() => {
+        const hero = sectionRef.current;
+        if (!hero) return;
+        const rect = hero.getBoundingClientRect();
+        if (rect.bottom <= 0 || rect.top >= window.innerHeight) {
+          setParallaxPx(0);
+          return;
+        }
+        const y = window.scrollY;
+        // Background layer moves slower (~0.5× feel) versus foreground scroll progression
+        setParallaxPx(y * 0.32);
+      });
+    };
+
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      cancelAnimationFrame(raf);
+    };
+  }, [reducesMotion]);
+
   return (
-    <section className={heroSectionClasses} aria-labelledby="hero-heading">
-      <div className="absolute inset-0">
-        <div className="absolute inset-0 overflow-hidden">
+    <section ref={sectionRef} className={heroSectionClasses} aria-labelledby="hero-heading">
+      <div className="absolute inset-0 overflow-hidden">
+        <div className="absolute inset-0">
           <div
             className="flex h-full transition-transform duration-500 ease-out motion-reduce:transition-none"
             style={{
@@ -146,25 +235,43 @@ export default function HeroSection() {
                 }}
                 aria-hidden={i !== index}
               >
-                <div className="absolute inset-0 z-0">
-                  <Image
-                    src={slide.src}
-                    alt={slide.alt}
-                    fill
-                    priority={i === 0}
-                    sizes="100vw"
-                    className={slide.imageClass ?? "object-cover object-center"}
-                  />
+                <div
+                  className="hero-parallax-layer absolute inset-0 z-0 overflow-hidden motion-reduce:transform-none"
+                  style={{
+                    transform: i === index && !reducesMotion ? `translate3d(0, ${parallaxPx * 0.5}px, 0)` : undefined,
+                  }}
+                  aria-hidden
+                >
+                  <div className="hero-ken-burns absolute inset-[-4%] z-0">
+                    <div
+                      className={[
+                        "hero-ken-burns-inner absolute inset-0",
+                        reducesMotion ? "motion-reduce:animation-none motion-reduce:transform-none" : "",
+                      ]
+                        .filter(Boolean)
+                        .join(" ")}
+                    >
+                      <Image
+                        src={slide.src}
+                        alt={slide.alt}
+                        fill
+                        priority={i === 0}
+                        sizes="100vw"
+                        className={slide.imageClass ?? "object-cover object-center"}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="absolute inset-0 z-[1] bg-gradient-to-b from-black/65 via-black/55 to-black/62" aria-hidden />
+                <div
+                  className="absolute inset-0 z-[1] bg-gradient-to-b from-black/65 via-black/55 to-black/62"
+                  aria-hidden
+                />
 
-                <div className="relative z-10 flex h-full min-h-0 w-full max-w-full min-w-0 flex-col pt-[clamp(5.75rem,18vw,9rem)] max-md:text-left md:text-center md:pt-[min(22vh,7.5rem)]">
-                  
+                <div className="relative z-10 flex h-full min-h-0 w-full max-w-full min-w-0 flex-col pt-[clamp(7rem,18vw,10rem)] max-md:text-left md:text-center md:pt-[min(23vh,8.25rem)]">
                   <div className="min-h-[2.75rem] shrink-0 sm:min-h-9" aria-hidden />
 
-                  <div className="flex min-h-0 w-full max-w-full min-w-0 flex-1 flex-col  items-start justify-start px-5 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] pt-2 max-md:items-start  md:items-center md:justify-center md:pb-[clamp(11rem,28svh,15rem)] ">
-                    
-                    <div className="flex  w-[100%] max-w-full flex-col self-start md:mx-auto md:w-full md:max-w-none md:items-center ">
+                  <div className="flex min-h-0 w-full max-w-full min-w-0 flex-1 flex-col items-start justify-start px-5 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] pt-2 max-md:items-start md:items-center md:justify-center md:pb-[clamp(11rem,28svh,15rem)]">
+                    <div className="flex w-[100%] max-w-full flex-col self-start md:mx-auto md:w-full md:max-w-none md:items-center">
                       {slide.badge ? (
                         <div
                           className="inline-flex max-w-full items-center gap-2 self-start rounded-full border border-white/45 bg-black/40 px-3 py-1.5 max-md:self-start md:mx-auto sm:gap-2.5 sm:px-5 sm:py-2.5"
@@ -182,23 +289,33 @@ export default function HeroSection() {
                       ) : null}
 
                       {index === i ? (
-                        <h1 id="hero-heading" className='text-[48px] font-[600]  tracking-tight text-white [overflow-wrap:anywhere] [text-shadow:_0_2px_20px_rgb(0_0_0_/_45%)]'>
-                          {slide.title}
+                        <h1 id="hero-heading" className={HERO_TITLE_BASE}>
+                          <HeroStaggeredHeading lines={slide.titleLines} animKey={`slide-${index}`} />
                         </h1>
                       ) : (
-                        <p className={HERO_TITLE_CLASS}>{slide.title}</p>
+                        <p aria-hidden className={HERO_TITLE_BASE}>
+                          {renderStaticHeading(slide.titleLines)}
+                        </p>
                       )}
 
                       <p className={HERO_SUBTITLE_CLASS}>{slide.subtitle}</p>
 
-                      <div className="mt-5 flex w-full justify-center md:mt-10">
-                        <Link
-                          href={slide.cta.href}
-                          className="flex w-full items-center justify-center rounded-full px-6 py-3 text-[14px] font-bold leading-tight text-white shadow-lg transition-opacity hover:opacity-92 max-md:min-h-[44px] md:w-auto md:shrink-0 md:min-h-0 md:px-10 md:py-3.5 md:text-[15px] lg:py-4 lg:text-[16px]"
-                          style={{ backgroundColor: GOLD }}
-                        >
-                          {slide.cta.label}
-                        </Link>
+                      <div className="relative z-[1] mt-5 flex w-full justify-center md:mt-10">
+                        <span className="cta-breathe-shell w-full md:w-auto">
+                          {!reducesMotion ? (
+                            <>
+                              <span className="cta-breathe-ring motion-reduce:hidden" aria-hidden />
+                              <span className="cta-breathe-ring motion-reduce:hidden delay" aria-hidden />
+                            </>
+                          ) : null}
+                          <Link
+                            href={slide.cta.href}
+                            className="ripple-parent relative z-[1] flex w-full items-center justify-center rounded-full px-6 py-3 text-[14px] font-bold leading-tight text-white shadow-lg transition-opacity hover:opacity-92 max-md:min-h-[44px] md:w-auto md:shrink-0 md:min-h-0 md:px-10 md:py-3.5 md:text-[15px] lg:py-4 lg:text-[16px] mi-hover"
+                            style={{ backgroundColor: GOLD }}
+                          >
+                            {slide.cta.label}
+                          </Link>
+                        </span>
                       </div>
 
                       {count > 1 && index === i ? (
@@ -255,7 +372,6 @@ export default function HeroSection() {
             ))}
           </div>
         </div>
-
       </div>
 
       <p className="sr-only" aria-live="polite">
