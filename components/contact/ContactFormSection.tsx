@@ -45,16 +45,16 @@ export default function ContactFormSection() {
   }
 
   const input =
-    "peer w-full rounded-t-lg border-b-2 border-neutral-200 bg-white px-[0.78rem] pt-[1.35rem] pb-[0.6rem] text-[15px] text-neutral-900 outline-none placeholder-transparent transition-colors duration-[200ms] ease-out focus-visible:border-[#48cfcb]/72 focus-visible:ring-[2px] focus-visible:ring-[rgba(192,158,107,0.28)] motion-reduce:focus-visible:ring-transparent";
+    "peer w-full rounded-t-lg border-b-2 border-neutral-200 bg-white px-[0.78rem] pt-[1.35rem] pb-[0.6rem] text-[15px] text-neutral-900 outline-none placeholder-transparent transition-colors duration-[200ms] ease-out focus-visible:border-[#48cfcb]/72 focus-visible:ring-[2px] focus-visible:ring-[rgba(107,143,113,0.35)] motion-reduce:focus-visible:ring-transparent dark:border-slate-500 dark:bg-slate-800/90 dark:text-slate-100 dark:focus-visible:border-teal-400/70";
 
   const label =
-    "pointer-events-none absolute left-[0.78rem] top-[calc(1.06rem)] z-[2] origin-left text-neutral-600 transition-[transform,color,font-size] duration-[200ms] ease-out peer-placeholder-shown:text-[15px] peer-placeholder-shown:text-neutral-500 peer-focus-visible:-translate-y-[1.06rem] peer-focus-visible:text-[11px] peer-focus-visible:font-semibold peer-focus-visible:text-neutral-900 peer-[&:not(:placeholder-shown)]:-translate-y-[1.06rem] peer-[&:not(:placeholder-shown)]:text-[11px] peer-[&:not(:placeholder-shown)]:font-semibold peer-[&:not(:placeholder-shown)]:text-neutral-900";
+    "pointer-events-none absolute left-[0.78rem] top-[calc(1.06rem)] z-[2] origin-left text-neutral-600 transition-[transform,color,font-size] duration-[200ms] ease-out peer-placeholder-shown:text-[15px] peer-placeholder-shown:text-neutral-500 peer-focus-visible:-translate-y-[1.06rem] peer-focus-visible:text-[11px] peer-focus-visible:font-semibold peer-focus-visible:text-neutral-900 peer-[&:not(:placeholder-shown)]:-translate-y-[1.06rem] peer-[&:not(:placeholder-shown)]:text-[11px] peer-[&:not(:placeholder-shown)]:font-semibold peer-[&:not(:placeholder-shown)]:text-neutral-900 dark:text-slate-400 peer-focus-visible:dark:text-slate-200 peer-[&:not(:placeholder-shown)]:dark:text-slate-200";
 
   const wrap = "relative pb-6";
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-neutral-900 sm:text-[1.35rem]">Send Us a Message</h2>
+      <h2 className="text-xl font-bold text-neutral-900 dark:text-white sm:text-[1.35rem]">Send Us a Message</h2>
       <form onSubmit={submitMailto} className="mt-8 space-y-6">
         <div className={wrap}>
           <input id="contact-name" name="name" type="text" autoComplete="name" required placeholder=" " className={input} />
@@ -81,7 +81,10 @@ export default function ContactFormSection() {
         </div>
 
         <div className={`${wrap} space-y-2`}>
-          <label htmlFor="contact-service" className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-700">
+          <label
+            htmlFor="contact-service"
+            className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-700 dark:text-slate-300"
+          >
             Service interested in *
           </label>
           <div className="relative">
@@ -90,7 +93,7 @@ export default function ContactFormSection() {
               name="service"
               required
               defaultValue=""
-              className="peer w-full rounded-t-lg border-b-2 border-neutral-200 bg-white px-[0.78rem] py-[0.65rem] text-[15px] text-neutral-800 outline-none transition-colors duration-[200ms] focus-visible:border-[#48cfcb]/72 focus-visible:ring-[2px] focus-visible:ring-[rgba(192,158,107,0.28)] motion-reduce:focus-visible:ring-transparent appearance-none min-h-[46px]"
+              className="peer w-full rounded-t-lg border-b-2 border-neutral-200 bg-white px-[0.78rem] py-[0.65rem] text-[15px] text-neutral-800 outline-none transition-colors duration-[200ms] focus-visible:border-[#48cfcb]/72 focus-visible:ring-[2px] focus-visible:ring-[rgba(107,143,113,0.35)] motion-reduce:focus-visible:ring-transparent dark:border-slate-500 dark:bg-slate-800/90 dark:text-slate-100 dark:focus-visible:border-teal-400/70 appearance-none min-h-[46px]"
             >
               {contactServiceOptions.map(({ value, label }) => (
                 <option key={`${value}-${label}`} value={value}>
@@ -112,7 +115,7 @@ export default function ContactFormSection() {
             rows={5}
             required
             placeholder=" "
-            className={`${input} resize-y rounded-2xl border-x border-y border-neutral-200 pb-3`}
+            className={`${input} resize-y rounded-2xl border-x border-y border-neutral-200 pb-3 dark:border-slate-500`}
           />
           <label htmlFor="contact-message" className={`${label} peer-focus-visible:top-[0.94rem]`}>
             Tell us about your goals *
@@ -126,7 +129,7 @@ export default function ContactFormSection() {
         <button
           type="submit"
           className="mi-hover flex w-full items-center justify-center gap-2 rounded-xl px-5 py-4 text-[15px] font-semibold text-white shadow-md transition-opacity hover:opacity-92 sm:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(192,158,107,0.52)] focus-visible:ring-offset-2 motion-reduce:transition-none"
-          style={{ backgroundColor: brand.goldButton }}
+          style={{ backgroundColor: brand.sage }}
         >
           <FiSend className="text-lg mi-svg" aria-hidden />
           Send Message

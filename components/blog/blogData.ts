@@ -1,3 +1,5 @@
+import { THUMB } from "@/lib/siteImages";
+
 export type ArticleBlock =
   | { type: "paragraph"; text: string }
   | { type: "heading"; text: string }
@@ -29,7 +31,7 @@ export const blogPosts: readonly BlogPost[] = [
     date: "2025-10-25",
     dateDisplay: "October 25, 2025",
     author: "Shivam Mehta",
-    heroImage: "/phy2.jpg",
+    heroImage: THUMB.blogPilates,
     sections: [
       {
         type: "paragraph",
@@ -88,8 +90,8 @@ export const blogPosts: readonly BlogPost[] = [
     date: "2025-09-12",
     dateDisplay: "September 12, 2025",
     author: "Physio Pilates Team",
-    heroImage: "/phy6.jpg",
-    cardImage: "/phy6.jpg",
+    heroImage: THUMB.collageA,
+    cardImage: THUMB.blogWellnessCard,
     sections: [
       {
         type: "paragraph",

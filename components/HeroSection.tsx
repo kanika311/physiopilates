@@ -7,8 +7,9 @@ import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import { brand } from "@/lib/brand";
+import { HERO_HOME } from "@/lib/siteImages";
 
-const GOLD = brand.gold;
+const SAGE = brand.sage;
 const TEAL = brand.tealAccent;
 
 const AUTOPLAY_MS = 2500;
@@ -36,7 +37,7 @@ const HERO_TITLE_BASE =
 function toneInline(tone: Tone): React.CSSProperties {
   switch (tone) {
     case "gold":
-      return { color: GOLD };
+      return { color: SAGE };
     case "teal":
       return { color: TEAL };
     default:
@@ -92,7 +93,7 @@ function HeroStaggeredHeading({ lines, animKey }: { lines: readonly WordsLine[];
 
 const HERO_SLIDES: HeroSlide[] = [
   {
-    src: "/index2.jpg",
+    src: HERO_HOME[0],
     alt: "Pilates reformer training in a bright studio",
     badge: "INSTRUCTOR COURSES",
     titleLines: [
@@ -109,7 +110,7 @@ const HERO_SLIDES: HeroSlide[] = [
     imageClass: "object-cover object-[center_38%] sm:object-center",
   },
   {
-    src: "/index1.webp",
+    src: HERO_HOME[1],
     alt: "Clients training strength and balance on Pilates equipment",
     badge: "PILATES",
     titleLines: [
@@ -125,7 +126,7 @@ const HERO_SLIDES: HeroSlide[] = [
     imageClass: "object-cover object-[center_32%] sm:object-center",
   },
   {
-    src: "/index3.webp",
+    src: HERO_HOME[2],
     alt: "Yoga and mindful movement in the studio",
     badge: "YOGA & WELLNESS",
     titleLines: [
@@ -143,7 +144,7 @@ const HERO_SLIDES: HeroSlide[] = [
     imageClass: "object-cover object-[center_28%] sm:object-center",
   },
   {
-    src: "/phy4.jpg",
+    src: HERO_HOME[3],
     alt: "Therapy and recovery-focused session",
     badge: "THERAPY",
     titleLines: [
@@ -267,7 +268,7 @@ export default function HeroSection() {
                   aria-hidden
                 />
 
-                <div className="relative z-10 flex h-full min-h-0 w-full max-w-full min-w-0 flex-col pt-[clamp(7rem,18vw,10rem)] max-md:text-left md:text-center md:pt-[min(23vh,8.25rem)]">
+                <div className="relative z-10 flex h-full min-h-0 w-full max-w-full min-w-0 flex-col pt-[clamp(1rem,5vw,2rem)] max-md:text-left md:text-center md:pt-[min(18vh,5rem)]">
                   <div className="min-h-[2.75rem] shrink-0 sm:min-h-9" aria-hidden />
 
                   <div className="flex min-h-0 w-full max-w-full min-w-0 flex-1 flex-col items-start justify-start px-5 pb-[calc(9.5rem+env(safe-area-inset-bottom,0px))] pt-2 max-md:items-start md:items-center md:justify-center md:pb-[clamp(11rem,28svh,15rem)]">
@@ -311,7 +312,7 @@ export default function HeroSection() {
                           <Link
                             href={slide.cta.href}
                             className="ripple-parent relative z-[1] flex w-full items-center justify-center rounded-full px-6 py-3 text-[14px] font-bold leading-tight text-white shadow-lg transition-opacity hover:opacity-92 max-md:min-h-[44px] md:w-auto md:shrink-0 md:min-h-0 md:px-10 md:py-3.5 md:text-[15px] lg:py-4 lg:text-[16px] mi-hover"
-                            style={{ backgroundColor: GOLD }}
+                            style={{ backgroundColor: SAGE }}
                           >
                             {slide.cta.label}
                           </Link>
@@ -335,10 +336,10 @@ export default function HeroSection() {
                                 onClick={() => setIndex(dotI)}
                                 className={`shrink-0 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none ${
                                   dotI === index
-                                    ? "h-2.5 w-9 shadow-[0_2px_14px_rgba(0,0,0,0.45)] md:h-3 md:w-10 md:shadow-[0_2px_16px_rgba(192,158,107,0.45)]"
+                                    ? "h-2.5 w-9 shadow-[0_2px_14px_rgba(0,0,0,0.45)] md:h-3 md:w-10 md:shadow-[0_2px_16px_rgb(107_143_113_/_0.42)]"
                                     : "size-3 bg-white shadow-[0_1px_8px_rgba(0,0,0,0.25)] hover:bg-white/95 md:size-3"
                                 }`}
-                                style={dotI === index ? { backgroundColor: GOLD } : undefined}
+                                style={dotI === index ? { backgroundColor: SAGE } : undefined}
                               />
                             ))}
                           </div>
@@ -361,7 +362,7 @@ export default function HeroSection() {
                       <div className="mt-5 hidden justify-center md:mt-9 md:flex md:justify-center lg:mt-11">
                         <div
                           className="h-0.5 w-24 rounded-full md:mx-auto sm:h-[3px] sm:w-[7.25rem]"
-                          style={{ background: `linear-gradient(90deg, ${TEAL} 0%, ${GOLD} 100%)` }}
+                          style={{ background: `linear-gradient(90deg, ${TEAL} 0%, ${SAGE} 100%)` }}
                           aria-hidden
                         />
                       </div>

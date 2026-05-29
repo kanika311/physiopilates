@@ -1,8 +1,9 @@
 import Image from "next/image";
 
 import { brand } from "@/lib/brand";
+import { HERO_BLOG_LIST } from "@/lib/siteImages";
 
-const GOLD = brand.gold;
+const SAGE = brand.sage;
 const TEAL = brand.tealAccent;
 
 type Props =
@@ -12,7 +13,7 @@ type Props =
 export default function BlogHero(props: Props) {
   const isListing = props.variant === "listing";
 
-  const imageSrc = isListing ? "/Blog.jpg" : props.imageSrc;
+  const imageSrc = isListing ? HERO_BLOG_LIST : props.imageSrc;
   const imageAlt = isListing
     ? "Therapy session — expert hands guiding recovery"
     : props.imageAlt;
@@ -34,8 +35,6 @@ export default function BlogHero(props: Props) {
       </div>
       <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/74 via-black/58 to-black/68" aria-hidden />
 
-      <div className="relative z-10 h-[7rem] shrink-0 sm:h-[8rem]" />
-
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-24 pt-6 text-center md:pb-28">
         {isListing && (
           <>
@@ -43,7 +42,7 @@ export default function BlogHero(props: Props) {
               className="inline-flex items-center gap-2.5 rounded-full border border-white/40 px-6 py-2"
               role="presentation"
             >
-              <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: GOLD }} aria-hidden />
+              <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: SAGE }} aria-hidden />
               <span className="text-[10px] font-semibold uppercase tracking-[0.26em] text-white sm:text-[11px]">
                 Wellness insights
               </span>
@@ -84,7 +83,7 @@ export default function BlogHero(props: Props) {
           <div className="mt-10 md:mt-12">
             <div
               className="mx-auto h-0.5 w-[7rem] rounded-full sm:h-[3px] sm:w-[8rem]"
-              style={{ background: `linear-gradient(90deg, ${GOLD} 0%, ${TEAL} 100%)` }}
+              style={{ background: `linear-gradient(90deg, ${SAGE} 0%, ${TEAL} 100%)` }}
               aria-hidden
             />
           </div>

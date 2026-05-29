@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 
-const GOLD = "#c09e6b";
-const TEAL = "#48cfcb";
+import { brand } from "@/lib/brand";
+import { HERO_YOGA } from "@/lib/siteImages";
+
+const SAGE = brand.sage;
+const TEAL = brand.tealAccent;
 
 export default function YogaHero() {
   return (
@@ -13,7 +16,7 @@ export default function YogaHero() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/yog1.jpg"
+          src={HERO_YOGA}
           alt="Yoga practice outdoors at dusk — silhouette in tree pose by the shore"
           fill
           priority
@@ -25,8 +28,6 @@ export default function YogaHero() {
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/70 via-black/55 to-black/60"
         aria-hidden
       />
-
-      <div className="relative z-10 h-[7rem] shrink-0 sm:h-[8rem]" />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-28 pt-8 text-center md:pb-32">
         <div
@@ -58,7 +59,7 @@ export default function YogaHero() {
           {/* Gold → teal accent per Yoga mock */}
           <div
             className="mx-auto h-0.5 w-[7rem] rounded-full sm:h-[3px]"
-            style={{ background: `linear-gradient(90deg, ${GOLD} 0%, ${TEAL} 100%)` }}
+            style={{ background: `linear-gradient(90deg, ${SAGE} 0%, ${TEAL} 100%)` }}
             aria-hidden
           />
         </div>

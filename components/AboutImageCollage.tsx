@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
+import { THUMB } from "@/lib/siteImages";
 
 /**
  * Overlapping photo stack for the home about strip — staggered masonry-style reveal on scroll.
@@ -79,7 +80,7 @@ export default function AboutImageCollage() {
           variants={itemVariants}
         >
           <Image
-            src="/index3.webp"
+            src={THUMB.collageB}
             alt="Group yoga and Pilates class from above"
             fill
             sizes="(max-width: 768px) 40vw, 260px"
@@ -92,7 +93,7 @@ export default function AboutImageCollage() {
           variants={itemVariants}
         >
           <Image
-            src="/index2.jpg"
+            src={THUMB.collageA}
             alt="Instructor guiding client on Pilates reformer"
             fill
             sizes="(max-width: 1024px) 70vw, 420px"
@@ -106,7 +107,7 @@ export default function AboutImageCollage() {
           variants={itemVariants}
         >
           <Image
-            src="/phy6.jpg"
+            src={THUMB.collageC}
             alt="Client doing guided floor exercise with physiotherapy props"
             fill
             sizes="(max-width: 768px) 45vw, 280px"
@@ -124,20 +125,20 @@ export default function AboutImageCollage() {
           className="relative mx-auto aspect-[16/11] w-full max-w-lg overflow-hidden rounded-2xl bg-neutral-200/40 shadow-[0_16px_40px_-14px_rgba(0,0,0,0.2)] sm:rounded-3xl"
           variants={mobileItemVariants}
         >
-          <Image src="/index2.jpg" alt="Physio Pilates studio reformer session" fill className="object-cover" sizes="95vw" priority />
+          <Image src={THUMB.collageA} alt="Physio Pilates studio reformer session" fill className="object-cover" sizes="95vw" priority />
         </motion.figure>
         <div className="flex gap-3">
           <motion.figure
             className="relative aspect-video min-h-0 flex-1 overflow-hidden rounded-xl bg-neutral-200/40 shadow-md sm:rounded-2xl"
             variants={mobileItemVariants}
           >
-            <Image src="/index3.webp" alt="Wellness movement class" fill className="object-cover object-center" sizes="45vw" />
+            <Image src={THUMB.collageB} alt="Wellness movement class" fill className="object-cover object-center" sizes="45vw" />
           </motion.figure>
           <motion.figure
             className="relative aspect-video min-h-0 flex-1 overflow-hidden rounded-xl bg-neutral-200/40 shadow-md sm:rounded-2xl"
             variants={mobileItemVariants}
           >
-            <Image src="/phy6.jpg" alt="Physiotherapy-guided movement session" fill className="object-cover object-center" sizes="45vw" />
+            <Image src={THUMB.collageC} alt="Physiotherapy-guided movement session" fill className="object-cover object-center" sizes="45vw" />
           </motion.figure>
         </div>
       </motion.div>

@@ -1,16 +1,34 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --navbar-height: 68px;
+  --page-bg: #ffffff;
+  --page-fg: #171717;
+  --muted-surface: #fdfbf7;
+  --accent: #6b8f71;
+}
+
+.dark {
+  --page-bg: #0f172a;
+  --page-fg: #f8fafc;
+  --muted-surface: #0f172a;
+}
+
 html {
   scroll-behavior: smooth;
   /* Avoid layout jump when scrollbar appears — stops fixed header / hero from “doubling” on scroll */
   scrollbar-gutter: stable;
   /* Anchors landing below fixed navbar (About, Contact, etc.) */
-  scroll-padding-top: clamp(7.75rem, 17vw, 9.75rem);
+  scroll-padding-top: clamp(3.25rem, 6vw, 4rem);
 }
 
 body {
   overflow-x: hidden;
-  color: rgb(38 38 38);
+  background-color: var(--page-bg);
+  color: var(--page-fg);
+  color-scheme: light dark;
   line-height: 1.625;
   letter-spacing: 0.012em;
   -webkit-font-smoothing: antialiased;
@@ -34,7 +52,7 @@ p {
 }
 
 ::selection {
-  background-color: rgba(72 207 203 / 0.22);
+  background-color: rgb(107 143 113 / 0.28);
   color: inherit;
 }
 
@@ -93,7 +111,7 @@ p {
 
 /* Keyboard focus — subtle teal ring matching brand accents */
 :is(a, button, input, textarea, select, summary):focus-visible {
-  outline: 2px solid rgba(72, 207, 203, 0.55);
+  outline: 2px solid rgb(107 143 113 / 0.65);
   outline-offset: 3px;
 }
 

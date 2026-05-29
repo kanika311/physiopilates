@@ -100,7 +100,7 @@ function TiltServiceCard({
       onPointerMove={onMove}
       onPointerLeave={onLeave}
       className={[
-        "group relative flex cursor-default flex-col overflow-hidden rounded-3xl border border-neutral-100 bg-white px-8 py-9 text-left",
+        "group relative flex cursor-default flex-col overflow-hidden rounded-3xl border border-neutral-100 bg-white px-8 py-9 text-left dark:border-[#334155] dark:bg-[#1e293b]",
         reduce
           ? "shadow-[0_14px_40px_-30px_rgba(0,0,0,0.16)]"
           : "shadow-[0_14px_40px_-30px_rgba(0,0,0,0.16)] transition-[transform,box-shadow] duration-300 ease-out will-change-transform hover:-translate-y-1 hover:shadow-[0_26px_60px_-32px_rgba(0,0,0,0.18)] motion-reduce:transform-none motion-reduce:transition-none motion-reduce:hover:translate-y-0",
@@ -127,13 +127,12 @@ function TiltServiceCard({
       >
         <Icon className="text-2xl mi-svg-origin" aria-hidden />
       </div>
-      <h3 className="relative z-[1] mt-6 text-lg font-bold text-neutral-900 md:text-xl">{title}</h3>
-      <p className="relative z-[1] mt-4 flex-1 text-[15px] leading-relaxed text-neutral-600">{text}</p>
+      <h3 className="relative z-[1] mt-6 text-lg font-bold text-neutral-900 dark:text-slate-100 md:text-xl">{title}</h3>
+      <p className="relative z-[1] mt-4 flex-1 text-[15px] leading-relaxed text-neutral-600 dark:text-slate-300">{text}</p>
 
       <Link
         href={href}
-        className="ripple-parent relative z-[1] mt-6 inline-flex items-center gap-2 rounded-md text-[15px] font-semibold transition-colors duration-150 hover:saturate-110 mi-hover focus-visible:outline-none"
-        style={{ color: brand.tealAccent }}
+        className="ripple-parent relative z-[1] mt-6 inline-flex items-center gap-2 rounded-md text-[15px] font-semibold text-[#56d8e4] transition-colors duration-150 hover:saturate-110 dark:text-teal-300 mi-hover focus-visible:outline-none"
       >
         Learn More
         {!reduce ? (
@@ -153,7 +152,6 @@ function TiltServiceCard({
 }
 
 export default function HomeServicesSection() {
-  const GOLD = brand.goldHeading;
   const reduce = useReducedMotion() ?? false;
 
   const headingMotion = reduce
@@ -165,7 +163,7 @@ export default function HomeServicesSection() {
       };
 
   return (
-    <section className="bg-white px-4 py-16 md:py-22">
+    <section className="bg-white px-4 py-16 dark:bg-[#0f172a] md:py-22">
       <div className="mx-auto max-w-6xl text-center">
         <motion.div
           {...headingMotion}
@@ -179,21 +177,20 @@ export default function HomeServicesSection() {
           }
         >
           <div
-            className="inline-flex items-center gap-2 rounded-full px-6 py-2"
-            style={{ backgroundColor: "rgba(179,147,89,0.12)" }}
+            className="inline-flex items-center gap-2 rounded-full bg-[rgba(179,147,89,0.12)] px-6 py-2 dark:bg-slate-800/80"
           >
-            <span className="text-[10px] font-semibold uppercase tracking-[0.26em]" style={{ color: GOLD }}>
+            <span className="text-[10px] font-semibold uppercase tracking-[0.26em] text-[#b39359] dark:text-amber-200/90">
               Our services
             </span>
           </div>
 
           <h2
-            className="mx-auto mt-6 max-w-3xl text-3xl font-semibold md:text-[2.5rem]"
-            style={{ fontFamily: 'var(--font-playfair), "Georgia", serif', color: GOLD }}
+            className="mx-auto mt-6 max-w-3xl text-3xl font-semibold leading-tight text-[#b39359] dark:text-white md:text-[2.5rem]"
+            style={{ fontFamily: 'var(--font-playfair), "Georgia", serif' }}
           >
             Care Designed For Your Wellness
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-neutral-600 md:text-[16px]">
+          <p className="mx-auto mt-4 max-w-2xl text-[15px] leading-relaxed text-neutral-600 dark:text-slate-300 md:text-[16px]">
             Personalized and science-based treatments to enhance your strength, posture &amp; recovery.
           </p>
         </motion.div>
@@ -211,7 +208,7 @@ export default function HomeServicesSection() {
           className="mx-auto mt-14 grid gap-8 sm:grid-cols-2"
         >
           {CARDS.map((c) => (
-            <TiltServiceCard key={c.title} {...c} gold={GOLD} />
+            <TiltServiceCard key={c.title} {...c} gold={brand.goldHeading} />
           ))}
         </motion.div>
       </div>

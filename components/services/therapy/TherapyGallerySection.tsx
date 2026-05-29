@@ -1,51 +1,26 @@
 import ServiceGallerySlider from "@/components/ServiceGallerySlider";
+import { THERAPY_TILES } from "@/lib/siteImages";
 
-/** Three therapy images per slide (dry needling & cup therapy). */
-
-const THERAPY_SLIDE_GROUPS = [
-  [
-    {
-      src: "/therapy2.jpg",
-      alt: "Therapist placing dry needling or stimulation pads along the patient's back",
-    },
-    {
-      src: "/therapy3.jpg",
-      alt: "Cupping therapy — glass cups applied along the spine for release",
-    },
-    {
-      src: "/therpay4.jpg",
-      alt: "Multiple cupping jars creating gentle suction on upper back tissues",
-    },
-  ],
-  [
-    {
-      src: "/therapy5.jpg",
-      alt: "Cup therapy positioned for upper-back fascia release",
-    },
-    {
-      src: "/therapy2.jpg",
-      alt: "Integrated cup therapy along the kinetic chain",
-    },
-    {
-      src: "/therapy2.jpg",
-      alt: "Dry needling and clinical soft-tissue intervention",
-    },
-  ],
-  [
-    {
-      src: "/phy6.jpg",
-      alt: "Cupping jars along the thoracic region for muscular ease",
-    },
-    {
-      src: "/phy2.jpg",
-      alt: "Precision needling adjunct to physiotherapy-led care",
-    },
-    {
-      src: "/phy5.jpg",
-      alt: "Therapeutic suction cupping in a restorative session",
-    },
-  ],
+const ALTS = [
+  "Therapist-led hands-on session — recovery and mobility",
+  "Clinical movement session with guided care",
+  "Wellness-focused bodywork in a calm studio",
+  "Integrated soft-tissue and movement therapy",
+  "Dry needling and clinical soft-tissue intervention",
+  "Precision treatment along the kinetic chain",
+  "Therapeutic session for thoracic ease and posture",
+  "Precision adjunct care with physiotherapy guidance",
+  "Therapeutic session with supportive clinical care",
 ] as const;
+
+const slides = THERAPY_TILES.map((src, i) => ({
+  src,
+  alt: ALTS[i] ?? "Therapy session",
+}));
+
+const THERAPY_SLIDE_GROUPS = Array.from({ length: Math.ceil(slides.length / 3) }, (_, row) =>
+  slides.slice(row * 3, row * 3 + 3),
+);
 
 export default function TherapyGallerySection() {
   return (
@@ -54,7 +29,7 @@ export default function TherapyGallerySection() {
       headingId="therapy-gallery-heading"
       title="Dry Needling & Cup Therapy Gallery"
       slideGroups={THERAPY_SLIDE_GROUPS}
-      sectionClassName="bg-white"
+      sectionClassName="bg-white dark:bg-[#0f172a]"
     />
   );
 }

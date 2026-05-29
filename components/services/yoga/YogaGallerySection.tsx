@@ -1,23 +1,26 @@
 import ServiceGallerySlider from "@/components/ServiceGallerySlider";
+import { YOGA_TILES } from "@/lib/siteImages";
 
-/** Three images per slide; same carousel behavior as Pilates (2.5s autoplay via default). */
-const YOGA_SLIDE_GROUPS = [
-  [
-    { src: "/yog2.jpg", alt: "Meditative seated yoga posture outdoors at sunrise" },
-    { src: "/yog3.jpg", alt: "Restorative yoga on the mat — breath and grounding" },
-    { src: "/yog5.jpg", alt: "Focused forward fold — flexibility and release" },
-  ],
-  [
-    { src: "/yog4.jpg", alt: "Mindful yoga flow building strength on the mat" },
-    { src: "/yog5.jpg", alt: "Yoga practice — grounding and lengthening movement" },
-    { src: "/yog2.jpg", alt: "Seated mindfulness and breath-led yoga" },
-  ],
-  [
-    { src: "/yog1.jpg", alt: "Deep stretch and mindful flexibility work" },
-    { src: "/index1.webp", alt: "Calm restorative yoga sequencing" },
-    { src: "/index2.jpg", alt: "Yoga mat work — posture and mobility" },
-  ],
+const ALTS = [
+  "Meditative seated yoga posture outdoors at sunrise",
+  "Restorative yoga on the mat — breath and grounding",
+  "Focused forward fold — flexibility and release",
+  "Mindful yoga flow building strength on the mat",
+  "Yoga practice — grounding and lengthening movement",
+  "Seated mindfulness and breath-led yoga",
+  "Deep stretch and mindful flexibility work",
+  "Calm restorative yoga sequencing",
+  "Yoga mat work — posture and mobility",
 ] as const;
+
+const slides = YOGA_TILES.map((src, i) => ({
+  src,
+  alt: ALTS[i] ?? "Yoga session",
+}));
+
+const YOGA_SLIDE_GROUPS = Array.from({ length: Math.ceil(slides.length / 3) }, (_, row) =>
+  slides.slice(row * 3, row * 3 + 3),
+);
 
 export default function YogaGallerySection() {
   return (
@@ -26,7 +29,7 @@ export default function YogaGallerySection() {
       headingId="yoga-gallery-heading"
       title="Yoga Gallery"
       slideGroups={YOGA_SLIDE_GROUPS}
-      sectionClassName="bg-white"
+      sectionClassName="bg-white dark:bg-[#0f172a]"
     />
   );
 }

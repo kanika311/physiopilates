@@ -1,8 +1,9 @@
 import Image from "next/image";
 
 import { brand } from "@/lib/brand";
+import { HERO_CONTACT } from "@/lib/siteImages";
 
-const GOLD = brand.gold;
+const SAGE = brand.sage;
 const TEAL = brand.tealAccent;
 
 export default function ContactHero() {
@@ -13,7 +14,7 @@ export default function ContactHero() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/contact.jpg"
+          src={HERO_CONTACT}
           alt="Physio Pilates studio — group wellness class"
           fill
           priority
@@ -23,14 +24,12 @@ export default function ContactHero() {
       </div>
       <div className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/74 via-black/58 to-black/68" aria-hidden />
 
-      <div className="relative z-10 h-[7rem] shrink-0 sm:h-[8rem]" />
-
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-24 pt-6 text-center md:pb-28">
         <div
           className="inline-flex items-center gap-2.5 rounded-full border border-white/40 bg-black/20 px-6 py-2 backdrop-blur-sm"
           role="presentation"
         >
-          <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: GOLD }} aria-hidden />
+          <span className="size-2 shrink-0 rounded-full" style={{ backgroundColor: SAGE }} aria-hidden />
           <span className="text-[10px] font-semibold uppercase tracking-[0.26em] text-white sm:text-[11px]">
             Get in touch
           </span>
@@ -54,7 +53,7 @@ export default function ContactHero() {
         <div className="mt-10 md:mt-12">
           <div
             className="mx-auto h-0.5 w-[7rem] rounded-full sm:h-[3px] sm:w-[8rem]"
-            style={{ background: `linear-gradient(90deg, ${GOLD} 0%, ${TEAL} 100%)` }}
+            style={{ background: `linear-gradient(90deg, ${SAGE} 0%, ${TEAL} 100%)` }}
             aria-hidden
           />
         </div>

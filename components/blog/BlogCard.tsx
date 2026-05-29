@@ -3,7 +3,6 @@ import Link from "next/link";
 import { FiCalendar, FiUser } from "react-icons/fi";
 
 import type { BlogPost } from "@/components/blog/blogData";
-import { brand } from "@/lib/brand";
 
 const TEAL_LIGHT = "#4fd1ed";
 const TEAL_DEEP = "#29b6f6";
@@ -16,7 +15,7 @@ export default function BlogCard({ post }: Props) {
   const thumb = post.cardImage ?? post.heroImage;
 
   return (
-    <article className="flex flex-col overflow-hidden rounded-2xl bg-white shadow-[0_14px_40px_-24px_rgba(0,0,0,0.18)] transition-shadow hover:shadow-[0_20px_48px_-22px_rgba(0,0,0,0.2)]">
+    <article className="flex flex-col overflow-hidden rounded-2xl border border-transparent bg-white shadow-[0_14px_40px_-24px_rgba(0,0,0,0.18)] transition-shadow hover:shadow-[0_20px_48px_-22px_rgba(0,0,0,0.2)] dark:border-[#334155] dark:bg-[#1e293b]">
       <Link href={`/blogs/${post.slug}`} className="relative block aspect-[16/11] shrink-0 overflow-hidden rounded-t-2xl">
         <Image
           src={thumb}
@@ -28,7 +27,7 @@ export default function BlogCard({ post }: Props) {
       </Link>
 
       <div className="flex flex-1 flex-col gap-4 p-6 sm:p-7">
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px]" style={{ color: brand.textMuted }}>
+        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 text-[13px] text-neutral-600 dark:text-slate-400">
           <span className="inline-flex items-center gap-2">
             <FiCalendar className="text-[15px]" aria-hidden />
             <time dateTime={post.date}>{post.dateDisplay}</time>
@@ -39,13 +38,13 @@ export default function BlogCard({ post }: Props) {
           </span>
         </div>
 
-        <h2 className="line-clamp-2 text-lg font-bold leading-snug text-neutral-900 sm:text-xl">
-          <Link href={`/blogs/${post.slug}`} className="no-underline hover:text-neutral-700">
+        <h2 className="line-clamp-2 text-lg font-bold leading-snug text-neutral-900 dark:text-white sm:text-xl">
+          <Link href={`/blogs/${post.slug}`} className="no-underline hover:text-neutral-700 dark:hover:text-slate-200">
             {post.title}
           </Link>
         </h2>
 
-        <p className="line-clamp-3 flex-1 text-[15px] leading-relaxed" style={{ color: brand.textBody }}>
+        <p className="line-clamp-3 flex-1 text-[15px] leading-relaxed text-neutral-600 dark:text-slate-300">
           {post.excerpt}
         </p>
 

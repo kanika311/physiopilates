@@ -9,8 +9,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FiChevronDown, FiMenu, FiX } from "react-icons/fi";
 import { brand } from "@/lib/brand";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import ThemeToggle from "@/components/ThemeToggle";
 
-const GOLD = brand.gold;
+const ACCENT = brand.sage;
 
 type NavLink = {
   label: string;
@@ -20,7 +21,6 @@ type NavLink = {
 
 const ABOUT_LINK: NavLink = { label: "About", href: "/about", pathnameMatch: "/about" };
 
-/** Services flyout targets (shown under desktop “Services” + mobile submenu) */
 const SERVICE_LINKS: NavLink[] = [
   { label: "Physiotherapy", href: "/physiotherapy", pathnameMatch: "/physiotherapy" },
   { label: "Pilates", href: "/pilates", pathnameMatch: "/pilates" },
@@ -35,46 +35,6 @@ const OTHER_NAV_LINKS: NavLink[] = [
   { label: "Contact", href: "/contact", pathnameMatch: "/contact" },
 ];
 
-/** Full-bleed hero under fixed nav → transparent bar at scroll 0 until scrolled */
-const TRANSPARENT_NAV_ROUTE_PREFIXES = [
-  "/about",
-  "/physiotherapy",
-  "/pilates",
-  "/yoga",
-  "/therapy",
-  "/courses",
-  "/gallery",
-  "/contact",
-  "/blogs",
-] as const;
-
-function normalizedPathname(pathname: string | null): string {
-  if (pathname == null || pathname === "" || pathname === "/") return "/";
-  const trimmed = pathname.endsWith("/") ? pathname.slice(0, -1) : pathname;
-  return trimmed === "" ? "/" : trimmed;
-}
-
-function pathAllowsTransparentNavHero(pathname: string | null): boolean {
-  const p = normalizedPathname(pathname);
-  if (p === "/") return true;
-  return TRANSPARENT_NAV_ROUTE_PREFIXES.some((prefix) => p === prefix || p.startsWith(`${prefix}/`));
-}
-
-function navScrollSolid(y: number, innerH: number, prevSolid: boolean) {
-  const vh = Math.max(innerH, 520);
-  const on = vh * 0.21;
-  const off = vh * 0.15;
-  return prevSolid ? y > off : y > on;
-}
-
-/**
- * Hero-route entry: hysteresis can carry `solidNav` across navigations (`prevSolid` from the prior page).
- * Recompute baseline without hysteresis when landing on any transparent-hero route so scroll 0 = transparent bar again.
- */
-function navScrollSolidHeroRouteBaseline(y: number, innerH: number) {
-  return navScrollSolid(y, innerH, false);
-}
-
 function routeActive(pathname: string, pathnameMatch?: string) {
   if (!pathnameMatch) return false;
   return pathname === pathnameMatch || pathname.startsWith(`${pathnameMatch}/`);
@@ -82,15 +42,13 @@ function routeActive(pathname: string, pathnameMatch?: string) {
 
 export default function Navbar() {
   const pathname = usePathname();
-  const [solidNav, setSolidNav] = useState(false);
-  const [compactNav, setCompactNav] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [servicesMenuOpen, setServicesMenuOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const svcMenuCloseTimerRef = useRef<number | undefined>(undefined);
+  const headerRef = useRef<HTMLElement | null>(null);
 
-  /** Hover / focus sliding pill underline for desktop rail */
   const railRef = useRef<HTMLDivElement | null>(null);
   const linkRefs = useRef<Array<HTMLElement | null>>([]);
   const [pill, setPill] = useState<{ left: number; width: number; opacity: number }>({
@@ -131,13 +89,15 @@ export default function Navbar() {
     movePillTo(null, false);
   }, [movePillTo, pathname]);
 
-  const heroTransparentEligible = pathAllowsTransparentNavHero(pathname);
-  /** Transparent over full-bleed heroes at scroll 0; otherwise always use readable chrome */
-  const showGlassChrome = mobileOpen || !heroTransparentEligible || solidNav;
   const reducedMotion = usePrefersReducedMotion() === true;
-
   const servicesRouteActive = SERVICE_LINKS.some((s) => routeActive(pathname, s.pathnameMatch));
-  const transparentOverHeroRail = heroTransparentEligible && !solidNav && !mobileOpen;
+
+  const publishNavHeight = useCallback(() => {
+    const el = headerRef.current;
+    if (!el || typeof document === "undefined") return;
+    const h = Math.ceil(el.getBoundingClientRect().height);
+    document.documentElement.style.setProperty("--navbar-height", `${h}px`);
+  }, []);
 
   const clearSvcMenuCloseTimer = useCallback(() => {
     const tid = svcMenuCloseTimerRef.current;
@@ -165,27 +125,20 @@ export default function Navbar() {
   }, []);
 
   useLayoutEffect(() => {
-    if (typeof window === "undefined") return;
-    if (!pathAllowsTransparentNavHero(pathname)) return;
-    const y = window.scrollY;
-    const h = window.innerHeight;
-    setSolidNav(navScrollSolidHeroRouteBaseline(y, h));
-    setCompactNav(y > 36);
-  }, [pathname]);
+    publishNavHeight();
+  }, [pathname, mobileOpen, publishNavHeight]);
 
   useEffect(() => {
-    const onScroll = () => {
-      setSolidNav((prev) => navScrollSolid(window.scrollY, window.innerHeight, prev));
-      setCompactNav(window.scrollY > 36);
-    };
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    window.addEventListener("resize", onScroll, { passive: true });
+    const el = headerRef.current;
+    if (!el || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => publishNavHeight());
+    ro.observe(el);
+    window.addEventListener("resize", publishNavHeight, { passive: true });
     return () => {
-      window.removeEventListener("scroll", onScroll);
-      window.removeEventListener("resize", onScroll);
+      ro.disconnect();
+      window.removeEventListener("resize", publishNavHeight);
     };
-  }, [pathname]);
+  }, [publishNavHeight]);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -196,10 +149,11 @@ export default function Navbar() {
   useLayoutEffect(() => {
     if (typeof window === "undefined") return;
     syncPillActive();
-  }, [pathname, mobileOpen, solidNav, syncPillActive]);
+  }, [pathname, mobileOpen, syncPillActive]);
 
   useEffect(() => {
     if (!mobileOpen) return;
+    publishNavHeight();
     const onEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") setMobileOpen(false);
     };
@@ -210,32 +164,17 @@ export default function Navbar() {
       document.removeEventListener("keydown", onEsc);
       document.body.style.overflow = prevOverflow;
     };
-  }, [mobileOpen]);
+  }, [mobileOpen, publishNavHeight]);
 
   const navFont =
-    "font-[family-name:var(--font-montserrat),ui-sans-serif,system-ui,sans-serif] not-italic font-semibold  tracking-[0.06em]";
+    "font-[family-name:var(--font-montserrat),ui-sans-serif,system-ui,sans-serif] not-italic font-semibold tracking-[0.06em]";
   const navMobileSize = "text-[15px] leading-6";
   const navDesktopSize =
-    "whitespace-nowrap text-[16px] leading-[1.15rem] xl:text-[15px] xl:leading-[1.4rem] 2xl:text-base 2xl:leading-6";
-  const desktopLinkBase = `${navFont} ${navDesktopSize} rounded-md px-2  no-underline transition-colors duration-200 xl:px-2.5 xl:py-[0.625rem] relative z-[1]`;
+    "whitespace-nowrap text-[12px] leading-tight xl:text-[13px] xl:leading-snug 2xl:text-sm 2xl:leading-normal";
+  const desktopLinkBase = `${navFont} ${navDesktopSize} rounded-md px-2 py-1 no-underline transition-colors duration-200 xl:px-2.5 relative z-[1]`;
 
-  const headerPad =
-    compactNav || mobileOpen
-      ? "pb-3 pt-3 sm:pb-3.5 sm:pt-3.5"
-      : "pb-[1.5rem] pt-[1.65rem] sm:pb-[1.75rem] sm:pt-[1.85rem]";
-  const backdrop =
-    showGlassChrome &&
-    `border-black/[0.06] shadow-[0_12px_40px_-18px_rgba(0,0,0,0.12)] backdrop-blur-[12px] supports-[backdrop-filter]:bg-[#f8f8f8]/84 bg-[#f8f8f8]/93`;
-  const transparentStrip = [
-    showGlassChrome ? "" : "border-transparent bg-transparent shadow-none backdrop-blur-none",
-    !showGlassChrome
-      ? compactNav
-        ? "py-5 sm:py-[1.375rem]"
-        : "pb-7 pt-[1.85rem] sm:pb-8 sm:pt-[2rem]"
-      : "",
-  ]
-    .filter(Boolean)
-    .join(" ");
+  /** Fixed vertical rhythm — no scroll-based height changes */
+  const headerPad = "py-2 sm:py-2.5";
 
   useEffect(() => {
     window.addEventListener("resize", syncPillActive, { passive: true });
@@ -263,189 +202,177 @@ export default function Navbar() {
   }, [servicesMenuOpen]);
 
   function desktopRailLinkClass(active: boolean) {
-    const inactiveOnLightHeader = !active && !transparentOverHeroRail;
-    const inactiveOverHero = !active && transparentOverHeroRail;
     return [
       desktopLinkBase,
-      inactiveOnLightHeader && "text-[black] hover:text-neutral-900",
-      inactiveOverHero && "text-white/95 drop-shadow-[0_1px_5px_rgba(0,0,0,0.4)] hover:text-white",
-      active && "text-[black]",
+      active ? "" : "text-neutral-800 hover:text-neutral-950 dark:text-slate-100 dark:hover:text-white",
     ]
       .filter(Boolean)
       .join(" ");
   }
 
-  // const headerShellMin =
-  //   compactNav || mobileOpen
-  //     ? "min-h-[5.5rem] sm:min-h-[5.625rem]"
-  //     : "min-h-[8rem] sm:min-h-[8.25rem] lg:min-h-[8.5rem]";
+  /** Mobile drawer + overlay sit below sticky header via measured `--navbar-height` */
+  const belowNavTop = `top-[calc(var(--navbar-height,3.75rem)+env(safe-area-inset-top,0px))]`;
 
   return (
     <header
+      ref={headerRef}
       className={[
-        "fixed inset-x-0 top-0 border-b px-4 sm:px-6 lg:px-8 transition-[background-color,border-color,backdrop-filter,box-shadow,padding,z-index,min-height] duration-500 ease-out",
-        // headerShellMin,
-        mobileOpen ? "z-[520]" : "z-[100]",
-        showGlassChrome ? [backdrop, headerPad].filter(Boolean).join(" ") : transparentStrip.trim(),
-      ].join(" ")}
+        "sticky top-0 z-[100] w-full border-b border-neutral-200/90 bg-white shadow-sm dark:border-slate-600 dark:bg-[#1e293b]",
+        "transition-shadow duration-200 ease-out",
+        headerPad,
+        mobileOpen ? "z-[520]" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-        <div className="relative mx-auto flex w-full max-w-[1480px] items-center justify-between gap-4 sm:gap-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:justify-items-stretch xl:gap-10">
+      <div className="relative mx-auto flex w-full max-w-[1480px] items-center justify-between gap-4 px-4 sm:gap-6 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:justify-items-stretch lg:px-8 xl:gap-10">
+        <Link
+          href="/"
+          className="relative z-[2] flex min-h-0 min-w-0 shrink-0 items-center leading-none no-underline mi-hover lg:justify-self-start"
+          aria-label="Physio Pilates home"
+          onClick={() => setMobileOpen(false)}
+        >
+          <Image
+            src="/logo.png"
+            alt="Physio Pilatees"
+            width={160}
+            height={40}
+            className=" min-h-[60px] max-h-[90px] w-auto max-w-[min(220px,calc(100vw-8.75rem))] object-contain object-left "
+            sizes="220px"
+            priority
+          />
+        </Link>
+
+        <nav
+          ref={railRef}
+          className="relative z-[1] hidden shrink-0 lg:col-start-2 lg:row-start-1 lg:flex lg:flex-nowrap lg:items-center lg:justify-self-center lg:gap-x-2.5 lg:gap-y-0 lg:py-0.5 xl:gap-x-3 2xl:gap-x-5"
+          aria-label="Main"
+          onMouseLeave={() => {
+            syncPillActive();
+          }}
+        >
+          <motion.span
+            aria-hidden
+            className="pointer-events-none absolute bottom-[2px] z-0 h-[3px] rounded-full bg-[transparent]"
+            style={{ backgroundColor: ACCENT }}
+            initial={false}
+            animate={{
+              left: pill.left,
+              width: pill.width,
+              opacity: pill.opacity > 0 && pill.width > 0 ? pill.opacity : 0,
+            }}
+            transition={{ type: reducedMotion ? "tween" : "spring", stiffness: 520, damping: 38, duration: reducedMotion ? 0.08 : undefined }}
+          />
+
           <Link
-            href="/"
-            className="relative z-[2] flex min-w-0 shrink-0 items-center  no-underline mi-hover lg:justify-self-start"
-            aria-label="Physio Pilates home"
-            onClick={() => setMobileOpen(false)}
+            href={ABOUT_LINK.href}
+            ref={(el) => {
+              linkRefs.current[0] = el;
+            }}
+            className={desktopRailLinkClass(routeActive(pathname, ABOUT_LINK.pathnameMatch))}
+            style={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? { color: ACCENT } : undefined}
+            aria-current={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? "page" : undefined}
+            onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
+            onFocus={(e) => movePillTo(e.currentTarget, true)}
           >
-            <Image
-              src="/logo.png"
-              alt="Physio Pilates"
-              width={122}
-              height={49}
-              className={[
-                " w-auto max-w-[min(240px,calc(100vw-8.5rem))] object-contain object-left transition-[filter] duration-500 ease-out",
-                compactNav || mobileOpen
-                  ? "min-h-[58px] min-w-[136px] w-full sm:min-h-[60px]"
-                  : "min-h-[58px] sm:min-h-[65px] lg:max-w-[196px]",
-                showGlassChrome ? "" : "drop-shadow-[0_2px_12px_rgba(0,0,0,0.35)]",
-              ].join(" ")}
-              priority
-            />
+            {ABOUT_LINK.label}
           </Link>
 
-          <nav
-            ref={railRef}
-            className="relative z-[1] hidden shrink-0 lg:col-start-2 lg:row-start-1 lg:flex lg:flex-nowrap lg:items-center lg:justify-self-center lg:gap-x-3 lg:gap-y-0 lg:py-1.5 lg:pb-2 xl:gap-x-4 2xl:gap-x-6"
-            aria-label="Main"
-            onMouseLeave={() => {
-              syncPillActive();
-            }}
+          <div
+            className="relative flex items-center py-0.5"
+            onMouseEnter={openServicesMenuHover}
+            onMouseLeave={scheduleCloseServicesMenu}
           >
-            <motion.span
-              aria-hidden
-              className="pointer-events-none absolute bottom-[2px] z-0 h-[3px] rounded-full bg-[transparent]"
-              style={{ backgroundColor: GOLD }}
-              initial={false}
-              animate={{
-                left: pill.left,
-                width: pill.width,
-                opacity: pill.opacity > 0 && pill.width > 0 ? pill.opacity : 0,
-              }}
-              transition={{ type: reducedMotion ? "tween" : "spring", stiffness: 520, damping: 38, duration: reducedMotion ? 0.08 : undefined }}
-            />
-
-            <Link
-              href={ABOUT_LINK.href}
-              ref={(el) => {
-                linkRefs.current[0] = el;
-              }}
-              className={desktopRailLinkClass(routeActive(pathname, ABOUT_LINK.pathnameMatch))}
-              style={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? { color: GOLD } : undefined}
-              aria-current={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? "page" : undefined}
-              onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
-              onFocus={(e) => movePillTo(e.currentTarget, true)}
-            >
-              {ABOUT_LINK.label}
-            </Link>
-
-            <div
-              className="relative flex items-center py-1"
-              onMouseEnter={openServicesMenuHover}
-              onMouseLeave={scheduleCloseServicesMenu}
-            >
-              <button
-                type="button"
-                ref={(el) => {
-                  linkRefs.current[1] = el;
-                }}
-                className={`${desktopRailLinkClass(servicesRouteActive || servicesMenuOpen)} inline-flex cursor-pointer items-center gap-0.5 border-0 bg-transparent p-0`}
-                style={servicesRouteActive ? { color: GOLD } : undefined}
-                aria-expanded={servicesMenuOpen}
-                aria-haspopup="menu"
-                aria-controls="desktop-services-menu"
-                data-no-ripple
-                onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
-                onFocus={(e) => {
-                  movePillTo(e.currentTarget, true);
-                  openServicesMenuHover();
-                }}
-                onClick={() => setServicesMenuOpen((v) => !v)}
-              >
-                Services
-                <FiChevronDown
-                  className={`size-[0.92em] shrink-0 transition-transform duration-200 ${servicesMenuOpen ? "rotate-180" : ""}`}
-                  aria-hidden
-                />
-              </button>
-              {servicesMenuOpen ? (
-                <div
-                  id="desktop-services-menu"
-                  role="menu"
-                  aria-orientation="vertical"
-                  className="absolute left-1/2 top-full z-[60] mt-2 w-max min-w-[13.75rem] -translate-x-1/2 rounded-xl border border-black/[0.08] bg-white py-1.5 shadow-[0_20px_52px_-24px_rgba(0,0,0,0.32)]"
-                  onMouseEnter={openServicesMenuHover}
-                >
-                  {SERVICE_LINKS.map(({ label, href, pathnameMatch }) => {
-                    const active = routeActive(pathname, pathnameMatch);
-                    return (
-                      <Link
-                        key={label}
-                        href={href}
-                        role="menuitem"
-                        className={`${navFont} block rounded-lg px-4 py-2.5 text-left text-[13px] font-semibold transition-colors xl:text-[14px] ${
-                          active ? "bg-[rgba(192,158,107,0.12)]" : "text-neutral-800 hover:bg-neutral-100"
-                        }`}
-                        style={active ? { color: GOLD } : undefined}
-                        aria-current={active ? "page" : undefined}
-                        onClick={() => setServicesMenuOpen(false)}
-                      >
-                        {label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              ) : null}
-            </div>
-
-            {OTHER_NAV_LINKS.map(({ label, href, pathnameMatch }, i) => {
-              const idx = 2 + i;
-              const active = routeActive(pathname, pathnameMatch);
-              return (
-                <Link
-                  key={label}
-                  href={href}
-                  ref={(el) => {
-                    linkRefs.current[idx] = el;
-                  }}
-                  className={desktopRailLinkClass(active)}
-                  style={active ? { color: GOLD } : undefined}
-                  aria-current={active ? "page" : undefined}
-                  onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
-                  onFocus={(e) => movePillTo(e.currentTarget, true)}
-                >
-                  {label}
-                </Link>
-              );
-            })}
-          </nav>
-
-          <div className="relative z-[2] flex min-h-11 shrink-0 items-center justify-end lg:col-start-3 lg:row-start-1 lg:min-h-0 lg:justify-self-end">
             <button
               type="button"
-              className={[
-                "inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl border transition-colors lg:hidden mi-hover",
-                showGlassChrome
-                  ? "border-neutral-200/90 bg-white text-neutral-800 shadow-sm hover:bg-neutral-50"
-                  : "border-white/45 bg-black/25 text-white backdrop-blur-sm hover:bg-black/35",
-              ].join(" ")}
-              aria-expanded={mobileOpen}
-              aria-controls="mobile-nav-panel"
-              onClick={() => setMobileOpen((o) => !o)}
+              ref={(el) => {
+                linkRefs.current[1] = el;
+              }}
+              className={`${desktopRailLinkClass(servicesRouteActive || servicesMenuOpen)} inline-flex cursor-pointer items-center gap-0.5 border-0 bg-transparent p-0`}
+              style={servicesRouteActive ? { color: ACCENT } : undefined}
+              aria-expanded={servicesMenuOpen}
+              aria-haspopup="menu"
+              aria-controls="desktop-services-menu"
+              data-no-ripple
+              onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
+              onFocus={(e) => {
+                movePillTo(e.currentTarget, true);
+                openServicesMenuHover();
+              }}
+              onClick={() => setServicesMenuOpen((v) => !v)}
             >
-              {mobileOpen ? <FiX className="mi-svg size-6" aria-hidden /> : <FiMenu className="mi-svg size-6" aria-hidden />}
-              <span className="sr-only">{mobileOpen ? "Close menu" : "Open menu"}</span>
+              Services
+              <FiChevronDown
+                className={`size-[0.92em] shrink-0 transition-transform duration-200 ${servicesMenuOpen ? "rotate-180" : ""}`}
+                aria-hidden
+              />
             </button>
+            {servicesMenuOpen ? (
+              <div
+                id="desktop-services-menu"
+                role="menu"
+                aria-orientation="vertical"
+                className="absolute left-1/2 top-full z-[60] mt-2 w-max min-w-[13.75rem] -translate-x-1/2 rounded-xl border border-neutral-200/90 bg-white py-1.5 shadow-[0_20px_52px_-24px_rgba(0,0,0,0.28)] dark:border-slate-600 dark:bg-[#1e293b]"
+                onMouseEnter={openServicesMenuHover}
+              >
+                {SERVICE_LINKS.map(({ label, href, pathnameMatch }) => {
+                  const active = routeActive(pathname, pathnameMatch);
+                  return (
+                    <Link
+                      key={label}
+                      href={href}
+                      role="menuitem"
+                      className={`${navFont} block rounded-lg px-4 py-2.5 text-left text-[13px] font-semibold transition-colors xl:text-[14px] ${
+                        active ? "bg-[rgba(107,143,113,0.14)]" : "text-neutral-800 hover:bg-neutral-50 dark:text-slate-100 dark:hover:bg-slate-700/50"
+                      }`}
+                      style={active ? { color: ACCENT } : undefined}
+                      aria-current={active ? "page" : undefined}
+                      onClick={() => setServicesMenuOpen(false)}
+                    >
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : null}
           </div>
+
+          {OTHER_NAV_LINKS.map(({ label, href, pathnameMatch }, i) => {
+            const idx = 2 + i;
+            const active = routeActive(pathname, pathnameMatch);
+            return (
+              <Link
+                key={label}
+                href={href}
+                ref={(el) => {
+                  linkRefs.current[idx] = el;
+                }}
+                className={desktopRailLinkClass(active)}
+                style={active ? { color: ACCENT } : undefined}
+                aria-current={active ? "page" : undefined}
+                onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
+                onFocus={(e) => movePillTo(e.currentTarget, true)}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </nav>
+
+        <div className="relative z-[2] flex min-h-9 shrink-0 items-center justify-end gap-1.5 lg:col-start-3 lg:row-start-1 lg:justify-self-end">
+          <ThemeToggle />
+          <button
+            type="button"
+            className="inline-flex min-h-9 min-w-9 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-800 shadow-sm transition-colors hover:bg-neutral-50 dark:border-slate-500 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 lg:hidden mi-hover"
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav-panel"
+            onClick={() => setMobileOpen((o) => !o)}
+          >
+            {mobileOpen ? <FiX className="mi-svg size-6" aria-hidden /> : <FiMenu className="mi-svg size-6" aria-hidden />}
+            <span className="sr-only">{mobileOpen ? "Close menu" : "Open menu"}</span>
+          </button>
         </div>
+      </div>
 
       {/* Mobile drawer from the right */}
       {mounted
@@ -456,7 +383,7 @@ export default function Navbar() {
                   <motion.button
                     type="button"
                     key="shade"
-                    className="fixed inset-x-0 bottom-0 top-[calc(8rem+env(safe-area-inset-top,0px))] z-[500] bg-black/46 sm:top-[calc(8.5rem+env(safe-area-inset-top,0px))]"
+                    className={`fixed inset-x-0 bottom-0 z-[500] bg-black/46 ${belowNavTop}`}
                     aria-label="Close menu"
                     data-static-button
                     initial={{ opacity: 0 }}
@@ -468,7 +395,7 @@ export default function Navbar() {
                   <motion.aside
                     id="mobile-nav-panel"
                     key="drawer"
-                    className="fixed bottom-0 right-0 top-[calc(8rem+env(safe-area-inset-top,0px))] z-[515] flex w-[min(22rem,calc(100vw-3rem))] max-w-[92vw] flex-col overflow-hidden rounded-tl-3xl border-l border-t border-black/[0.08] bg-[#f8f8f8]/98 shadow-[0_18px_50px_-20px_rgba(0,0,0,0.28)] supports-[backdrop-filter]:backdrop-blur-[18px]"
+                    className={`fixed bottom-0 right-0 z-[515] flex w-[min(22rem,calc(100vw-3rem))] max-w-[92vw] flex-col overflow-hidden rounded-tl-3xl border border-neutral-200/90 bg-[#fafafa] shadow-[0_18px_50px_-20px_rgba(0,0,0,0.28)] dark:border-slate-600 dark:bg-[#0f172a] ${belowNavTop}`}
                     role="dialog"
                     aria-modal="true"
                     aria-label="Site navigation"
@@ -490,10 +417,10 @@ export default function Navbar() {
                         className={[
                           `${navFont} ${navMobileSize} flex items-center justify-between rounded-xl px-3 py-3.5 no-underline active:bg-neutral-200/50`,
                           routeActive(pathname, "/about")
-                            ? "bg-white shadow-sm ring-1 ring-black/[0.06]"
-                            : "text-neutral-800 hover:bg-white/80",
+                            ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600"
+                            : "text-neutral-800 hover:bg-white/90 dark:text-slate-100 dark:hover:bg-slate-800/80",
                         ].join(" ")}
-                        style={routeActive(pathname, "/about") ? { color: GOLD } : undefined}
+                        style={routeActive(pathname, "/about") ? { color: ACCENT } : undefined}
                         aria-current={routeActive(pathname, "/about") ? "page" : undefined}
                       >
                         About
@@ -502,16 +429,16 @@ export default function Navbar() {
                       <button
                         type="button"
                         aria-expanded={mobileServicesOpen}
-                        className={`${navFont} ${navMobileSize} flex w-full items-center justify-between rounded-xl px-3 py-3.5 text-left text-neutral-800 no-underline active:bg-neutral-200/50 hover:bg-white/80 ${
-                          servicesRouteActive ? "bg-white shadow-sm ring-1 ring-black/[0.06]" : ""
+                        className={`${navFont} ${navMobileSize} flex w-full items-center justify-between rounded-xl px-3 py-3.5 text-left text-neutral-800 no-underline active:bg-neutral-200/50 hover:bg-white/90 dark:text-slate-100 dark:active:bg-slate-700/50 dark:hover:bg-slate-800/80 ${
+                          servicesRouteActive ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600" : ""
                         }`}
-                        style={servicesRouteActive ? { color: GOLD } : undefined}
+                        style={servicesRouteActive ? { color: ACCENT } : undefined}
                         onClick={() => setMobileServicesOpen((o) => !o)}
                       >
                         Services
                         <FiChevronDown className={`size-4 opacity-55 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} aria-hidden />
                       </button>
-                      <div className={`ml-4 flex flex-col gap-1 border-l border-neutral-200/90 pl-3 ${mobileServicesOpen ? "pb-1" : "hidden"}`}>
+                      <div className={`ml-4 flex flex-col gap-1 border-l border-neutral-200/90 pl-3 dark:border-slate-600 ${mobileServicesOpen ? "pb-1" : "hidden"}`}>
                         {SERVICE_LINKS.map(({ label, href, pathnameMatch }) => {
                           const active = routeActive(pathname, pathnameMatch);
                           return (
@@ -523,9 +450,9 @@ export default function Navbar() {
                               }}
                               className={[
                                 `${navFont} ${navMobileSize} block rounded-lg px-3 py-2.5 no-underline active:bg-neutral-200/50`,
-                                active ? "bg-white font-semibold shadow-sm ring-1 ring-black/[0.05]" : "text-neutral-800 hover:bg-white/70",
+                                active ? "bg-white font-semibold shadow-sm ring-1 ring-black/[0.05] dark:bg-[#334155] dark:ring-slate-500" : "text-neutral-800 hover:bg-white/85 dark:text-slate-100 dark:hover:bg-slate-700/50",
                               ].join(" ")}
-                              style={active ? { color: GOLD } : undefined}
+                              style={active ? { color: ACCENT } : undefined}
                               aria-current={active ? "page" : undefined}
                             >
                               {label}
@@ -542,9 +469,9 @@ export default function Navbar() {
                             onClick={() => setMobileOpen(false)}
                             className={[
                               `${navFont} ${navMobileSize} block rounded-xl px-3 py-3.5 no-underline active:bg-neutral-200/50`,
-                              active ? "bg-white shadow-sm ring-1 ring-black/[0.06]" : "text-neutral-800 hover:bg-white/80",
+                              active ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600" : "text-neutral-800 hover:bg-white/90 dark:text-slate-100 dark:hover:bg-slate-800/80",
                             ].join(" ")}
-                            style={active ? { color: GOLD } : undefined}
+                            style={active ? { color: ACCENT } : undefined}
                             aria-current={active ? "page" : undefined}
                           >
                             {label}

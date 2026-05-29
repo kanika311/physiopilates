@@ -6,8 +6,9 @@ import { FaGraduationCap } from "react-icons/fa";
 import { FiClock } from "react-icons/fi";
 import { MdGroups } from "react-icons/md";
 import { brand } from "@/lib/brand";
+import { THUMB } from "@/lib/siteImages";
 
-const GOLD = brand.goldHeading;
+const GOLD = brand.sage;
 
 const features = [
   {
@@ -26,10 +27,10 @@ const features = [
 
 export default function CoursesOverviewSection() {
   return (
-    <section id="courses-overview" className="bg-white px-4 py-16 md:py-24 lg:py-28" aria-labelledby="courses-overview-heading">
+    <section id="courses-overview" className="bg-white px-4 py-16 dark:bg-[#0f172a] md:py-24 lg:py-28" aria-labelledby="courses-overview-heading">
       <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="order-2 lg:order-1">
-          <div className="inline-flex items-center gap-2 rounded-full border px-5 py-1.5 uppercase" style={{ borderColor: "rgba(179,147,89,0.45)", backgroundColor: "rgba(192,158,107,0.08)" }}>
+          <div className="inline-flex items-center gap-2 rounded-full border border-[rgb(107_143_113_/_0.45)] bg-[rgba(107,143,113,0.08)] px-5 py-1.5 uppercase dark:border-[rgb(107_143_113_/_0.35)] dark:bg-[rgba(107,143,113,0.12)]">
             <span className="size-1.5 shrink-0 rounded-full" style={{ backgroundColor: GOLD }} aria-hidden />
             <span className="text-[10px] font-semibold tracking-[0.22em] sm:text-[11px]" style={{ color: GOLD }}>
               Course overview
@@ -44,7 +45,7 @@ export default function CoursesOverviewSection() {
             Become a Certified Pilates &amp; Movement Teacher
           </h2>
 
-          <p className="mt-6 text-[16px] leading-relaxed md:text-[17px]" style={{ color: brand.textMuted }}>
+          <p className="mt-6 text-[16px] leading-relaxed text-neutral-600 dark:text-slate-300 md:text-[17px]">
             Build teaching confidence through structured curricula, mentorship, and real studio hours. Graduate with
             coursework that honours anatomy, safe progressions, and the art of cueing bodies of every age.
           </p>
@@ -75,7 +76,7 @@ export default function CoursesOverviewSection() {
 
         <div className="order-1 lg:order-2">
           <div className="relative mx-auto aspect-[4/5] max-w-xl overflow-hidden rounded-[2rem] shadow-[0_28px_64px_-28px_rgba(0,0,0,0.22)] lg:aspect-[592/656] lg:max-w-none">
-            <Image src="/courses2.jpg" alt="Hands-on Pilates teacher mentoring in the studio" fill className="object-cover object-center" sizes="(max-width: 1024px) 100vw, 50vw" priority />
+            <Image src={THUMB.coursesOv} alt="Hands-on Pilates teacher mentoring in the studio" fill className="object-cover object-center" sizes="(max-width: 1024px) 100vw, 50vw" priority />
           </div>
         </div>
       </div>

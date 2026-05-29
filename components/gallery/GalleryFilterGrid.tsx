@@ -26,7 +26,7 @@ export default function GalleryFilterGrid() {
   }, [active]);
 
   return (
-    <section className="bg-white px-4 pb-28 pt-10 md:pb-32 md:pt-14 lg:pb-36" aria-label="Filtered gallery">
+    <section className="bg-white px-4 pb-28 pt-10 dark:bg-[#0f172a] md:pb-32 md:pt-14 lg:pb-36" aria-label="Filtered gallery">
       <div className="mx-auto max-w-6xl">
         <div className="flex flex-wrap justify-center gap-3 md:gap-4">
           {FILTERS.map(({ id, label }) => {
@@ -38,7 +38,7 @@ export default function GalleryFilterGrid() {
                 onClick={() => setActive(id)}
                 aria-pressed={selected}
                 className={`rounded-full px-5 py-2.5 text-[13px] font-semibold shadow-sm transition-all duration-200 sm:px-6 sm:text-[14px] ${
-                  selected ? "text-white ring-2 ring-offset-2 ring-offset-white" : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200"
+                  selected ? "text-white ring-2 ring-offset-2 ring-offset-white dark:ring-offset-[#0f172a]" : "bg-neutral-100 text-neutral-700 hover:bg-neutral-200 dark:bg-[#1e293b] dark:text-slate-200 dark:hover:bg-[#334155]"
                 }`}
                 style={
                   selected

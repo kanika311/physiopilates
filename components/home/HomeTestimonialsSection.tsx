@@ -90,26 +90,22 @@ function BurstStarsBand() {
 }
 
 function TestimonialCard({ t, tick }: { t: T; tick: number }) {
-  const GOLD = brand.goldHeading;
 
   return (
-    <article className="flex w-full flex-col rounded-[1.85rem] border border-neutral-100 bg-white p-8 text-left shadow-[0_14px_40px_-26px_rgba(0,0,0,0.15)] md:p-9">
-      <p className="text-[15px] leading-relaxed text-neutral-700">{t.quote}</p>
-      <div className="mt-8 flex items-center gap-4 border-t border-neutral-100 pt-6">
-        <div
-          className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-amber-200/80 bg-amber-50 text-sm font-bold"
-          style={{ color: GOLD }}
-        >
+    <article className="flex w-full flex-col rounded-[1.85rem] border border-neutral-100 bg-white p-8 text-left shadow-[0_14px_40px_-26px_rgba(0,0,0,0.15)] dark:border-[#334155] dark:bg-[#1e293b] dark:shadow-none md:p-9">
+      <p className="text-[15px] leading-relaxed text-neutral-700 dark:text-slate-300">{t.quote}</p>
+      <div className="mt-8 flex items-center gap-4 border-t border-neutral-100 pt-6 dark:border-[#334155]">
+        <div className="flex size-12 shrink-0 items-center justify-center rounded-full border-2 border-amber-200/80 bg-amber-50 text-sm font-bold text-[#b39359] dark:border-teal-700/60 dark:bg-teal-950/50 dark:text-teal-200">
           {t.name
             .split(" ")
             .map((x) => x[0])
             .join("")
             .slice(0, 2)}
         </div>
-        <span className="font-semibold text-neutral-900">{t.name}</span>
+        <span className="font-semibold text-neutral-900 dark:text-slate-100">{t.name}</span>
       </div>
 
-      <div className="pointer-events-none mt-9 h-[3px] w-full overflow-hidden rounded-full bg-neutral-100">
+      <div className="pointer-events-none mt-9 h-[3px] w-full overflow-hidden rounded-full bg-neutral-100 dark:bg-slate-700/80">
         <motion.span
           key={`${tick}-${t.name}-bar`}
           className="block h-full origin-left rounded-full"
@@ -157,14 +153,14 @@ export default function HomeTestimonialsSection() {
   }, [total]);
 
   return (
-    <section className="bg-white px-4 py-16 md:py-24">
+    <section className="bg-white px-4 py-16 dark:bg-[#0f172a] md:py-24">
       <div className="mx-auto max-w-6xl text-center">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.36em]" style={{ color: brand.goldHeading }}>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.36em] text-[#b39359] dark:text-amber-200/90">
           Testimonials
         </p>
         <h2
-          className="mt-5 text-[2.05rem] font-semibold md:text-[2.85rem]"
-          style={{ fontFamily: 'var(--font-playfair), "Georgia", serif', color: brand.goldHeading }}
+          className="mt-5 text-[2.05rem] font-semibold text-[#b39359] dark:text-slate-100 md:text-[2.85rem]"
+          style={{ fontFamily: 'var(--font-playfair), "Georgia", serif' }}
         >
           Client Stories
         </h2>
@@ -190,8 +186,7 @@ export default function HomeTestimonialsSection() {
                 type="button"
                 role="tab"
                 aria-selected={dot === index}
-                className={`mi-hover h-2.5 rounded-full transition-colors duration-200 motion-reduce:transition-none ${dot === index ? "w-9" : "w-2.5 bg-neutral-300 hover:bg-neutral-400"}`}
-                style={dot === index ? { backgroundColor: brand.goldHeading } : undefined}
+                className={`mi-hover h-2.5 rounded-full transition-colors duration-200 motion-reduce:transition-none ${dot === index ? "w-9 bg-[#b39359] dark:bg-teal-400" : "w-2.5 bg-neutral-300 hover:bg-neutral-400 dark:bg-slate-600 dark:hover:bg-slate-500"}`}
                 onClick={() => {
                   setIndex(dot);
                   setTick((t) => t + 1);

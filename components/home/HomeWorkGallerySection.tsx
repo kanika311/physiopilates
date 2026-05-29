@@ -7,8 +7,11 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, LayoutGroup, motion, useReducedMotion } from "framer-motion";
 
 import { brand } from "@/lib/brand";
+import { HOME_WORK_GRID, GALLERY_UNSPASH_TILES } from "@/lib/siteImages";
 
 type GalleryCategoryFilter = "All" | "Physiotherapy" | "Pilates" | "Yoga" | "Therapy";
+
+const TILE_SRC = [...HOME_WORK_GRID, GALLERY_UNSPASH_TILES[0]];
 
 type Item = {
   src: string;
@@ -19,43 +22,43 @@ type Item = {
 
 const ITEMS: Item[] = [
   {
-    src: "/index3.webp",
+    src: TILE_SRC[0],
     alt: "Yoga and mindful movement practice in-studio",
     label: "Yoga & Mobility",
     categories: ["Yoga", "Pilates"],
   },
   {
-    src: "/phy5.jpg",
+    src: TILE_SRC[1],
     alt: "Pilates equipment and strengthening session in studio",
     label: "Reformer Pilates",
     categories: ["Pilates", "Physiotherapy"],
   },
   {
-    src: "/phy3.jpg",
+    src: TILE_SRC[2],
     alt: "Therapeutic intervention and clinician care",
     label: "Therapy Precision",
     categories: ["Therapy", "Physiotherapy"],
   },
   {
-    src: "/phy6.jpg",
+    src: TILE_SRC[3],
     alt: "Rehabilitation and controlled movement drills",
     label: "Rehab Pilates",
     categories: ["Physiotherapy", "Pilates"],
   },
   {
-    src: "/phy4.jpg",
+    src: TILE_SRC[4],
     alt: "Clinical therapy precision and supportive care",
     label: "Clinical Physio",
     categories: ["Physiotherapy"],
   },
   {
-    src: "/index2.jpg",
+    src: TILE_SRC[5],
     alt: "Group movement and reformer-focused training",
     label: "Group Movement",
     categories: ["Pilates"],
   },
   {
-    src: "/phy2.jpg",
+    src: TILE_SRC[6],
     alt: "Physiotherapy footwork and conditioning",
     label: "Conditioning Rehab",
     categories: ["Physiotherapy"],
@@ -69,7 +72,7 @@ function categoryMatches(active: GalleryCategoryFilter, item: Item) {
 }
 
 export default function HomeWorkGallerySection() {
-  const GOLD = brand.goldHeading;
+  const GOLD = brand.sage;
   const reduceMotion = useReducedMotion() ?? false;
 
   const [active, setActive] = useState<GalleryCategoryFilter>("All");
@@ -107,7 +110,7 @@ export default function HomeWorkGallerySection() {
   }, [close, goto, lightboxIdx]);
 
   return (
-    <section className="px-4 py-16 md:py-20" style={{ backgroundColor: "#f0fafb" }}>
+    <section className="bg-[#f0fafb] px-4 py-16 dark:bg-[#0f172a] md:py-20">
       <LayoutGroup id="home-work-gallery-layout">
         <div className="mx-auto max-w-6xl text-center">
           <h2
@@ -116,7 +119,7 @@ export default function HomeWorkGallerySection() {
           >
             Our Physiotherapy Work
           </h2>
-          <p className="mx-auto mt-3 max-w-xl text-[15px] text-neutral-600">
+          <p className="mx-auto mt-3 max-w-xl text-[15px] text-neutral-600 dark:text-slate-300">
             Great treatments, movements &amp; recovery moments from our centre.
           </p>
 
@@ -130,7 +133,7 @@ export default function HomeWorkGallerySection() {
                   aria-pressed={pressed}
                   onClick={() => setActive(f)}
                   className={`rounded-full px-4 py-2 text-[11px] font-semibold uppercase tracking-[0.18em] transition-colors duration-[150ms] ease-out mi-hover md:text-[12px] ${
-                    pressed ? "text-white shadow-md" : "border border-white/90 bg-white/90 text-neutral-700 hover:bg-white"
+                    pressed ? "text-white shadow-md" : "border border-white/90 bg-white/90 text-neutral-700 hover:bg-white dark:border-[#334155] dark:bg-[#1e293b] dark:text-slate-100 dark:hover:bg-[#334155]"
                   }`}
                   style={pressed ? { backgroundColor: GOLD } : undefined}
                 >

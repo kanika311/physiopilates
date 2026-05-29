@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 
-const GOLD = "#c09e6b";
-const TEAL = "#48cfcb";
+import { brand } from "@/lib/brand";
+import { HERO_PHYSIO } from "@/lib/siteImages";
+
+const SAGE = brand.sage;
+const TEAL = brand.tealAccent;
 
 export default function PhysiotherapyHero() {
   return (
@@ -13,7 +16,7 @@ export default function PhysiotherapyHero() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/physio1.jpg"
+          src={HERO_PHYSIO}
           alt="Physiotherapy session with agility ladder and exercise equipment"
           fill
           priority
@@ -25,8 +28,6 @@ export default function PhysiotherapyHero() {
         className="absolute inset-0 z-[1] bg-black/55 bg-gradient-to-b from-black/60 via-black/50 to-black/55"
         aria-hidden
       />
-
-      <div className="relative z-10 h-[7rem] shrink-0 sm:h-[8rem]" />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-28 pt-8 text-center md:pb-32">
         <div
@@ -58,7 +59,7 @@ export default function PhysiotherapyHero() {
         <div className="mt-10 md:mt-14">
           <div
             className="mx-auto h-0.5 w-[6.75rem] rounded-full sm:h-[3px]"
-            style={{ background: `linear-gradient(90deg, ${TEAL} 0%, ${GOLD} 100%)` }}
+            style={{ background: `linear-gradient(90deg, ${TEAL} 0%, ${SAGE} 100%)` }}
             aria-hidden
           />
         </div>

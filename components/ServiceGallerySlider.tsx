@@ -36,8 +36,8 @@ export default function ServiceGallerySlider({
   title,
   slides = [],
   slideGroups,
-  sectionClassName = "bg-white",
-  accentColor = brand.gold,
+  sectionClassName = "bg-white dark:bg-[#0f172a]",
+  accentColor = brand.sage,
   autoplayMs = DEFAULT_AUTOPLAY,
 }: ServiceGallerySliderProps) {
   const grouped = Boolean(slideGroups && slideGroups.length > 0);
@@ -76,7 +76,7 @@ export default function ServiceGallerySlider({
         <header className="text-center">
           <h2
             id={headingId}
-            className="text-3xl font-bold tracking-tight text-neutral-900 sm:text-4xl md:text-[2.15rem]"
+            className="text-3xl font-bold tracking-tight text-neutral-900 dark:text-white sm:text-4xl md:text-[2.15rem]"
           >
             {title}
           </h2>
@@ -154,7 +154,7 @@ export default function ServiceGallerySlider({
                 aria-label={`Show slide ${i + 1} of ${count}`}
                 onClick={() => setIndex(i)}
                 className={`h-2.5 rounded-full transition-all duration-300 ${
-                  i === index ? "w-8" : "w-2.5 bg-neutral-300 hover:bg-neutral-400"
+                  i === index ? "w-8" : "w-2.5 bg-neutral-300 hover:bg-neutral-400 dark:bg-slate-600 dark:hover:bg-slate-500"
                 }`}
                 style={i === index ? { backgroundColor: accentColor } : undefined}
               />

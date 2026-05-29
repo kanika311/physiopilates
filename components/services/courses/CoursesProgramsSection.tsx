@@ -3,10 +3,9 @@ import Link from "next/link";
 import { FiCheck, FiClock, FiPhone } from "react-icons/fi";
 
 import { brand } from "@/lib/brand";
+import { COURSES_PROGRAM_IMAGES } from "@/lib/siteImages";
 
-const GOLD_CARD = "#b89b72";
-const BG = "#faf8f4";
-
+const GOLD_CARD = brand.sage;
 type Program = {
   title: string;
   image: string;
@@ -20,7 +19,7 @@ type Program = {
 const programs: readonly Program[] = [
   {
     title: "200-Hour Pilates Teacher Training",
-    image: "/courses2.jpg",
+    image: COURSES_PROGRAM_IMAGES[0],
     imageAlt: "Group Pilates teacher training studio session",
     duration: "8 Weeks • Beginner to Intermediate",
     description:
@@ -34,7 +33,7 @@ const programs: readonly Program[] = [
   },
   {
     title: "300-Hour Advanced Pilates Training",
-    image: "/phy4.jpg",
+    image: COURSES_PROGRAM_IMAGES[1],
     imageAlt: "Advanced Pilates technique on equipment",
     duration: "12 Weeks • Advanced Level",
     description:
@@ -44,7 +43,7 @@ const programs: readonly Program[] = [
   },
   {
     title: "Holistic Body Conditioning Program",
-    image: "/phy3.jpg",
+    image: COURSES_PROGRAM_IMAGES[2],
     imageAlt: "Holistic physiotherapy-informed conditioning session",
     duration: "6 Weeks • All Levels",
     description:
@@ -58,7 +57,7 @@ const programs: readonly Program[] = [
   },
   {
     title: "Reformer & Equipment Masterclass",
-    image: "/index3.webp",
+    image: COURSES_PROGRAM_IMAGES[3],
     imageAlt: "Reformer Pilates equipment coaching",
     duration: "10 Weeks • Intermediate to Advanced",
     description:
@@ -72,13 +71,14 @@ export default function CoursesProgramsSection() {
   return (
     <section
       id="courses-programs"
-      className="px-4 py-16 md:py-24 lg:py-28"
-      style={{ backgroundColor: BG }}
+      className="bg-[#faf8f4] px-4 py-16 dark:bg-[#0f172a] md:py-24 lg:py-28"
       aria-labelledby="courses-programs-heading"
     >
       <div className="mx-auto max-w-6xl">
         <header className="text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border px-5 py-1.5 uppercase" style={{ borderColor: "rgba(184,155,114,0.55)", backgroundColor: "rgba(184,155,114,0.06)" }}>
+          <div
+            className="inline-flex items-center gap-2 rounded-full border border-[rgb(107_143_113_/_0.45)] bg-[rgba(107,143,113,0.08)] px-5 py-1.5 uppercase dark:border-[rgb(107_143_113_/_0.35)] dark:bg-[rgba(107,143,113,0.12)]"
+          >
             <span className="size-1.5 shrink-0 rounded-full" style={{ backgroundColor: GOLD_CARD }} aria-hidden />
             <span className="text-[10px] font-semibold tracking-[0.26em]" style={{ color: GOLD_CARD }}>
               Our courses
@@ -91,7 +91,7 @@ export default function CoursesProgramsSection() {
           >
             Explore Our Teacher Training Programs
           </h2>
-          <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed" style={{ color: brand.textMuted }}>
+          <p className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed text-neutral-600 dark:text-slate-300">
             Gain the knowledge, confidence, and guidance to become a certified instructor — or enhance your wellness
             journey through movement and science.
           </p>
@@ -101,7 +101,7 @@ export default function CoursesProgramsSection() {
           {programs.map((program) => (
             <article
               key={program.title}
-              className="flex flex-col overflow-hidden rounded-[1.75rem] border border-neutral-100/90 bg-white shadow-[0_20px_50px_-32px_rgba(0,0,0,0.18)]"
+              className="flex flex-col overflow-hidden rounded-[1.75rem] border border-neutral-100/90 bg-white shadow-[0_20px_50px_-32px_rgba(0,0,0,0.18)] dark:border-[#334155] dark:bg-[#1e293b]"
             >
               <div className="relative aspect-[16/10] w-full shrink-0">
                 <Image src={program.image} alt={program.imageAlt} fill className="object-cover object-center" sizes="(max-width: 1024px) 100vw, 50vw" />
@@ -114,18 +114,18 @@ export default function CoursesProgramsSection() {
                   <FiClock className="size-4 shrink-0 opacity-90" aria-hidden />
                   <span>{program.duration}</span>
                 </p>
-                <p className="mt-4 text-[15px] leading-relaxed" style={{ color: "#718096" }}>
+                <p className="mt-4 text-[15px] leading-relaxed text-[#718096] dark:text-slate-400">
                   {program.description}
                 </p>
                 <ul className="mt-6 space-y-3">
                   {program.features.map((line) => (
-                    <li key={line} className="flex items-start gap-2.5 text-[14px]" style={{ color: "#718096" }}>
+                    <li key={line} className="flex items-start gap-2.5 text-[14px] text-[#718096] dark:text-slate-400">
                       <FiCheck className="mt-0.5 shrink-0 text-base" style={{ color: brand.tealIcon }} aria-hidden />
                       <span>{line}</span>
                     </li>
                   ))}
                 </ul>
-                <div className="mt-auto flex flex-wrap items-center justify-between gap-4 border-t border-neutral-100 pt-7">
+                <div className="mt-auto flex flex-wrap items-center justify-between gap-4 border-t border-neutral-100 pt-7 dark:border-[#334155]">
                   <p className="font-[family-name:var(--font-playfair)] text-2xl font-bold" style={{ color: GOLD_CARD }}>
                     {program.price}
                   </p>

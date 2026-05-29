@@ -4,8 +4,9 @@ import Image from "next/image";
 import { useState } from "react";
 import { FiCheck, FiMinus, FiPlus } from "react-icons/fi";
 import { brand } from "@/lib/brand";
+import { THUMB } from "@/lib/siteImages";
 
-const GOLD_HEAD = "#9a7848";
+const GOLD_HEAD = brand.sage;
 const TEAL = brand.teal;
 
 const accordionItems = [
@@ -47,8 +48,7 @@ export default function CoursesWhySection() {
 
   return (
     <section
-      className={`px-4 pt-16 sm:px-6 md:pt-24 lg:px-8 lg:pt-28 ${fabClear}`}
-      style={{ backgroundColor: "#fdfbf6" }}
+      className={`bg-[#fdfbf6] px-4 pt-16 dark:bg-[#0f172a] sm:px-6 md:pt-24 lg:px-8 lg:pt-28 ${fabClear}`}
     >
       <div className="mx-auto grid max-w-6xl gap-10 sm:gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
         <div className="min-w-0">
@@ -56,12 +56,12 @@ export default function CoursesWhySection() {
             • Why choose us
           </p>
           <h2
-            className="mt-5 font-[family-name:var(--font-playfair)] text-[clamp(1.625rem,4.85vw,2.375rem)] font-bold leading-[1.12] tracking-tight text-neutral-900"
+            className="mt-5 font-[family-name:var(--font-playfair)] text-[clamp(1.625rem,4.85vw,2.375rem)] font-bold leading-[1.12] tracking-tight text-neutral-900 dark:text-white"
             style={{ color: GOLD_HEAD }}
           >
             Experience the Difference with Our Approach
           </h2>
-          <p className="mt-6 max-w-xl text-pretty text-[15px] leading-relaxed text-neutral-600 sm:text-base">
+          <p className="mt-6 max-w-xl text-pretty text-[15px] leading-relaxed text-neutral-600 dark:text-slate-300 sm:text-base">
             Teaching blends structured science with humane pacing — mentorship over memorisation so instructors leave
             ready to uplift every body seated in front of them.
           </p>
@@ -73,7 +73,7 @@ export default function CoursesWhySection() {
                 <div
                   key={item.q}
                   className={`overflow-hidden rounded-2xl border transition-colors duration-300 ${
-                    expanded ? "" : "border-neutral-200/90 bg-white"
+                    expanded ? "" : "border-neutral-200/90 bg-white dark:border-[#334155] dark:bg-[#1e293b]"
                   }`}
                   style={
                     expanded
@@ -90,12 +90,12 @@ export default function CoursesWhySection() {
                     aria-expanded={expanded}
                     aria-controls={`course-faq-panel-${idx}`}
                     id={`course-faq-${idx}`}
-                    className="flex w-full min-w-0 items-center justify-between gap-3 px-4 py-4 text-left text-[14px] font-semibold text-neutral-800 transition hover:bg-white/70 sm:gap-4 sm:px-5 sm:text-[15px]"
+                    className="flex w-full min-w-0 items-center justify-between gap-3 px-4 py-4 text-left text-[14px] font-semibold text-neutral-800 transition hover:bg-white/70 dark:text-slate-100 dark:hover:bg-slate-600/40 sm:gap-4 sm:px-5 sm:text-[15px]"
                   >
                     <span className="min-w-0 flex-1 pr-1">{item.q}</span>
                     <span
                       style={{ color: TEAL }}
-                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-neutral-100"
+                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-neutral-100 dark:bg-[#334155] dark:ring-slate-500"
                     >
                       {expanded ? <FiMinus className="size-4" aria-hidden /> : <FiPlus className="size-4" aria-hidden />}
                     </span>
@@ -105,7 +105,7 @@ export default function CoursesWhySection() {
                       id={`course-faq-panel-${idx}`}
                       role="region"
                       aria-labelledby={`course-faq-${idx}`}
-                      className="px-4 pb-5 pt-0 text-[14px] leading-relaxed text-neutral-600 sm:px-5 md:text-[15px]"
+                      className="px-4 pb-5 pt-0 text-[14px] leading-relaxed text-neutral-600 dark:text-slate-300 sm:px-5 md:text-[15px]"
                     >
                       {item.a}
                     </div>
@@ -120,7 +120,7 @@ export default function CoursesWhySection() {
           <div className="relative overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_-32px_rgba(0,0,0,0.2)] sm:rounded-[2rem]">
             <div className="relative aspect-[4/3] w-full min-h-[220px] sm:aspect-video sm:min-h-[260px] md:min-h-[300px] lg:aspect-[572/418] lg:max-h-[440px]">
               <Image
-                src="/courses3.jpg"
+                src={THUMB.coursesWhy}
                 alt="Instructor practising mindful movement outdoors"
                 fill
                 className="object-cover object-[center_30%]"

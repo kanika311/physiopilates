@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useInView } from "framer-motion";
-import { brand } from "@/lib/brand";
 
 export type AnimatedStatSpec = {
   label: string;
@@ -10,7 +9,6 @@ export type AnimatedStatSpec = {
   suffix?: string;
 };
 
-const GOLD = brand.goldHeading;
 const CYAN_STROKE = "#48cfcb";
 
 /** SVG ring radius (viewBox-relative) — thin progress arc synced with numeric count-up */
@@ -34,7 +32,7 @@ function StatRing({
           width="118"
           height="118"
           viewBox="0 0 100 100"
-          className="col-start-1 row-start-1 text-neutral-900/10"
+          className="col-start-1 row-start-1 text-neutral-900/15 dark:text-slate-400/35"
           aria-hidden
         >
           <circle
@@ -60,14 +58,13 @@ function StatRing({
             style={{ filter: "drop-shadow(0 0 6px rgba(72,207,203,0.22))" }}
           />
         </svg>
-        <p
-          className="relative z-[1] col-start-1 row-start-1 text-lg font-bold tabular-nums sm:text-[1.35rem]"
-          style={{ color: GOLD }}
-        >
+        <p className="relative z-[1] col-start-1 row-start-1 text-lg font-bold tabular-nums text-[#6B8F71] dark:text-emerald-200 sm:text-[1.35rem]">
           {displayText}
         </p>
       </div>
-      <p className="mt-2 px-1 text-[11px] font-medium leading-tight text-neutral-600 sm:text-xs">{label}</p>
+      <p className="mt-2 px-1 text-[11px] font-medium leading-tight text-neutral-600 dark:text-slate-200 sm:text-xs">
+        {label}
+      </p>
     </div>
   );
 }
@@ -118,7 +115,7 @@ export default function AnimatedStatCards({ specs }: { specs: readonly AnimatedS
         return (
           <div
             key={s.label}
-            className="rounded-2xl border border-white/90 bg-white/95 shadow-[0_14px_34px_-20px_rgba(0,0,0,0.12)] backdrop-blur-[2px]"
+            className="rounded-2xl border border-white/90 bg-white/95 shadow-[0_14px_34px_-20px_rgba(0,0,0,0.12)] backdrop-blur-[2px] dark:border-[#334155] dark:bg-[#1e293b]/95"
           >
             <StatRing progress={eased} label={s.label} displayText={displayText} />
           </div>

@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { brand } from "@/lib/brand";
+import { HERO_ABOUT } from "@/lib/siteImages";
 
-const GOLD = brand.gold;
+const SAGE = brand.sage;
 const TEAL = brand.tealAccent;
 
 /**
@@ -15,7 +16,7 @@ export default function AboutHeroSection() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/index2.jpg"
+          src={HERO_ABOUT}
           alt="Physio Pilates — instructor and client on reformer equipment"
           fill
           priority
@@ -27,8 +28,6 @@ export default function AboutHeroSection() {
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/68 via-black/55 to-black/62"
         aria-hidden
       />
-
-      <div className="relative z-10 h-[7rem] shrink-0 sm:h-[8rem]" aria-hidden />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-28 pt-8 text-center md:pb-32">
         <div
@@ -46,7 +45,7 @@ export default function AboutHeroSection() {
           className="mx-auto mt-10 max-w-5xl text-[1.5rem] font-bold leading-snug tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.18] lg:text-[2.75rem] [text-shadow:_0_2px_24px_rgb(0_0_0_/_45%)]"
         >
           <span className="text-white">Building </span>
-          <span className="font-semibold" style={{ color: GOLD }}>
+          <span className="font-semibold" style={{ color: SAGE }}>
             Strength,
           </span>
           <span className="text-white"> Balance &amp; </span>
@@ -64,7 +63,7 @@ export default function AboutHeroSection() {
         <div className="mt-10 md:mt-14">
           <div
             className="mx-auto h-0.5 w-[8.5rem] rounded-full sm:h-[3px] sm:w-40"
-            style={{ background: `linear-gradient(90deg, ${GOLD} 0%, ${TEAL} 100%)` }}
+            style={{ background: `linear-gradient(90deg, ${SAGE} 0%, ${TEAL} 100%)` }}
             aria-hidden
           />
         </div>

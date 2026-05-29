@@ -1,5 +1,8 @@
 /** Physio Pilates design tokens — aligned across sections */
 export const brand = {
+  /** Primary UI accent (light + dark) */
+  sage: "#6B8F71",
+  sageMuted: "#5a7a5f",
   gold: "#c09e6b",
   goldHeading: "#b39359",
   goldFooterBar: "#b89b66",

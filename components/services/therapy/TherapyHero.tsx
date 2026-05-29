@@ -2,8 +2,11 @@
 
 import Image from "next/image";
 
-const GOLD = "#c09e6b";
-const TEAL = "#48cfcb";
+import { brand } from "@/lib/brand";
+import { HERO_THERAPY } from "@/lib/siteImages";
+
+const SAGE = brand.sage;
+const TEAL = brand.tealAccent;
 
 export default function TherapyHero() {
   return (
@@ -13,7 +16,7 @@ export default function TherapyHero() {
     >
       <div className="absolute inset-0 z-0">
         <Image
-          src="/therapy1.jpg"
+          src={HERO_THERAPY}
           alt="Dry needling therapy — precision treatment for muscle tension"
           fill
           priority
@@ -25,8 +28,6 @@ export default function TherapyHero() {
         className="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-b from-black/65 via-black/58 to-black/62"
         aria-hidden
       />
-
-      <div className="relative z-10 h-[7rem] shrink-0 sm:h-[8rem]" />
 
       <div className="relative z-10 flex flex-1 flex-col items-center justify-center px-4 pb-28 pt-8 text-center md:pb-32">
         <div
@@ -49,7 +50,7 @@ export default function TherapyHero() {
           aria-label="Dry Needling and Cup Therapy"
         >
           <span className="text-white">Dry Needling </span>
-          <span style={{ color: GOLD }}>{`& `}</span>
+          <span style={{ color: SAGE }}>{`& `}</span>
           <span style={{ color: TEAL }}>Cup Therapy</span>
         </h1>
 
@@ -60,7 +61,7 @@ export default function TherapyHero() {
         <div className="mt-10 md:mt-14">
           <div
             className="mx-auto h-0.5 w-[8rem] rounded-full sm:h-[3px]"
-            style={{ background: `linear-gradient(90deg, ${GOLD} 0%, ${TEAL} 100%)` }}
+            style={{ background: `linear-gradient(90deg, ${SAGE} 0%, ${TEAL} 100%)` }}
             aria-hidden
           />
         </div>

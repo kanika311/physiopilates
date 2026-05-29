@@ -5,6 +5,7 @@ import FloatingActions from "@/components/FloatingActions";
 import Footer from "@/components/Footer";
 import Navbar from "@/components/Navbar";
 import MotionProviders from "@/components/providers/MotionProviders";
+import ThemeProvider from "@/components/providers/ThemeProvider";
 import "./globals.css";
 
 const montserrat = Montserrat({
@@ -34,16 +35,18 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" className={montserrat.variable}>
+    <html lang="en" className={`${montserrat.variable} scroll-smooth`} suppressHydrationWarning>
       <body
-        className={`${montserrat.className} ${playfair.variable} bg-white text-neutral-900 antialiased`}
+        className={`${montserrat.className} ${playfair.variable} flex min-h-dvh min-w-0 flex-col bg-white antialiased transition-colors duration-200 dark:bg-[#0f172a] dark:text-white`}
       >
-        <Navbar />
-        <main>
-          <MotionProviders>{children}</MotionProviders>
-        </main>
-        <Footer />
-        <FloatingActions />
+        <ThemeProvider>
+          <Navbar />
+          <main className="min-w-0 flex-1">
+            <MotionProviders>{children}</MotionProviders>
+          </main>
+          <Footer />
+          <FloatingActions />
+        </ThemeProvider>
       </body>
     </html>
   );
