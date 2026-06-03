@@ -5,6 +5,8 @@ import {
   PhysiotherapyGallerySection,
   PhysiotherapyHero,
 } from "@/components/services/physiotherapy";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Physiotherapy",
@@ -18,9 +20,11 @@ export const metadata: Metadata = {
 export default function PhysiotherapyPage() {
   return (
     <>
+    <Navbar/>
       <PhysiotherapyHero />
       <PhysiotherapyDetailSection />
       <PhysiotherapyGallerySection />
+      <Footer/>
     </>
   );
 }

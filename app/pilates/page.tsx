@@ -5,6 +5,8 @@ import {
   PilatesGallerySection,
   PilatesHero,
 } from "@/components/services/pilates";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Pilates",
@@ -18,9 +20,11 @@ export const metadata: Metadata = {
 export default function PilatesPage() {
   return (
     <>
+    <Navbar/>
       <PilatesHero />
       <PilatesDetailSection />
       <PilatesGallerySection />
+      <Footer/>
     </>
   );
 }

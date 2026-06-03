@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import BlogArticleBody from "@/components/blog/BlogArticleBody";
 import BlogHero from "@/components/blog/BlogHero";
 import { getPostBySlug, blogPosts } from "@/components/blog/blogData";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -30,6 +32,7 @@ export default async function BlogPostPage({ params }: Props) {
 
   return (
     <>
+    <Navbar/>
       <BlogHero
         variant="post"
         title={post.title}
@@ -38,6 +41,7 @@ export default async function BlogPostPage({ params }: Props) {
         imageAlt={`${post.title} — hero`}
       />
       <BlogArticleBody blocks={post.sections} />
+      <Footer/>
     </>
   );
 }

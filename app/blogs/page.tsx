@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import BlogCard from "@/components/blog/BlogCard";
 import BlogHero from "@/components/blog/BlogHero";
 import { getSortedPosts } from "@/components/blog/blogData";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -15,6 +17,7 @@ export default function BlogsPage() {
 
   return (
     <>
+    <Navbar/>
       <BlogHero variant="listing" />
       <section className="bg-white px-4 pb-24 pt-12 dark:bg-[#0f172a] md:pb-28 md:pt-16">
         <p className="mx-auto max-w-4xl px-2 text-center text-[15px] leading-relaxed text-neutral-700 dark:text-slate-300 md:text-[16px]">
@@ -28,6 +31,7 @@ export default function BlogsPage() {
           ))}
         </div>
       </section>
+      <Footer/>
     </>
   );
 }

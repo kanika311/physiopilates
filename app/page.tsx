@@ -1,4 +1,6 @@
+import Footer from "@/components/Footer";
 import HeroSection from "@/components/HeroSection";
+import Navbar from "@/components/Navbar";
 import RevealOnScroll from "@/components/RevealOnScroll";
 import HomeAboutIntro from "@/components/home/HomeAboutIntro";
 import HomeCertificationsSection from "@/components/home/HomeCertificationsSection";
@@ -10,6 +12,7 @@ import HomeWorkGallerySection from "@/components/home/HomeWorkGallerySection";
 export default function Home() {
   return (
     <>
+    <Navbar/>
       <HeroSection />
       <HomeAboutIntro />
       <HomeServicesSection />
@@ -19,6 +22,7 @@ export default function Home() {
       <HomeTestimonialsSection />
       <HomeWorkGallerySection />
       <HomeContactStrip />
+      <Footer/>
     </>
   );
 }

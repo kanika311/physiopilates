@@ -6,6 +6,8 @@ import {
   CoursesProgramsSection,
   CoursesWhySection,
 } from "@/components/services/courses";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Courses",
@@ -17,10 +19,12 @@ export const metadata: Metadata = {
 export default function CoursesPage() {
   return (
     <>
+    <Navbar/>
       <CoursesHero />
       <CoursesOverviewSection />
       <CoursesProgramsSection />
       <CoursesWhySection />
+      <Footer/>
     </>
   );
 }

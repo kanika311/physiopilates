@@ -5,6 +5,8 @@ import {
   TherapyGallerySection,
   TherapyHero,
 } from "@/components/services/therapy";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Dry Needling & Cup Therapy",
@@ -16,9 +18,11 @@ export const metadata: Metadata = {
 export default function TherapyPage() {
   return (
     <>
+    <Navbar/>
       <TherapyHero />
       <TherapyDetailSection />
       <TherapyGallerySection />
+      <Footer/>
     </>
   );
 }

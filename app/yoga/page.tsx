@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 
 import { YogaDetailSection, YogaGallerySection, YogaHero } from "@/components/services/yoga";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "Yoga",
@@ -12,9 +14,11 @@ export const metadata: Metadata = {
 export default function YogaPage() {
   return (
     <>
+    <Navbar/>
       <YogaHero />
       <YogaDetailSection />
       <YogaGallerySection />
+      <Footer/>
     </>
   );
 }

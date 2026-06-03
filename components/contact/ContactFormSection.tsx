@@ -1,138 +1,166 @@
 "use client";
 
+import { useState } from "react";
 import type { FormEvent } from "react";
-
-import { FiSend } from "react-icons/fi";
-
-import { contactEmailHref, contactServiceOptions } from "@/lib/contact";
-import { brand } from "@/lib/brand";
-
-function BottomGlow() {
-  return (
-    <span
-      className="pointer-events-none absolute inset-x-2 bottom-[1px] h-[2px] rounded-full bg-gradient-to-r from-[#48cfcb] via-[rgba(192,158,107,0.94)] to-[rgba(72,207,203,0.35)] opacity-55 transition-opacity duration-[220ms] ease-out peer-placeholder-shown:opacity-[0.32] peer-focus-visible:opacity-92 peer-[&:not(:placeholder-shown)]:opacity-[0.68]"
-      aria-hidden
-    />
-  );
-}
+import axios from "axios";
 
 export default function ContactFormSection() {
-  function submitMailto(e: FormEvent<HTMLFormElement>) {
+  const [loading, setLoading] =
+    useState(false);
+
+  const [success, setSuccess] =
+    useState(false);
+
+  const [error, setError] =
+    useState("");
+
+  async function submitForm(
+    e: FormEvent<HTMLFormElement>
+  ) {
     e.preventDefault();
-    const form = e.currentTarget;
-    const data = new FormData(form);
 
-    const name = String(data.get("name") ?? "").trim();
-    const email = String(data.get("email") ?? "").trim();
-    const phone = String(data.get("phone") ?? "").trim();
-    const service = String(data.get("service") ?? "").trim();
-    const message = String(data.get("message") ?? "").trim();
+    try {
+      setLoading(true);
+      setError("");
+      setSuccess(false);
 
-    const subject = `[Physio Pilates website] Inquiry from ${name || "Website visitor"}`.slice(0, 200);
+      const form =
+        e.currentTarget;
 
-    const body =
-      `${message}\n\n` +
-      "---\n" +
-      `Name: ${name}\n` +
-      `Email: ${email}\n` +
-      `Phone: ${phone || "—"}\n` +
-      `Service interest: ${service || "—"}`;
+      const data =
+        new FormData(form);
 
-    const mailtoHref = `mailto:${contactEmailHref}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      const payload = {
+        name: String(
+          data.get("name") || ""
+        ),
+        email: String(
+          data.get("email") || ""
+        ),
+        phone: String(
+          data.get("phone") || ""
+        ),
+        service: String(
+          data.get("service") || ""
+        ),
+        message: String(
+          data.get("message") || ""
+        ),
+      };
 
-    window.location.href = mailtoHref;
-    form.reset();
+      console.log(
+        "Submitting:",
+        payload
+      );
+
+      const response =
+        await axios.post(
+          "/api/contact",
+          payload
+        );
+
+      console.log(
+        response.data
+      );
+
+      if (
+        response.data.success
+      ) {
+        setSuccess(true);
+        form.reset();
+      }
+    } catch (err: any) {
+      console.error(err);
+
+      setError(
+        err?.response?.data
+          ?.message ||
+          "Failed to send message"
+      );
+    } finally {
+      setLoading(false);
+    }
   }
-
-  const input =
-    "peer w-full rounded-t-lg border-b-2 border-neutral-200 bg-white px-[0.78rem] pt-[1.35rem] pb-[0.6rem] text-[15px] text-neutral-900 outline-none placeholder-transparent transition-colors duration-[200ms] ease-out focus-visible:border-[#48cfcb]/72 focus-visible:ring-[2px] focus-visible:ring-[rgba(107,143,113,0.35)] motion-reduce:focus-visible:ring-transparent dark:border-slate-500 dark:bg-slate-800/90 dark:text-slate-100 dark:focus-visible:border-teal-400/70";
-
-  const label =
-    "pointer-events-none absolute left-[0.78rem] top-[calc(1.06rem)] z-[2] origin-left text-neutral-600 transition-[transform,color,font-size] duration-[200ms] ease-out peer-placeholder-shown:text-[15px] peer-placeholder-shown:text-neutral-500 peer-focus-visible:-translate-y-[1.06rem] peer-focus-visible:text-[11px] peer-focus-visible:font-semibold peer-focus-visible:text-neutral-900 peer-[&:not(:placeholder-shown)]:-translate-y-[1.06rem] peer-[&:not(:placeholder-shown)]:text-[11px] peer-[&:not(:placeholder-shown)]:font-semibold peer-[&:not(:placeholder-shown)]:text-neutral-900 dark:text-slate-400 peer-focus-visible:dark:text-slate-200 peer-[&:not(:placeholder-shown)]:dark:text-slate-200";
-
-  const wrap = "relative pb-6";
 
   return (
     <div>
-      <h2 className="text-xl font-bold text-neutral-900 dark:text-white sm:text-[1.35rem]">Send Us a Message</h2>
-      <form onSubmit={submitMailto} className="mt-8 space-y-6">
-        <div className={wrap}>
-          <input id="contact-name" name="name" type="text" autoComplete="name" required placeholder=" " className={input} />
-          <label htmlFor="contact-name" className={label}>
-            Full name *
-          </label>
-          <BottomGlow />
+      {success && (
+        <div className="mb-4 rounded-lg bg-green-100 p-3 text-green-700">
+          Message sent successfully
         </div>
+      )}
 
-        <div className={wrap}>
-          <input id="contact-email" name="email" type="email" autoComplete="email" required placeholder=" " className={input} />
-          <label htmlFor="contact-email" className={label}>
-            Email address *
-          </label>
-          <BottomGlow />
+      {error && (
+        <div className="mb-4 rounded-lg bg-red-100 p-3 text-red-700">
+          {error}
         </div>
+      )}
 
-        <div className={wrap}>
-          <input id="contact-phone" name="phone" type="tel" autoComplete="tel" placeholder=" " className={input} />
-          <label htmlFor="contact-phone" className={label}>
-            Phone number
-          </label>
-          <BottomGlow />
-        </div>
+      <form
+        onSubmit={submitForm}
+        className="space-y-4"
+      >
+        <input
+          type="text"
+          name="name"
+          placeholder="Name"
+          required
+          className="w-full rounded-lg border p-3"
+        />
 
-        <div className={`${wrap} space-y-2`}>
-          <label
-            htmlFor="contact-service"
-            className="block text-[11px] font-semibold uppercase tracking-[0.12em] text-neutral-700 dark:text-slate-300"
-          >
-            Service interested in *
-          </label>
-          <div className="relative">
-            <select
-              id="contact-service"
-              name="service"
-              required
-              defaultValue=""
-              className="peer w-full rounded-t-lg border-b-2 border-neutral-200 bg-white px-[0.78rem] py-[0.65rem] text-[15px] text-neutral-800 outline-none transition-colors duration-[200ms] focus-visible:border-[#48cfcb]/72 focus-visible:ring-[2px] focus-visible:ring-[rgba(107,143,113,0.35)] motion-reduce:focus-visible:ring-transparent dark:border-slate-500 dark:bg-slate-800/90 dark:text-slate-100 dark:focus-visible:border-teal-400/70 appearance-none min-h-[46px]"
-            >
-              {contactServiceOptions.map(({ value, label }) => (
-                <option key={`${value}-${label}`} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            <span
-              className="pointer-events-none absolute inset-x-2 bottom-[1px] h-[2px] rounded-full bg-gradient-to-r from-[#48cfcb] via-[rgba(192,158,107,0.94)] to-[rgba(72,207,203,0.35)] opacity-45 transition-opacity duration-[220ms] ease-out peer-hover:opacity-70 peer-focus-visible:opacity-90"
-              aria-hidden
-            />
-          </div>
-        </div>
+        <input
+          type="email"
+          name="email"
+          placeholder="Email"
+          required
+          className="w-full rounded-lg border p-3"
+        />
 
-        <div className={`${wrap}`}>
-          <textarea
-            id="contact-message"
-            name="message"
-            rows={5}
-            required
-            placeholder=" "
-            className={`${input} resize-y rounded-2xl border-x border-y border-neutral-200 pb-3 dark:border-slate-500`}
-          />
-          <label htmlFor="contact-message" className={`${label} peer-focus-visible:top-[0.94rem]`}>
-            Tell us about your goals *
-          </label>
-          <span
-            className="pointer-events-none absolute inset-x-3 bottom-3 h-[2px] rounded-full bg-gradient-to-r from-[#48cfcb] via-[rgba(192,158,107,0.94)] to-[rgba(72,207,203,0.35)] opacity-55 transition-opacity duration-[220ms] ease-out peer-placeholder-shown:opacity-[0.34] peer-focus-visible:opacity-92 peer-[&:not(:placeholder-shown)]:opacity-[0.72]"
-            aria-hidden
-          />
-        </div>
+        <input
+          type="text"
+          name="phone"
+          placeholder="Phone"
+          className="w-full rounded-lg border p-3"
+        />
+
+        <select
+          name="service"
+          required
+          className="w-full rounded-lg border p-3"
+        >
+          <option value="">
+            Select Service
+          </option>
+
+          <option value="Physiotherapy">
+            Physiotherapy
+          </option>
+
+          <option value="Pilates">
+            Pilates
+          </option>
+
+          <option value="Yoga">
+            Yoga
+          </option>
+        </select>
+
+        <textarea
+          name="message"
+          rows={5}
+          placeholder="Message"
+          required
+          className="w-full rounded-lg border p-3"
+        />
 
         <button
           type="submit"
-          className="mi-hover flex w-full items-center justify-center gap-2 rounded-xl px-5 py-4 text-[15px] font-semibold text-white shadow-md transition-opacity hover:opacity-92 sm:rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[rgba(192,158,107,0.52)] focus-visible:ring-offset-2 motion-reduce:transition-none"
-          style={{ backgroundColor: brand.sage }}
+          disabled={loading}
+          className="rounded-lg bg-black px-6 py-3 text-white"
         >
-          <FiSend className="text-lg mi-svg" aria-hidden />
-          Send Message
+          {loading
+            ? "Sending..."
+            : "Send Message"}
         </button>
       </form>
     </div>

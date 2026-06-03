@@ -40,11 +40,11 @@ export default function RootLayout({
         className={`${montserrat.className} ${playfair.variable} flex min-h-dvh min-w-0 flex-col bg-white antialiased transition-colors duration-200 dark:bg-[#0f172a] dark:text-white`}
       >
         <ThemeProvider>
-          <Navbar />
+         
           <main className="min-w-0 flex-1">
             <MotionProviders>{children}</MotionProviders>
           </main>
-          <Footer />
+         
           <FloatingActions />
         </ThemeProvider>
       </body>
