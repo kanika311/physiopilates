@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
+import { useParams, useRouter } from "next/navigation";
 
 import { useAdminPage } from "@/components/admin/AdminPageContext";
 import {
@@ -11,12 +12,18 @@ import {
   AdminInput,
   AdminSelect,
   FormCard,
+  LoadingState,
 } from "@/components/admin/ui";
 
-export default function CreateGalleryPage() {
-  useAdminPage("Create Gallery");
+export default function EditGalleryPage() {
+  useAdminPage("Edit Gallery");
+
+  const router = useRouter();
+  const params = useParams();
+  const id = params.id as string;
 
   const [loading, setLoading] = useState(false);
+  const [fetching, setFetching] = useState(true);
   const [preview, setPreview] = useState("");
   const [formData, setFormData] = useState({
     title: "",
@@ -25,6 +32,30 @@ export default function CreateGalleryPage() {
     categories: "",
     badge: "",
   });
+
+  useEffect(() => {
+    if (id) fetchGallery();
+  }, [id]);
+
+  const fetchGallery = async () => {
+    try {
+      const response = await axios.get(`/api/admin/gallary/${id}`);
+      const item = response.data.data;
+      setFormData({
+        title: item.title || "",
+        image: item.image || "",
+        alt: item.alt || "",
+        categories: item.categories?.[0] || "",
+        badge: item.badge || "",
+      });
+      setPreview(item.image || "");
+    } catch (error) {
+      console.log(error);
+      alert("Failed to load gallery item");
+    } finally {
+      setFetching(false);
+    }
+  };
 
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -53,19 +84,12 @@ export default function CreateGalleryPage() {
         categories: [formData.categories],
         badge: formData.badge,
       };
-      const response = await axios.post(
-        "/api/admin/gallary/create",
+      const response = await axios.put(
+        `/api/admin/gallary/${id}`,
         payload
       );
       alert(response.data.message);
-      setFormData({
-        title: "",
-        image: "",
-        alt: "",
-        categories: "",
-        badge: "",
-      });
-      setPreview("");
+      router.push("/admin/gallery");
     } catch (error) {
       console.log(error);
       alert("Something went wrong");
@@ -74,15 +98,16 @@ export default function CreateGalleryPage() {
     }
   };
 
+  if (fetching) {
+    return <LoadingState message="Loading gallery item..." />;
+  }
+
   return (
     <FormCard
-      title="Add Gallery Image"
-      description="Upload and manage gallery images"
+      title="Edit Gallery Image"
+      description="Update gallery image details"
     >
-      <form
-        onSubmit={handleSubmit}
-        className="space-y-5"
-      >
+      <form onSubmit={handleSubmit} className="space-y-5">
         <AdminField label="Title">
           <AdminInput
             type="text"
@@ -98,9 +123,8 @@ export default function CreateGalleryPage() {
           <input
             type="file"
             accept="image/*"
-            required
             onChange={handleImageUpload}
-            className="admin-focus-ring w-full rounded-[12px] border p-3 text-sm file:mr-4 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white"
+            className="admin-focus-ring w-full rounded-[12px] border p-3 text-sm"
             style={{
               borderColor: "var(--admin-border)",
               backgroundColor: "var(--admin-muted)",
@@ -164,9 +188,19 @@ export default function CreateGalleryPage() {
           />
         </AdminField>
 
-        <AdminButton type="submit" disabled={loading} fullWidth>
-          {loading ? "Please wait..." : "Create Gallery"}
-        </AdminButton>
+        <div className="flex flex-col gap-3 sm:flex-row">
+          <AdminButton
+            type="button"
+            variant="outline"
+            fullWidth
+            onClick={() => router.push("/admin/gallery")}
+          >
+            Cancel
+          </AdminButton>
+          <AdminButton type="submit" disabled={loading} fullWidth>
+            {loading ? "Please wait..." : "Update Gallery"}
+          </AdminButton>
+        </div>
       </form>
     </FormCard>
   );

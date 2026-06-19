@@ -4,7 +4,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
 import { brand } from "@/lib/brand";
 
 const GOLD = brand.gold;
@@ -44,6 +45,13 @@ export default function HeroSection() {
 
   const count = slides.length;
 
+  const go = useCallback(
+    (dir: -1 | 1) => {
+      setIndex((prev) => (prev + dir + count) % count);
+    },
+    [count]
+  );
+
   useEffect(() => {
     fetchCarousel();
   }, []);
@@ -70,15 +78,12 @@ export default function HeroSection() {
 
     const timer =
       window.setInterval(() => {
-        setIndex(
-          (prev) =>
-            (prev + 1) % count
-        );
+        go(1);
       }, AUTOPLAY_MS);
 
     return () =>
       window.clearInterval(timer);
-  }, [count]);
+  }, [count, go]);
 
   if (loading) {
     return (
@@ -210,6 +215,29 @@ export default function HeroSection() {
           )}
         </div>
 
+        {/* Prev / Next arrows */}
+        {count > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => go(-1)}
+              aria-label="Previous slide"
+              className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 sm:left-6 sm:h-12 sm:w-12"
+            >
+              <ChevronLeft size={24} strokeWidth={2.5} />
+            </button>
+
+            <button
+              type="button"
+              onClick={() => go(1)}
+              aria-label="Next slide"
+              className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 sm:right-6 sm:h-12 sm:w-12"
+            >
+              <ChevronRight size={24} strokeWidth={2.5} />
+            </button>
+          </>
+        )}
+
         {/* Dots */}
         {count > 1 && (
           <div className="absolute bottom-12 left-0 right-0 z-20 flex justify-center gap-3">
@@ -222,6 +250,7 @@ export default function HeroSection() {
                   key={
                     slide._id
                   }
+                  type="button"
                   onClick={() =>
                     setIndex(i)
                   }

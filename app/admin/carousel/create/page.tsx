@@ -2,14 +2,22 @@
 
 import { useState } from "react";
 import axios from "axios";
-import AdminSidebar from "@/components/admin/AdminSidebar";
-import AdminHeader from "@/components/admin/AdminHeader";
 import Image from "next/image";
+
+import { useAdminPage } from "@/components/admin/AdminPageContext";
+import {
+  AdminButton,
+  AdminField,
+  AdminInput,
+  AdminSelect,
+  AdminTextarea,
+  FormCard,
+} from "@/components/admin/ui";
 
 interface CarouselForm {
   title: string;
   subtitle: string;
-  image: string; // Base64 Image
+  image: string;
   buttonText: string;
   buttonLink: string;
   order: number;
@@ -17,8 +25,9 @@ interface CarouselForm {
 }
 
 export default function CreateCarousel() {
-  const [loading, setLoading] = useState(false);
+  useAdminPage("Create Carousel");
 
+  const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<CarouselForm>({
     title: "",
     subtitle: "",
@@ -30,58 +39,36 @@ export default function CreateCarousel() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
-
     setForm((prev) => ({
       ...prev,
-      [name]:
-        name === "order"
-          ? Number(value)
-          : value,
+      [name]: name === "order" ? Number(value) : value,
     }));
   };
 
-  // Convert Image to Base64
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const file = e.target.files?.[0];
-
     if (!file) return;
-
     const reader = new FileReader();
-
     reader.onloadend = () => {
       setForm((prev) => ({
         ...prev,
         image: reader.result as string,
       }));
     };
-
     reader.readAsDataURL(file);
   };
 
-  const submit = async (
-    e: React.FormEvent
-  ) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     try {
       setLoading(true);
-
-      await axios.post(
-        "/api/carousel",
-        form
-      );
-
-      alert(
-        "Carousel Created Successfully"
-      );
-
+      await axios.post("/api/carousel", form);
+      alert("Carousel Created Successfully");
       setForm({
         title: "",
         subtitle: "",
@@ -100,199 +87,109 @@ export default function CreateCarousel() {
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
-      {/* Sidebar */}
-      <AdminSidebar />
+    <FormCard
+      title="Create Carousel"
+      description="Add a new banner slider"
+      maxWidth="2xl"
+    >
+      <form onSubmit={submit} className="space-y-5">
+        <AdminField label="Title">
+          <AdminInput
+            type="text"
+            name="title"
+            value={form.title}
+            onChange={handleChange}
+            required
+            placeholder="Enter title"
+          />
+        </AdminField>
 
-      {/* Main Content */}
-      <div className="min-w-0 flex-1 lg:ml-72">
-        <AdminHeader />
+        <AdminField label="Subtitle">
+          <AdminTextarea
+            rows={4}
+            name="subtitle"
+            value={form.subtitle}
+            onChange={handleChange}
+            placeholder="Enter subtitle"
+          />
+        </AdminField>
 
-        <div className="mt-16 p-4 sm:p-6 lg:mt-0">
-          <div className="mx-auto max-w-5xl">
-            {/* Page Title */}
-            <div className="mb-6">
-              <h1 className="text-2xl font-bold md:text-3xl">
-                Create Carousel
-              </h1>
+        <AdminField label="Upload Banner Image">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="admin-focus-ring w-full rounded-[12px] border p-3 text-sm"
+            style={{
+              borderColor: "var(--admin-border)",
+              backgroundColor: "var(--admin-muted)",
+            }}
+          />
+        </AdminField>
 
-              <p className="mt-1 text-gray-500">
-                Add a new banner slider
-              </p>
-            </div>
+        {form.image && (
+          <AdminField label="Preview">
+            <Image
+              src={form.image}
+              alt="Preview"
+              width={600}
+              height={300}
+              className="h-56 w-full rounded-[12px] border object-cover"
+              style={{ borderColor: "var(--admin-border)" }}
+            />
+          </AdminField>
+        )}
 
-            {/* Form Card */}
-            <div className="rounded-2xl bg-white p-5 shadow-sm md:p-8">
-              <form
-                onSubmit={submit}
-                className="space-y-6"
-              >
-                {/* Title */}
-                <div>
-                  <label className="mb-2 block text-sm font-medium">
-                    Title
-                  </label>
-
-                  <input
-                    type="text"
-                    name="title"
-                    value={form.title}
-                    onChange={handleChange}
-                    required
-                    className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none"
-                    placeholder="Enter title"
-                  />
-                </div>
-
-                {/* Subtitle */}
-                <div>
-                  <label className="mb-2 block text-sm font-medium">
-                    Subtitle
-                  </label>
-
-                  <textarea
-                    rows={4}
-                    name="subtitle"
-                    value={form.subtitle}
-                    onChange={handleChange}
-                    className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none"
-                    placeholder="Enter subtitle"
-                  />
-                </div>
-
-                {/* Image Upload */}
-                <div>
-                  <label className="mb-2 block text-sm font-medium">
-                    Upload Banner Image
-                  </label>
-
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleImageUpload}
-                    className="w-full rounded-xl border border-gray-300 p-3"
-                  />
-                </div>
-
-                {/* Preview */}
-                {form.image && (
-                  <div>
-                    <label className="mb-2 block text-sm font-medium">
-                      Preview
-                    </label>
-
-                    <Image
-                      src={form.image}
-                      alt="Preview"
-                      width={600}
-                      height={300}
-                      className="h-56 w-full rounded-xl border object-cover"
-                    />
-                  </div>
-                )}
-
-                {/* Button Text & Link */}
-                <div className="grid gap-5 md:grid-cols-2">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium">
-                      Button Text
-                    </label>
-
-                    <input
-                      type="text"
-                      name="buttonText"
-                      value={
-                        form.buttonText
-                      }
-                      onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none"
-                      placeholder="Learn More"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium">
-                      Button Link
-                    </label>
-
-                    <input
-                      type="text"
-                      name="buttonLink"
-                      value={
-                        form.buttonLink
-                      }
-                      onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none"
-                      placeholder="/about-us"
-                    />
-                  </div>
-                </div>
-
-                {/* Order & Status */}
-                <div className="grid gap-5 md:grid-cols-2">
-                  <div>
-                    <label className="mb-2 block text-sm font-medium">
-                      Display Order
-                    </label>
-
-                    <input
-                      type="number"
-                      name="order"
-                      value={form.order}
-                      onChange={handleChange}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="mb-2 block text-sm font-medium">
-                      Status
-                    </label>
-
-                    <select
-                      value={
-                        form.status
-                          ? "active"
-                          : "inactive"
-                      }
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          status:
-                            e.target.value ===
-                            "active",
-                        })
-                      }
-                      className="w-full rounded-xl border border-gray-300 px-4 py-3 focus:border-black focus:outline-none"
-                    >
-                      <option value="active">
-                        Active
-                      </option>
-
-                      <option value="inactive">
-                        Inactive
-                      </option>
-                    </select>
-                  </div>
-                </div>
-
-                {/* Submit */}
-                <div className="pt-2">
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full rounded-xl bg-black px-6 py-4 font-medium text-white transition hover:bg-gray-800 disabled:cursor-not-allowed disabled:opacity-50 md:w-auto"
-                  >
-                    {loading
-                      ? "Saving..."
-                      : "Save Carousel"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          </div>
+        <div className="grid gap-5 md:grid-cols-2">
+          <AdminField label="Button Text">
+            <AdminInput
+              type="text"
+              name="buttonText"
+              value={form.buttonText}
+              onChange={handleChange}
+              placeholder="Learn More"
+            />
+          </AdminField>
+          <AdminField label="Button Link">
+            <AdminInput
+              type="text"
+              name="buttonLink"
+              value={form.buttonLink}
+              onChange={handleChange}
+              placeholder="/about-us"
+            />
+          </AdminField>
         </div>
-      </div>
-    </div>
+
+        <div className="grid gap-5 md:grid-cols-2">
+          <AdminField label="Display Order">
+            <AdminInput
+              type="number"
+              name="order"
+              value={form.order}
+              onChange={handleChange}
+            />
+          </AdminField>
+          <AdminField label="Status">
+            <AdminSelect
+              value={form.status ? "active" : "inactive"}
+              onChange={(e) =>
+                setForm({
+                  ...form,
+                  status: e.target.value === "active",
+                })
+              }
+            >
+              <option value="active">Active</option>
+              <option value="inactive">Inactive</option>
+            </AdminSelect>
+          </AdminField>
+        </div>
+
+        <AdminButton type="submit" disabled={loading}>
+          {loading ? "Saving..." : "Save Carousel"}
+        </AdminButton>
+      </form>
+    </FormCard>
   );
 }

@@ -1,15 +1,13 @@
 import type { ReactNode } from "react";
 
-interface LoginLayoutProps {
+import AdminShell from "@/components/admin/AdminShell";
+
+interface AdminLayoutProps {
   children: ReactNode;
 }
 
-export default function LoginLayout({
+export default function AdminLayout({
   children,
-}: LoginLayoutProps) {
-  return (
-    <div className="min-h-screen bg-white">
-      {children}
-    </div>
-  );
+}: AdminLayoutProps) {
+  return <AdminShell>{children}</AdminShell>;
 }

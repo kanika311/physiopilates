@@ -3,10 +3,14 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import Link from "next/link";
 
-import AdminSidebar from "@/components/admin/AdminSidebar";
-import AdminHeader from "@/components/admin/AdminHeader";
+import { useAdminPage } from "@/components/admin/AdminPageContext";
+import {
+  AdminButton,
+  EmptyState,
+  LoadingState,
+  PageHeader,
+} from "@/components/admin/ui";
 
 interface GalleryItem {
   _id: string;
@@ -18,6 +22,8 @@ interface GalleryItem {
 }
 
 export default function GalleryPage() {
+  useAdminPage("Gallery");
+
   const [gallery, setGallery] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -36,122 +42,123 @@ export default function GalleryPage() {
     fetchGallery();
   }, []);
 
+  const deleteGallery = async (id: string) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this gallery image?"
+    );
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`/api/admin/gallary/${id}`);
+      setGallery((prev) => prev.filter((item) => item._id !== id));
+    } catch (error) {
+      console.log(error);
+      alert("Failed to delete gallery image");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      <AdminSidebar />
+    <>
+      <PageHeader
+        title="Gallery Images"
+        description="Manage all gallery images"
+        action={
+          <AdminButton href="/admin/gallery/create">
+            Add New
+          </AdminButton>
+        }
+      />
 
-      <div className="min-w-0 lg:ml-72">
-        <AdminHeader title="Gallery" />
-
-        <main className="p-4 sm:p-6 lg:p-8">
-          {/* Header */}
-          <div className="mb-6 flex flex-col gap-4 md:mb-8 md:flex-row md:items-center md:justify-between">
-            <div>
-              <h2 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-                Gallery Images
-              </h2>
-
-              <p className="mt-1 text-sm text-gray-500 sm:text-base">
-                Manage all gallery images
-              </p>
-            </div>
-
-            <Link
-              href="/admin/gallery/create"
-              className="inline-flex w-full items-center justify-center rounded-xl bg-black px-5 py-3 text-sm font-medium text-white transition hover:opacity-90 sm:w-auto"
+      {loading ? (
+        <LoadingState message="Loading gallery..." />
+      ) : gallery.length === 0 ? (
+        <EmptyState
+          title="No Gallery Images"
+          description="Add your first gallery image"
+          action={
+            <AdminButton href="/admin/gallery/create">
+              Create Gallery
+            </AdminButton>
+          }
+        />
+      ) : (
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
+          {gallery.map((item) => (
+            <div
+              key={item._id}
+              className="admin-card admin-card-hover overflow-hidden"
+              style={{ borderRadius: "var(--admin-radius-lg)" }}
             >
-              Add New
-            </Link>
-          </div>
+              <div
+                className="relative flex min-h-[250px] items-center justify-center p-2 sm:min-h-[280px] md:min-h-[320px]"
+                style={{ backgroundColor: "var(--admin-muted)" }}
+              >
+                <Image
+                  src={item.image}
+                  alt={item.alt}
+                  width={1200}
+                  height={800}
+                  sizes="100vw"
+                  className="max-h-[320px] w-full object-contain"
+                />
+                {item.badge && (
+                  <div
+                    className="absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-semibold text-white sm:text-sm"
+                    style={{ backgroundColor: "var(--admin-accent)" }}
+                  >
+                    {item.badge}
+                  </div>
+                )}
+              </div>
 
-          {/* Loading */}
-          {loading ? (
-            <div className="flex h-48 items-center justify-center">
-              <div className="text-base font-medium text-gray-600 sm:text-lg">
-                Loading...
+              <div className="p-4 sm:p-5">
+                <h3
+                  className="text-lg font-bold sm:text-xl"
+                  style={{ color: "var(--page-fg)" }}
+                >
+                  {item.title}
+                </h3>
+                <p
+                  className="mt-2 line-clamp-2 text-xs sm:text-sm"
+                  style={{ color: "var(--admin-text-muted)" }}
+                >
+                  {item.alt}
+                </p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {item.categories.map((category, index) => (
+                    <span
+                      key={index}
+                      className="rounded-full px-3 py-1 text-[11px] font-medium capitalize sm:text-xs"
+                      style={{
+                        backgroundColor: "var(--admin-accent-softer)",
+                        color: "var(--admin-accent)",
+                      }}
+                    >
+                      {category}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                  <AdminButton
+                    href={`/admin/gallery/edit/${item._id}`}
+                    variant="primary"
+                    fullWidth
+                  >
+                    Edit
+                  </AdminButton>
+                  <AdminButton
+                    variant="danger"
+                    fullWidth
+                    onClick={() => deleteGallery(item._id)}
+                  >
+                    Delete
+                  </AdminButton>
+                </div>
               </div>
             </div>
-          ) : gallery.length === 0 ? (
-            <div className="rounded-2xl bg-white p-6 text-center shadow-sm sm:rounded-3xl sm:p-10">
-              <h3 className="text-xl font-bold text-gray-900 sm:text-2xl">
-                No Gallery Images
-              </h3>
-
-              <p className="mt-2 text-sm text-gray-500 sm:text-base">
-                Add your first gallery image
-              </p>
-
-              <Link
-                href="/admin/gallery/create"
-                className="mt-6 inline-flex rounded-xl bg-black px-5 py-3 text-sm font-medium text-white"
-              >
-                Create Gallery
-              </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 xl:grid-cols-3">
-              {gallery.map((item) => (
-                <div
-                  key={item._id}
-                  className="overflow-hidden rounded-2xl bg-white shadow-sm transition-all duration-300 hover:shadow-lg"
-                >
-                  {/* Image */}
-                  <div className="relative flex min-h-[250px] items-center justify-center bg-gray-100 p-2 sm:min-h-[280px] md:min-h-[320px]">
-                    <Image
-                      src={item.image}
-                      alt={item.alt}
-                      width={1200}
-                      height={800}
-                      sizes="100vw"
-                      className="max-h-[320px] w-full object-contain"
-                    />
-
-                    {item.badge && (
-                      <div className="absolute left-3 top-3 rounded-full bg-black px-3 py-1 text-xs font-medium text-white sm:text-sm">
-                        {item.badge}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-4 sm:p-5">
-                    <h3 className="text-lg font-bold text-gray-900 sm:text-xl">
-                      {item.title}
-                    </h3>
-
-                    <p className="mt-2 line-clamp-2 text-xs text-gray-500 sm:text-sm">
-                      {item.alt}
-                    </p>
-
-                    {/* Categories */}
-                    <div className="mt-4 flex flex-wrap gap-2">
-                      {item.categories.map((category, index) => (
-                        <span
-                          key={index}
-                          className="rounded-full bg-gray-100 px-3 py-1 text-[11px] font-medium capitalize text-gray-700 sm:text-xs"
-                        >
-                          {category}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Actions */}
-                    <div className="mt-5 flex flex-col gap-3 sm:flex-row">
-                      <button className="flex-1 rounded-xl bg-black px-4 py-2.5 text-sm font-medium text-white transition hover:opacity-90">
-                        Edit
-                      </button>
-
-                      <button className="flex-1 rounded-xl border border-red-200 bg-red-50 px-4 py-2.5 text-sm font-medium text-red-600 transition hover:bg-red-100">
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </main>
-      </div>
-    </div>
+          ))}
+        </div>
+      )}
+    </>
   );
 }
