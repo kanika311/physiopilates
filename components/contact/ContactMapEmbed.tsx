@@ -7,12 +7,12 @@ import { googleMapsEmbedSrc, googleMapsExternalUrl } from "@/lib/contact";
 
 export default function ContactMapEmbed() {
   return (
-    <section className="mx-auto max-w-6xl px-4 pb-24 md:pb-28" aria-label="Physio Pilates on the map">
-      <div className="overflow-hidden rounded-2xl border border-neutral-200/80 shadow-[0_24px_50px_-32px_rgba(0,0,0,0.25)]">
+    <section className="mx-auto max-w-6xl px-4 pb-10 pt-2 sm:px-6 sm:pb-12" aria-label="Physio Pilates on the map">
+      <div className="overflow-hidden rounded-[20px] border shadow-[var(--luxury-shadow)]" style={{ borderColor: brand.border }}>
         <iframe
           title="Physio Pilates — Google Maps location"
           src={googleMapsEmbedSrc}
-          className="aspect-[21/11] min-h-[280px] w-full border-0 sm:min-h-[360px]"
+          className="aspect-[21/9] min-h-[200px] w-full border-0 sm:min-h-[260px]"
           loading="lazy"
           referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen

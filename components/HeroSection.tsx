@@ -1,12 +1,12 @@
-
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import axios from "axios";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
-import { brand, SERIF } from "@/lib/brand";
+import PremiumButton from "@/components/luxury/PremiumButton";
+import { brand } from "@/lib/brand";
 import { contactWhatsAppUrl } from "@/lib/contact";
 import { HERO_HOME } from "@/lib/siteImages";
 
@@ -14,7 +14,7 @@ const AUTOPLAY_MS = 6000;
 
 const HERO_HEADLINE = "Move Better. Heal Stronger. Live Fully.";
 const HERO_DESC =
-  "Delhi NCR's premier physiotherapy & Pilates studio — expert-led recovery, posture correction, and mindful movement under one roof.";
+  "Expert physiotherapy, Pilates, and rehabilitation designed to restore movement and improve quality of life.";
 
 interface HeroSlide {
   _id: string;
@@ -30,10 +30,48 @@ const FALLBACK: HeroSlide[] = [
   { _id: "f2", title: "", subtitle: "", image: HERO_HOME[1] },
 ];
 
+const contentVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.14, delayChildren: 0.2 } },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 36 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.75, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+function FloatingShape({
+  className,
+  delay = 0,
+  reduce,
+}: {
+  className: string;
+  delay?: number;
+  reduce: boolean;
+}) {
+  if (reduce) {
+    return <div className={className} aria-hidden />;
+  }
+
+  return (
+    <motion.div
+      className={className}
+      aria-hidden
+      animate={{ y: [0, -14, 0], rotate: [0, 6, 0] }}
+      transition={{ duration: 7 + delay, repeat: Infinity, ease: "easeInOut", delay }}
+    />
+  );
+}
+
 export default function HeroSection() {
   const [slides, setSlides] = useState<HeroSlide[]>([]);
   const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
+  const reduce = useReducedMotion();
 
   const display = slides.length ? slides : FALLBACK;
   const count = display.length;
@@ -62,78 +100,110 @@ export default function HeroSection() {
 
   return (
     <section
-      className="relative isolate h-[clamp(520px,88svh,920px)] w-full overflow-hidden bg-[#12344D]"
+      className="surface-dark relative isolate min-h-[90svh] w-full overflow-hidden"
+      style={{ backgroundColor: brand.navy }}
       aria-labelledby="hero-heading"
     >
-      {/* Slides */}
+      {/* Slides with Ken Burns */}
       <div className="absolute inset-0">
         <div
-          className="flex h-full w-full transition-transform duration-[900ms] ease-out"
+          className="flex h-full w-full transition-transform duration-[1000ms] ease-out"
           style={{ transform: `translateX(-${index * 100}%)` }}
         >
           {display.map((slide, i) => (
-            <div key={slide._id} className="relative h-full min-w-full">
-              <Image
-                src={slide.image}
-                alt="Physiotherapy and Pilates studio"
-                fill
-                priority={i === 0}
-                sizes="100vw"
-                className="object-cover object-center scale-105"
-                unoptimized
+            <div key={slide._id} className="relative h-full min-w-full hero-ken-burns">
+              <motion.div
+                className="hero-ken-burns-inner absolute inset-[-8%]"
+                initial={reduce ? false : { scale: 1.12 }}
+                animate={{ scale: i === index ? 1.05 : 1.12 }}
+                transition={{ duration: 8, ease: "easeOut" }}
+              >
+                <Image
+                  src={slide.image}
+                  alt="Physiotherapy and Pilates studio"
+                  fill
+                  priority={i === 0}
+                  sizes="100vw"
+                  className="object-cover object-center"
+                  unoptimized
+                />
+              </motion.div>
+              <div
+                className="absolute inset-0"
+                style={{
+                  background:
+                    "linear-gradient(105deg, rgb(18 52 77 / 0.62) 0%, rgb(15 109 109 / 0.5) 50%, rgb(18 52 77 / 0.55) 100%)",
+                }}
               />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#12344D]/88 via-[#12344D]/55 to-[#12344D]/25" />
             </div>
           ))}
         </div>
       </div>
 
+      {/* Floating decorative shapes */}
+      <FloatingShape
+        reduce={!!reduce}
+        className="pointer-events-none absolute left-[8%] top-[18%] z-[2] h-24 w-24 rounded-full border border-white/10 bg-white/5 backdrop-blur-sm"
+      />
+      <FloatingShape
+        reduce={!!reduce}
+        delay={1.2}
+        className="pointer-events-none absolute bottom-[22%] right-[10%] z-[2] h-16 w-16 rotate-12 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm"
+      />
+      <FloatingShape
+        reduce={!!reduce}
+        delay={2}
+        className="pointer-events-none absolute right-[28%] top-[12%] z-[2] h-10 w-10 rounded-full bg-white/15 blur-[1px]"
+      />
+
       {/* Content */}
-      <div className="relative z-10 mx-auto flex h-full max-w-[1320px] items-center px-5 sm:px-8 lg:px-10">
-        <div className="max-w-2xl text-white">
-          <p
-            className="text-[11px] font-semibold uppercase tracking-[0.38em]"
-            style={{ color: brand.gold }}
+      <div className="relative z-10 mx-auto flex min-h-[90svh] max-w-[1320px] items-center px-5 py-24 sm:px-8 lg:px-10">
+        <motion.div
+          className="max-w-2xl"
+          variants={reduce ? undefined : contentVariants}
+          initial={reduce ? false : "hidden"}
+          animate="visible"
+        >
+          <motion.p
+            variants={reduce ? undefined : itemVariants}
+            className="section-label section-label-on-dark"
           >
             Physio Pilates · Delhi NCR
-          </p>
+          </motion.p>
 
-          <h1
+          <motion.h1
             id="hero-heading"
-            className="mt-5 text-[clamp(2.25rem,5.5vw,4.25rem)] font-semibold leading-[1.08] tracking-tight"
-            style={{ fontFamily: SERIF }}
+            variants={reduce ? undefined : itemVariants}
+            className="heading-on-dark hero-heading-on-dark mt-5 !text-[clamp(2.25rem,5vw,3.75rem)]"
           >
             {HERO_HEADLINE}
-          </h1>
+          </motion.h1>
 
-          <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-white/88 md:text-[17px]">
+          <motion.p
+            variants={reduce ? undefined : itemVariants}
+            className="subtitle-on-dark hero-subtitle-on-dark mt-5 max-w-xl"
+          >
             {HERO_DESC}
-          </p>
+          </motion.p>
 
-          <div className="mt-10 flex flex-wrap gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex min-w-[168px] items-center justify-center rounded-full px-8 py-3.5 text-[14px] font-semibold text-white shadow-lg transition hover:opacity-92"
-              style={{ backgroundColor: brand.primary }}
-            >
+          <motion.div
+            variants={reduce ? undefined : itemVariants}
+            className="mt-10 flex flex-wrap gap-4"
+          >
+            <PremiumButton href="/contact" className="min-w-[168px] px-8 py-3.5 text-[14px]">
               Book Appointment
-            </Link>
-            <a
-              href={contactWhatsAppUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-w-[168px] items-center justify-center rounded-full border-2 border-white/85 px-8 py-3.5 text-[14px] font-semibold text-white transition hover:bg-white/10"
-            >
+            </PremiumButton>
+            <PremiumButton href={contactWhatsAppUrl} external className="min-w-[168px] px-8 py-3.5 text-[14px]">
               WhatsApp Us
-            </a>
-          </div>
+            </PremiumButton>
+          </motion.div>
 
-          <div
-            className="mt-12 h-px w-24"
-            style={{ background: `linear-gradient(90deg, ${brand.gold}, transparent)` }}
+          <motion.div
+            variants={reduce ? undefined : itemVariants}
+            className="mt-12 h-px w-28 bg-gradient-to-r from-white/70 to-transparent"
             aria-hidden
           />
-        </div>
+        </motion.div>
       </div>
 
       {/* Controls */}
@@ -143,7 +213,7 @@ export default function HeroSection() {
             type="button"
             onClick={() => go(-1)}
             aria-label="Previous slide"
-            className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20 sm:left-8"
+            className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 sm:left-8"
           >
             <ChevronLeft size={22} />
           </button>
@@ -151,7 +221,7 @@ export default function HeroSection() {
             type="button"
             onClick={() => go(1)}
             aria-label="Next slide"
-            className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20 sm:right-8"
+            className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-md transition hover:bg-white/20 sm:right-8"
           >
             <ChevronRight size={22} />
           </button>
@@ -170,7 +240,7 @@ export default function HeroSection() {
       )}
 
       {loading ? (
-        <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#12344D]/40 backdrop-blur-[2px]">
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-[rgb(18_52_77/0.45)] backdrop-blur-[2px]">
           <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/30 border-t-white" />
         </div>
       ) : null}

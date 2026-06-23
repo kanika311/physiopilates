@@ -1,4 +1,7 @@
+"use client";
+
 import Image from "next/image";
+import { motion, useReducedMotion } from "framer-motion";
 import Reveal from "@/components/luxury/Reveal";
 import SectionHeading from "@/components/luxury/SectionHeading";
 import { brand, SECTION_MAX } from "@/lib/brand";
@@ -26,37 +29,46 @@ const EXPERTS = [
 ];
 
 export default function HomeTeamSection() {
+  const reduce = useReducedMotion();
+
   return (
     <section className="luxury-section px-5 sm:px-8" style={{ backgroundColor: brand.surfaceMuted }}>
       <div className={`mx-auto ${SECTION_MAX}`}>
         <Reveal>
           <SectionHeading
             eyebrow="Our experts"
-            goldEyebrow
             title="Meet the Team Behind Your Recovery"
             description="Certified clinicians and movement specialists dedicated to premium, personalised care."
           />
         </Reveal>
 
-        <div className="mx-auto mt-14 grid gap-8 md:grid-cols-3">
+        <div className="mx-auto mt-12 grid gap-8 md:grid-cols-3">
           {EXPERTS.map((expert, i) => (
             <Reveal key={expert.name} delay={0.1 * i}>
-              <article className="luxury-card overflow-hidden">
-                <div className="relative aspect-[4/5] w-full">
-                  <Image src={expert.image} alt={expert.name} fill className="object-cover" sizes="33vw" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#12344D]/80 via-transparent to-transparent" />
+              <motion.article
+                className="luxury-card group overflow-hidden"
+                whileHover={reduce ? undefined : { y: -6, scale: 1.02 }}
+                transition={{ duration: 0.35 }}
+              >
+                <div className="relative aspect-[4/5] w-full overflow-hidden">
+                  <Image
+                    src={expert.image}
+                    alt={expert.name}
+                    fill
+                    className="object-cover transition duration-700 group-hover:scale-105"
+                    sizes="33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
                   <div className="absolute inset-x-0 bottom-0 p-6 text-white">
-                    <p className="text-[10px] font-semibold uppercase tracking-[0.28em]" style={{ color: brand.gold }}>
-                      Expert
-                    </p>
-                    <h3 className="mt-2 text-xl font-semibold">{expert.name}</h3>
-                    <p className="mt-1 text-sm text-white/85">{expert.role}</p>
+                    <p className="section-label section-label-on-dark !text-[12px]">Expert</p>
+                    <h3 className="heading-on-dark mt-2 !text-[1.35rem]">{expert.name}</h3>
+                    <p className="mt-1 text-base text-white/90">{expert.role}</p>
                   </div>
                 </div>
-                <p className="p-6 text-[14px] leading-relaxed" style={{ color: brand.textMuted }}>
+                <p className="body-text p-6 !text-[17px]" style={{ color: brand.textBody }}>
                   {expert.bio}
                 </p>
-              </article>
+              </motion.article>
             </Reveal>
           ))}
         </div>

@@ -7,7 +7,7 @@
 const PHOTO = {
   pilatesReformer: "1571019614242-c5c5dee9f50b",
   yogaGroup: "1518611012118-696072aa579a",
-  physioSession: "1576091160399-112ba8d25d1d",
+  physioSession: "1545389336-cf090694435e",
   studioInterior: "1571902943202-507ec2618e8f",
   wellnessStretch: "1544367567-0f2fcb009e0b",
   calmWellness: "1506126613408-eca07ce68773",

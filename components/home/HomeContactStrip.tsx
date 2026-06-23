@@ -1,48 +1,65 @@
-import Link from "next/link";
-import { contactWhatsAppUrl } from "@/lib/contact";
+"use client";
+
+import { motion, useReducedMotion } from "framer-motion";
+import PremiumButton from "@/components/luxury/PremiumButton";
 import Reveal from "@/components/luxury/Reveal";
-import { brand, SERIF } from "@/lib/brand";
+import { brand } from "@/lib/brand";
+import { contactWhatsAppUrl } from "@/lib/contact";
+
+function FloatingBlob({ className, delay = 0, reduce }: { className: string; delay?: number; reduce: boolean }) {
+  if (reduce) return <div className={className} aria-hidden />;
+
+  return (
+    <motion.div
+      className={className}
+      aria-hidden
+      animate={{ y: [0, -18, 0], x: [0, 12, 0] }}
+      transition={{ duration: 9 + delay, repeat: Infinity, ease: "easeInOut", delay }}
+    />
+  );
+}
 
 export default function HomeContactStrip() {
+  const reduce = useReducedMotion();
+
   return (
-    <section className="relative isolate overflow-hidden px-5 py-20 sm:px-8 md:py-28" style={{ backgroundColor: brand.navy }}>
-      <div
-        className="pointer-events-none absolute -right-24 top-1/2 h-[420px] w-[420px] -translate-y-1/2 rounded-full opacity-20"
-        style={{ background: `radial-gradient(circle, ${brand.primary} 0%, transparent 70%)` }}
+    <section className="surface-dark luxury-section relative isolate overflow-hidden px-5 sm:px-8">
+      <motion.div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background: `linear-gradient(135deg, ${brand.primary} 0%, #0a5858 55%, ${brand.navy} 100%)`,
+          backgroundSize: "200% 200%",
+        }}
+        animate={reduce ? undefined : { backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"] }}
+        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
         aria-hidden
       />
 
+      <FloatingBlob
+        reduce={!!reduce}
+        className="pointer-events-none absolute -left-16 top-8 h-48 w-48 rounded-full bg-white/10 blur-2xl"
+      />
+      <FloatingBlob
+        reduce={!!reduce}
+        delay={2}
+        className="pointer-events-none absolute -right-10 bottom-6 h-56 w-56 rounded-full bg-white/10 blur-3xl"
+      />
+
       <Reveal>
-        <div className="relative z-[1] mx-auto max-w-3xl text-center text-white">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.36em]" style={{ color: brand.gold }}>
-            Begin your journey
-          </p>
-          <h2
-            className="mt-4 text-[clamp(1.85rem,4vw,2.65rem)] font-semibold leading-tight"
-            style={{ fontFamily: SERIF }}
-          >
-            Let&apos;s Begin Your Healing Journey
-          </h2>
-          <p className="mx-auto mt-4 max-w-xl text-[15px] leading-relaxed text-white/82 md:text-[16px]">
+        <div className="relative z-[1] mx-auto max-w-3xl text-center">
+          <p className="section-label section-label-on-dark">Begin your journey</p>
+          <h2 className="heading-on-dark mt-4">Let&apos;s Begin Your Healing Journey</h2>
+          <p className="subtitle-on-dark mx-auto mt-5 max-w-xl">
             Book a consultation or message us on WhatsApp — our team will guide you to the right program.
           </p>
 
           <div className="mt-10 flex flex-wrap justify-center gap-4">
-            <Link
-              href="/contact"
-              className="inline-flex min-w-[180px] items-center justify-center rounded-full px-10 py-3.5 text-[14px] font-semibold text-white transition hover:opacity-92"
-              style={{ backgroundColor: brand.primary }}
-            >
+            <PremiumButton href="/contact" className="min-w-[180px] px-10 py-3.5">
               Book Appointment
-            </Link>
-            <a
-              href={contactWhatsAppUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex min-w-[180px] items-center justify-center rounded-full border-2 border-white/80 px-10 py-3.5 text-[14px] font-semibold text-white transition hover:bg-white/10"
-            >
+            </PremiumButton>
+            <PremiumButton href={contactWhatsAppUrl} external className="min-w-[180px] px-10 py-3.5">
               WhatsApp Us
-            </a>
+            </PremiumButton>
           </div>
         </div>
       </Reveal>

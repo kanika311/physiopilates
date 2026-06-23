@@ -1,36 +1,36 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useMemo, useState } from "react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import PremiumButton from "@/components/luxury/PremiumButton";
 import Reveal from "@/components/luxury/Reveal";
 import SectionHeading from "@/components/luxury/SectionHeading";
 import { brand, SECTION_MAX } from "@/lib/brand";
 import { HOME_WORK_GRID, GALLERY_UNSPASH_TILES } from "@/lib/siteImages";
 
 type Filter = "All" | "Physiotherapy" | "Pilates" | "Yoga" | "Therapy";
+type Category = Exclude<Filter, "All">;
 
 const TILE_SRC = [...HOME_WORK_GRID, GALLERY_UNSPASH_TILES[0]];
 
-const ITEMS = [
-  { src: TILE_SRC[0], alt: "Yoga practice", label: "Yoga & Mobility", categories: ["Yoga", "Pilates"] as const },
-  { src: TILE_SRC[1], alt: "Reformer Pilates", label: "Reformer Pilates", categories: ["Pilates", "Physiotherapy"] as const },
-  { src: TILE_SRC[2], alt: "Therapy session", label: "Clinical Therapy", categories: ["Therapy", "Physiotherapy"] as const },
-  { src: TILE_SRC[3], alt: "Rehabilitation", label: "Rehab Pilates", categories: ["Physiotherapy", "Pilates"] as const },
-  { src: TILE_SRC[4], alt: "Physiotherapy", label: "Physio Care", categories: ["Physiotherapy"] as const },
-  { src: TILE_SRC[5], alt: "Group movement", label: "Studio Sessions", categories: ["Pilates"] as const },
+const ITEMS: { src: string; alt: string; label: string; categories: Category[]; tall?: boolean }[] = [
+  { src: TILE_SRC[0], alt: "Yoga practice", label: "Yoga & Mobility", categories: ["Yoga", "Pilates"], tall: true },
+  { src: TILE_SRC[1], alt: "Reformer Pilates", label: "Reformer Pilates", categories: ["Pilates", "Physiotherapy"] },
+  { src: TILE_SRC[2], alt: "Therapy session", label: "Clinical Therapy", categories: ["Therapy", "Physiotherapy"], tall: true },
+  { src: TILE_SRC[3], alt: "Rehabilitation", label: "Rehab Pilates", categories: ["Physiotherapy", "Pilates"] },
+  { src: TILE_SRC[4], alt: "Physiotherapy", label: "Physio Care", categories: ["Physiotherapy"] },
+  { src: TILE_SRC[5], alt: "Group movement", label: "Studio Sessions", categories: ["Pilates"], tall: true },
 ];
 
 const FILTERS: Filter[] = ["All", "Physiotherapy", "Pilates", "Yoga", "Therapy"];
 
 export default function HomeWorkGallerySection() {
   const [active, setActive] = useState<Filter>("All");
+  const reduce = useReducedMotion();
 
   const filtered = useMemo(
-    () =>
-      ITEMS.filter((img) =>
-        active === "All" ? true : img.categories.includes(active as Exclude<Filter, "All">),
-      ),
+    () => ITEMS.filter((img) => (active === "All" ? true : img.categories.includes(active))),
     [active],
   );
 
@@ -54,11 +54,11 @@ export default function HomeWorkGallerySection() {
                   key={f}
                   type="button"
                   onClick={() => setActive(f)}
-                  className="rounded-full px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] transition"
+                  className={`rounded-full px-5 py-2 text-[11px] font-semibold uppercase tracking-[0.14em] transition ${on ? "" : "premium-btn !py-2"}`}
                   style={
                     on
-                      ? { backgroundColor: brand.primary, color: "#fff" }
-                      : { border: `1px solid ${brand.border}`, color: brand.navy, backgroundColor: "#fff" }
+                      ? { backgroundColor: brand.primary, color: "#fff", border: `2px solid ${brand.primary}` }
+                      : undefined
                   }
                 >
                   {f === "Physiotherapy" ? "Physio" : f}
@@ -68,30 +68,51 @@ export default function HomeWorkGallerySection() {
           </div>
         </Reveal>
 
-        <div className="mx-auto mt-12 columns-2 gap-4 md:columns-3 md:gap-5">
-          {filtered.map((img, i) => (
-            <Reveal key={img.src} delay={0.05 * i}>
-              <figure className="mb-4 break-inside-avoid overflow-hidden rounded-[18px] shadow-[var(--luxury-shadow)]">
-                <div className="relative aspect-[4/3] w-full">
-                  <Image src={img.src} alt={img.alt} fill className="object-cover" sizes="33vw" />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#12344D]/75 to-transparent p-4">
-                    <figcaption className="text-sm font-medium text-white">{img.label}</figcaption>
+        <motion.div layout className="mx-auto mt-12 columns-2 gap-4 md:columns-3 md:gap-5">
+          <AnimatePresence mode="popLayout">
+            {filtered.map((img, i) => (
+              <motion.figure
+                key={img.src}
+                layout
+                initial={reduce ? false : { opacity: 0, scale: 0.94 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={reduce ? undefined : { opacity: 0, scale: 0.94 }}
+                transition={{ duration: 0.45, delay: i * 0.04 }}
+                className="group mb-4 break-inside-avoid overflow-hidden rounded-[20px] shadow-[var(--luxury-shadow)]"
+              >
+                <div className={`relative w-full overflow-hidden ${img.tall ? "aspect-[3/4]" : "aspect-[4/3]"}`}>
+                  <Image
+                    src={img.src}
+                    alt={img.alt}
+                    fill
+                    className="object-cover transition duration-700 ease-out group-hover:scale-110"
+                    sizes="33vw"
+                  />
+                  <div
+                    className="absolute inset-0 opacity-90 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{
+                      background: "linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.1))",
+                    }}
+                  />
+                  <div className="absolute inset-x-0 bottom-0 p-5">
+                    <figcaption
+                      className="text-lg font-semibold text-white"
+                      style={{ textShadow: "0 2px 12px rgba(0,0,0,0.55)" }}
+                    >
+                      {img.label}
+                    </figcaption>
                   </div>
                 </div>
-              </figure>
-            </Reveal>
-          ))}
-        </div>
+              </motion.figure>
+            ))}
+          </AnimatePresence>
+        </motion.div>
 
         <Reveal>
           <div className="mt-12 text-center">
-            <Link
-              href="/gallery"
-              className="inline-flex rounded-full px-10 py-3.5 text-[14px] font-semibold text-white shadow-md transition hover:opacity-92"
-              style={{ backgroundColor: brand.primary }}
-            >
+            <PremiumButton href="/gallery" className="px-10 py-3.5 text-[14px]">
               View Full Gallery
-            </Link>
+            </PremiumButton>
           </div>
         </Reveal>
       </div>

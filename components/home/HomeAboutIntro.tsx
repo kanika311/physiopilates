@@ -13,7 +13,7 @@ const STAT_SPECS = [
 export default function HomeAboutIntro() {
   return (
     <section id="home-about" className="luxury-section bg-white px-5 sm:px-8">
-      <div className={`mx-auto grid ${SECTION_MAX} items-center gap-12 lg:grid-cols-2 lg:gap-20`}>
+      <div className={`mx-auto grid ${SECTION_MAX} items-center gap-10 lg:grid-cols-2 lg:gap-14`}>
         <Reveal>
           <SectionHeading
             align="left"
@@ -26,7 +26,7 @@ export default function HomeAboutIntro() {
             className="mt-8 rounded-[18px] border p-6 md:p-7"
             style={{ borderColor: brand.border, backgroundColor: brand.mintBg }}
           >
-            <p className="text-[15px] leading-relaxed md:text-[16px]" style={{ color: brand.navy }}>
+            <p className="body-text font-medium" style={{ color: brand.navy }}>
               We specialise in{" "}
               <strong className="font-semibold" style={{ color: brand.primary }}>
                 Physiotherapy, Pilates, Yoga, Dry Needling & Cupping Therapy
@@ -35,7 +35,7 @@ export default function HomeAboutIntro() {
             </p>
           </div>
 
-          <p className="mt-6 text-[15px] leading-relaxed" style={{ color: brand.textMuted }}>
+          <p className="body-text mt-6">
             With expert clinicians and certified instructors, we help you feel better, move better, and live better —
             every session tailored to your body and goals.
           </p>

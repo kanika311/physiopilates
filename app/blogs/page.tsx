@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 
-import BlogCard from "@/components/blog/BlogCard";
+import BlogGrid from "@/components/blog/BlogGrid";
 import BlogHero from "@/components/blog/BlogHero";
 import { getSortedPosts } from "@/components/blog/blogData";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import Reveal from "@/components/luxury/Reveal";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -17,21 +18,19 @@ export default function BlogsPage() {
 
   return (
     <>
-    <Navbar/>
+      <Navbar />
       <BlogHero variant="listing" />
-      <section className="bg-white px-4 pb-24 pt-12 dark:bg-[#0f172a] md:pb-28 md:pt-16">
-        <p className="mx-auto max-w-4xl px-2 text-center text-[15px] leading-relaxed text-neutral-700 dark:text-slate-300 md:text-[16px]">
-          Explore our collection of expert articles covering physiotherapy, pilates, yoga, and holistic wellness. Learn
-          from professionals and stay ahead in your health journey.
-        </p>
+      <section className="luxury-section bg-white px-4 sm:px-6">
+        <Reveal>
+          <p className="subtitle-text mx-auto max-w-3xl text-center">
+            Explore our collection of expert articles covering physiotherapy, pilates, yoga, and holistic wellness.
+            Learn from professionals and stay ahead in your health journey.
+          </p>
+        </Reveal>
 
-        <div className="mx-auto mt-14 grid max-w-6xl gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8 xl:gap-10">
-          {posts.map((post) => (
-            <BlogCard key={post.slug} post={post} />
-          ))}
-        </div>
+        <BlogGrid posts={posts} />
       </section>
-      <Footer/>
+      <Footer />
     </>
   );
 }

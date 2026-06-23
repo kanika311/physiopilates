@@ -3,6 +3,7 @@ import { TbTrophy, TbUsers } from "react-icons/tb";
 import { MdOutlineSchool, MdOutlineMenuBook } from "react-icons/md";
 import Reveal from "@/components/luxury/Reveal";
 import SectionHeading from "@/components/luxury/SectionHeading";
+import { StaggerGrid, StaggerItem } from "@/components/luxury/Stagger";
 import { brand, SECTION_MAX } from "@/lib/brand";
 
 const TAGS = ["Experienced Faculty", "Practical Learning", "Lifetime Support"];
@@ -21,7 +22,6 @@ export default function HomeCertificationsSection() {
         <Reveal>
           <SectionHeading
             eyebrow="Certifications"
-            goldEyebrow
             title="Certified & Trusted Training"
             description="Professional programs designed to build practical skills, clinical confidence, and career-ready expertise."
           />
@@ -41,9 +41,9 @@ export default function HomeCertificationsSection() {
           </div>
         </Reveal>
 
-        <div className="mx-auto mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {STATS.map(({ Icon, value, label }, i) => (
-            <Reveal key={label} delay={0.08 * i}>
+        <StaggerGrid className="mx-auto mt-12 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:grid-cols-4">
+          {STATS.map(({ Icon, value, label }) => (
+            <StaggerItem key={label}>
               <div className="luxury-card flex flex-col items-center px-6 py-10">
                 <div
                   className="flex size-16 items-center justify-center rounded-[14px] text-white"
@@ -58,9 +58,9 @@ export default function HomeCertificationsSection() {
                   {label}
                 </p>
               </div>
-            </Reveal>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGrid>
       </div>
     </section>
   );

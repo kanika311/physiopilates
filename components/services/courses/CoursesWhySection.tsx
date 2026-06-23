@@ -3,11 +3,12 @@
 import Image from "next/image";
 import { useState } from "react";
 import { FiCheck, FiMinus, FiPlus } from "react-icons/fi";
-import { brand } from "@/lib/brand";
-import { THUMB } from "@/lib/siteImages";
+import { motion, AnimatePresence } from "framer-motion";
 
-const GOLD_HEAD = brand.sage;
-const TEAL = brand.teal;
+import Reveal from "@/components/luxury/Reveal";
+import SectionHeading from "@/components/luxury/SectionHeading";
+import { brand, SECTION_MAX } from "@/lib/brand";
+import { THUMB } from "@/lib/siteImages";
 
 const accordionItems = [
   {
@@ -28,127 +29,86 @@ const accordionItems = [
   },
 ] as const;
 
-const highlights = [
-  "Certified Trainers",
-  "Clinical Expertise",
-  "Personalized Guidance",
-  "Supportive Community",
-] as const;
+const highlights = ["Certified Trainers", "Clinical Expertise", "Personalized Guidance", "Supportive Community"] as const;
 
 export default function CoursesWhySection() {
-  const [openIdx, setOpenIdx] = useState<number>(0);
-
-  const toggle = (idx: number) => {
-    setOpenIdx((cur) => (cur === idx ? -1 : idx));
-  };
-
-  /** Extra bottom space so fixed Chat/Call FABs (~z-95) do not cover accordion or highlight cards */
-  const fabClear =
-    "pb-[max(9.5rem,calc(env(safe-area-inset-bottom,0px)+8.75rem))] md:pb-[max(8.75rem,calc(env(safe-area-inset-bottom,0px)+8rem))] lg:pb-28";
+  const [openIdx, setOpenIdx] = useState(0);
 
   return (
-    <section
-      className={`bg-[#fdfbf6] px-4 pt-16 dark:bg-[#0f172a] sm:px-6 md:pt-24 lg:px-8 lg:pt-28 ${fabClear}`}
-    >
-      <div className="mx-auto grid max-w-6xl gap-10 sm:gap-12 lg:grid-cols-2 lg:items-start lg:gap-16">
-        <div className="min-w-0">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.26em]" style={{ color: GOLD_HEAD }}>
-            • Why choose us
-          </p>
-          <h2
-            className="mt-5 font-[family-name:var(--font-playfair)] text-[clamp(1.625rem,4.85vw,2.375rem)] font-bold leading-[1.12] tracking-tight text-neutral-900 dark:text-white"
-            style={{ color: GOLD_HEAD }}
-          >
-            Experience the Difference with Our Approach
-          </h2>
-          <p className="mt-6 max-w-xl text-pretty text-[15px] leading-relaxed text-neutral-600 dark:text-slate-300 sm:text-base">
-            Teaching blends structured science with humane pacing — mentorship over memorisation so instructors leave
-            ready to uplift every body seated in front of them.
-          </p>
+    <section className="luxury-section px-4 sm:px-6" style={{ backgroundColor: brand.surfaceMuted }}>
+      <div className={`mx-auto grid ${SECTION_MAX} gap-8 lg:grid-cols-2 lg:gap-10`}>
+        <Reveal>
+          <SectionHeading
+            align="left"
+            eyebrow="Why choose us"
+            title="Experience the Difference with Our Approach"
+            description="Teaching blends structured science with humane pacing — mentorship over memorisation."
+          />
 
-          <div className="mt-10 space-y-3">
+          <div className="mt-6 space-y-2">
             {accordionItems.map((item, idx) => {
               const expanded = openIdx === idx;
               return (
                 <div
                   key={item.q}
-                  className={`overflow-hidden rounded-2xl border transition-colors duration-300 ${
-                    expanded ? "" : "border-neutral-200/90 bg-white dark:border-[#334155] dark:bg-[#1e293b]"
-                  }`}
-                  style={
-                    expanded
-                      ? {
-                          borderColor: "rgba(72,207,203,0.55)",
-                          backgroundColor: "rgba(209,247,241,0.45)",
-                        }
-                      : undefined
-                  }
+                  className="overflow-hidden rounded-[16px] border bg-white"
+                  style={{ borderColor: expanded ? brand.primary : brand.border }}
                 >
                   <button
                     type="button"
-                    onClick={() => toggle(idx)}
+                    onClick={() => setOpenIdx(expanded ? -1 : idx)}
                     aria-expanded={expanded}
-                    aria-controls={`course-faq-panel-${idx}`}
-                    id={`course-faq-${idx}`}
-                    className="flex w-full min-w-0 items-center justify-between gap-3 px-4 py-4 text-left text-[14px] font-semibold text-neutral-800 transition hover:bg-white/70 dark:text-slate-100 dark:hover:bg-slate-600/40 sm:gap-4 sm:px-5 sm:text-[15px]"
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left text-[15px] font-semibold"
+                    style={{ color: brand.navy }}
                   >
-                    <span className="min-w-0 flex-1 pr-1">{item.q}</span>
+                    <span>{item.q}</span>
                     <span
-                      style={{ color: TEAL }}
-                      className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-neutral-100 dark:bg-[#334155] dark:ring-slate-500"
+                      className="flex size-8 shrink-0 items-center justify-center rounded-lg border"
+                      style={{ borderColor: brand.border, color: brand.primary }}
                     >
-                      {expanded ? <FiMinus className="size-4" aria-hidden /> : <FiPlus className="size-4" aria-hidden />}
+                      {expanded ? <FiMinus size={16} /> : <FiPlus size={16} />}
                     </span>
                   </button>
-                  {expanded && (
-                    <div
-                      id={`course-faq-panel-${idx}`}
-                      role="region"
-                      aria-labelledby={`course-faq-${idx}`}
-                      className="px-4 pb-5 pt-0 text-[14px] leading-relaxed text-neutral-600 dark:text-slate-300 sm:px-5 md:text-[15px]"
-                    >
-                      {item.a}
-                    </div>
-                  )}
+                  <AnimatePresence initial={false}>
+                    {expanded ? (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <p className="body-text px-4 pb-4 !text-[16px]">{item.a}</p>
+                      </motion.div>
+                    ) : null}
+                  </AnimatePresence>
                 </div>
               );
             })}
           </div>
-        </div>
+        </Reveal>
 
-        <div className="min-w-0">
-          <div className="relative overflow-hidden rounded-[1.75rem] shadow-[0_24px_60px_-32px_rgba(0,0,0,0.2)] sm:rounded-[2rem]">
-            <div className="relative aspect-[4/3] w-full min-h-[220px] sm:aspect-video sm:min-h-[260px] md:min-h-[300px] lg:aspect-[572/418] lg:max-h-[440px]">
-              <Image
-                src={THUMB.coursesWhy}
-                alt="Instructor practising mindful movement outdoors"
-                fill
-                className="object-cover object-[center_30%]"
-                sizes="(max-width: 1024px) 100vw, 50vw"
-              />
+        <Reveal delay={0.1}>
+          <div className="relative overflow-hidden rounded-[20px] shadow-[var(--luxury-shadow)]">
+            <div className="relative aspect-[4/3] w-full">
+              <Image src={THUMB.coursesWhy} alt="Instructor practising mindful movement" fill className="object-cover" sizes="50vw" />
             </div>
             <div
-              className="pointer-events-none absolute bottom-4 left-4 max-w-[min(248px,calc(100%-1.25rem))] rounded-xl px-4 py-3 text-[12px] font-semibold leading-snug text-white shadow-lg sm:bottom-6 sm:left-6 sm:max-w-[min(260px,calc(100%-3rem))] sm:rounded-2xl sm:px-5 sm:py-3.5 sm:text-[13px] md:bottom-8 md:left-8 md:text-sm"
-              style={{ backgroundColor: TEAL }}
+              className="absolute bottom-4 left-4 max-w-[240px] rounded-xl px-4 py-2.5 text-sm font-semibold text-white"
+              style={{ backgroundColor: brand.primary }}
             >
               Trusted by 500+ students and 30+ certified trainers.
             </div>
           </div>
 
-          <div className="mt-8 grid grid-cols-2 gap-2.5 max-[360px]:grid-cols-1 sm:gap-4">
+          <div className="mt-5 grid grid-cols-2 gap-3">
             {highlights.map((label) => (
-              <div
-                key={label}
-                className="flex min-w-0 items-center gap-3 rounded-xl border border-neutral-200/70 bg-neutral-50/80 px-4 py-3.5 text-[13px] font-medium text-neutral-700 sm:text-sm"
-              >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-white shadow-sm ring-1 ring-teal-200" style={{ color: TEAL }}>
-                  <FiCheck className="size-4" aria-hidden />
-                </span>
+              <div key={label} className="luxury-card flex items-center gap-2 px-3 py-3 text-sm font-medium" style={{ color: brand.navy }}>
+                <FiCheck style={{ color: brand.primary }} aria-hidden />
                 {label}
               </div>
             ))}
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

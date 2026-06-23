@@ -168,11 +168,10 @@ export default function Navbar() {
   }, [mobileOpen, publishNavHeight]);
 
   const navFont =
-    "font-[family-name:var(--font-inter),ui-sans-serif,system-ui,sans-serif] not-italic font-semibold tracking-[0.06em]";
-  const navMobileSize = "text-[15px] leading-6";
-  const navDesktopSize =
-    "whitespace-nowrap text-[12px] leading-tight xl:text-[13px] xl:leading-snug 2xl:text-sm 2xl:leading-normal";
-  const desktopLinkBase = `${navFont} ${navDesktopSize} rounded-md px-2 py-1 no-underline transition-colors duration-200 xl:px-2.5 relative z-[1]`;
+    "font-[family-name:var(--font-inter),ui-sans-serif,system-ui,sans-serif] not-italic font-semibold";
+  const navMobileSize = "text-[17px] leading-7";
+  const navDesktopSize = "whitespace-nowrap text-[17px] leading-snug";
+  const desktopLinkBase = `${navFont} ${navDesktopSize} nav-link rounded-md px-2.5 py-1.5 no-underline transition-colors duration-200 relative z-[1]`;
 
   /** Fixed vertical rhythm — no scroll-based height changes */
   const headerPad = "py-2 sm:py-2.5";
@@ -206,7 +205,7 @@ export default function Navbar() {
   function desktopRailLinkClass(active: boolean) {
     return [
       desktopLinkBase,
-      active ? "" : "text-neutral-800 hover:text-neutral-950 dark:text-slate-100 dark:hover:text-white",
+      active ? "" : "hover:opacity-90",
     ]
       .filter(Boolean)
       .join(" ");
@@ -272,7 +271,7 @@ export default function Navbar() {
               linkRefs.current[0] = el;
             }}
             className={desktopRailLinkClass(routeActive(pathname, ABOUT_LINK.pathnameMatch))}
-            style={{ color: routeActive(pathname, ABOUT_LINK.pathnameMatch) ? TEAL : NAVY }}
+            data-active={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? "true" : undefined}
             aria-current={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? "page" : undefined}
             onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
             onFocus={(e) => movePillTo(e.currentTarget, true)}
@@ -292,7 +291,7 @@ export default function Navbar() {
                 linkRefs.current[1] = el;
               }}
               className={`${desktopRailLinkClass(servicesRouteActive || servicesMenuOpen)} inline-flex cursor-pointer items-center gap-0.5 border-0 bg-transparent p-0`}
-              style={{ color: servicesRouteActive || servicesMenuOpen ? TEAL : NAVY }}
+              data-active={servicesRouteActive || servicesMenuOpen ? "true" : undefined}
               aria-expanded={servicesMenuOpen}
               aria-haspopup="menu"
               aria-controls="desktop-services-menu"
@@ -329,10 +328,10 @@ export default function Navbar() {
                         key={label}
                         href={href}
                         role="menuitem"
-                        className={`${navFont} block rounded-lg px-4 py-2.5 text-left text-[13px] font-semibold transition-colors xl:text-[14px] ${
+                        className={`${navFont} nav-link block rounded-lg px-4 py-2.5 text-left text-[15px] font-semibold transition-colors ${
                           active ? "bg-[rgb(15_109_109/0.08)]" : "hover:bg-[rgb(15_109_109/0.05)]"
                         }`}
-                        style={{ color: active ? TEAL : NAVY }}
+                        data-active={active ? "true" : undefined}
                         aria-current={active ? "page" : undefined}
                         onClick={() => setServicesMenuOpen(false)}
                       >
@@ -356,7 +355,7 @@ export default function Navbar() {
                   linkRefs.current[idx] = el;
                 }}
                 className={desktopRailLinkClass(active)}
-                style={{ color: active ? TEAL : NAVY }}
+                data-active={active ? "true" : undefined}
                 aria-current={active ? "page" : undefined}
                 onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
                 onFocus={(e) => movePillTo(e.currentTarget, true)}
@@ -422,12 +421,12 @@ export default function Navbar() {
                         href="/about"
                         onClick={() => setMobileOpen(false)}
                         className={[
-                          `${navFont} ${navMobileSize} flex items-center justify-between rounded-xl px-3 py-3.5 no-underline active:bg-neutral-200/50`,
+                          `${navFont} ${navMobileSize} nav-link flex items-center justify-between rounded-xl px-3 py-3.5 no-underline active:bg-neutral-100`,
                           routeActive(pathname, "/about")
-                            ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600"
-                            : "text-neutral-800 hover:bg-white/90 dark:text-slate-100 dark:hover:bg-slate-800/80",
+                            ? "bg-white shadow-sm ring-1 ring-black/[0.06]"
+                            : "hover:bg-white/90",
                         ].join(" ")}
-                        style={routeActive(pathname, "/about") ? { color: TEAL } : undefined}
+                        data-active={routeActive(pathname, "/about") ? "true" : undefined}
                         aria-current={routeActive(pathname, "/about") ? "page" : undefined}
                       >
                         About
@@ -436,10 +435,10 @@ export default function Navbar() {
                       <button
                         type="button"
                         aria-expanded={mobileServicesOpen}
-                        className={`${navFont} ${navMobileSize} flex w-full items-center justify-between rounded-xl px-3 py-3.5 text-left text-neutral-800 no-underline active:bg-neutral-200/50 hover:bg-white/90 dark:text-slate-100 dark:active:bg-slate-700/50 dark:hover:bg-slate-800/80 ${
-                          servicesRouteActive ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600" : ""
+                        className={`${navFont} ${navMobileSize} nav-link flex w-full items-center justify-between rounded-xl px-3 py-3.5 text-left no-underline active:bg-neutral-100 hover:bg-white/90 ${
+                          servicesRouteActive ? "bg-white shadow-sm ring-1 ring-black/[0.06]" : ""
                         }`}
-                        style={servicesRouteActive ? { color: TEAL } : undefined}
+                        data-active={servicesRouteActive ? "true" : undefined}
                         onClick={() => setMobileServicesOpen((o) => !o)}
                       >
                         Services
@@ -456,10 +455,10 @@ export default function Navbar() {
                                 setMobileOpen(false);
                               }}
                               className={[
-                                `${navFont} ${navMobileSize} block rounded-lg px-3 py-2.5 no-underline active:bg-neutral-200/50`,
-                                active ? "bg-white font-semibold shadow-sm ring-1 ring-black/[0.05] dark:bg-[#334155] dark:ring-slate-500" : "text-neutral-800 hover:bg-white/85 dark:text-slate-100 dark:hover:bg-slate-700/50",
+                                `${navFont} ${navMobileSize} nav-link block rounded-lg px-3 py-2.5 no-underline active:bg-neutral-100`,
+                                active ? "bg-white font-semibold shadow-sm ring-1 ring-black/[0.05]" : "hover:bg-white/85",
                               ].join(" ")}
-                              style={{ color: active ? TEAL : NAVY }}
+                              data-active={active ? "true" : undefined}
                               aria-current={active ? "page" : undefined}
                             >
                               {label}
@@ -475,10 +474,10 @@ export default function Navbar() {
                             href={href}
                             onClick={() => setMobileOpen(false)}
                             className={[
-                              `${navFont} ${navMobileSize} block rounded-xl px-3 py-3.5 no-underline active:bg-neutral-200/50`,
-                              active ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600" : "text-neutral-800 hover:bg-white/90 dark:text-slate-100 dark:hover:bg-slate-800/80",
+                              `${navFont} ${navMobileSize} nav-link block rounded-xl px-3 py-3.5 no-underline active:bg-neutral-100`,
+                              active ? "bg-white shadow-sm ring-1 ring-black/[0.06]" : "hover:bg-white/90",
                             ].join(" ")}
-                            style={{ color: active ? TEAL : NAVY }}
+                            data-active={active ? "true" : undefined}
                             aria-current={active ? "page" : undefined}
                           >
                             {label}

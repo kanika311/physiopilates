@@ -1,9 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import type { IconType } from "react-icons";
 import { FiActivity, FiHeart, FiDroplet } from "react-icons/fi";
 import { IoSparklesOutline } from "react-icons/io5";
-import Reveal from "@/components/luxury/Reveal";
+import { motion, useReducedMotion } from "framer-motion";
 import SectionHeading from "@/components/luxury/SectionHeading";
+import { StaggerGrid, StaggerItem } from "@/components/luxury/Stagger";
+import Reveal from "@/components/luxury/Reveal";
 import { brand, SECTION_MAX } from "@/lib/brand";
 
 type Card = { title: string; text: string; href: string; Icon: IconType };
@@ -36,28 +40,36 @@ const CARDS: Card[] = [
 ];
 
 function ServiceCard({ title, text, href, Icon }: Card) {
+  const reduce = useReducedMotion();
+
   return (
-    <article className="luxury-card flex flex-col p-8 md:p-9">
-      <div
+    <motion.article
+      className="luxury-card group flex flex-col p-8 md:p-9"
+      whileHover={reduce ? undefined : { y: -6, scale: 1.02 }}
+      transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <motion.div
         className="flex size-14 items-center justify-center rounded-[14px] text-white"
         style={{ backgroundColor: brand.primary }}
+        whileHover={reduce ? undefined : { rotate: 8, scale: 1.06 }}
+        transition={{ type: "spring", stiffness: 280, damping: 18 }}
       >
         <Icon className="text-2xl" aria-hidden />
-      </div>
-      <h3 className="mt-6 text-xl font-semibold" style={{ color: brand.navy }}>
+      </motion.div>
+      <h3 className="mt-6 !text-[1.35rem] !leading-snug font-semibold" style={{ color: brand.navy }}>
         {title}
       </h3>
-      <p className="mt-4 flex-1 text-[15px] leading-relaxed" style={{ color: brand.textMuted }}>
+      <p className="body-text mt-4 flex-1 !text-[17px]">
         {text}
       </p>
       <Link
         href={href}
-        className="mt-6 inline-flex items-center gap-2 text-[14px] font-semibold transition hover:gap-3"
+        className="mt-6 inline-flex items-center gap-2 text-[14px] font-semibold transition group-hover:gap-3"
         style={{ color: brand.primary }}
       >
         Explore service <span aria-hidden>→</span>
       </Link>
-    </article>
+    </motion.article>
   );
 }
 
@@ -73,13 +85,13 @@ export default function HomeServicesSection() {
           />
         </Reveal>
 
-        <div className="mx-auto mt-14 grid gap-6 sm:grid-cols-2 lg:gap-8">
-          {CARDS.map((c, i) => (
-            <Reveal key={c.title} delay={i * 0.08}>
+        <StaggerGrid className="mx-auto mt-12 grid gap-6 sm:grid-cols-2 lg:mt-14 lg:gap-8">
+          {CARDS.map((c) => (
+            <StaggerItem key={c.title}>
               <ServiceCard {...c} />
-            </Reveal>
+            </StaggerItem>
           ))}
-        </div>
+        </StaggerGrid>
       </div>
     </section>
   );

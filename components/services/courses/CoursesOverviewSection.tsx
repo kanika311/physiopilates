@@ -1,84 +1,70 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import type { IconType } from "react-icons";
 import { FaGraduationCap } from "react-icons/fa";
 import { FiClock } from "react-icons/fi";
 import { MdGroups } from "react-icons/md";
-import { brand } from "@/lib/brand";
+
+import PremiumButton from "@/components/luxury/PremiumButton";
+import Reveal from "@/components/luxury/Reveal";
+import SectionHeading from "@/components/luxury/SectionHeading";
+import { brand, SECTION_MAX } from "@/lib/brand";
 import { THUMB } from "@/lib/siteImages";
 
-const GOLD = brand.sage;
-
-const features = [
-  {
-    label: "International Certification",
-    Icon: FaGraduationCap,
-  },
-  {
-    label: "Expert Trainers",
-    Icon: MdGroups,
-  },
-  {
-    label: "Flexible Duration",
-    Icon: FiClock,
-  },
-] as const;
+const features: { label: string; Icon: IconType }[] = [
+  { label: "International Certification", Icon: FaGraduationCap },
+  { label: "Expert Trainers", Icon: MdGroups },
+  { label: "Flexible Duration", Icon: FiClock },
+];
 
 export default function CoursesOverviewSection() {
   return (
-    <section id="courses-overview" className="bg-white px-4 py-16 dark:bg-[#0f172a] md:py-24 lg:py-28" aria-labelledby="courses-overview-heading">
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
-        <div className="order-2 lg:order-1">
-          <div className="inline-flex items-center gap-2 rounded-full border border-[rgb(107_143_113_/_0.45)] bg-[rgba(107,143,113,0.08)] px-5 py-1.5 uppercase dark:border-[rgb(107_143_113_/_0.35)] dark:bg-[rgba(107,143,113,0.12)]">
-            <span className="size-1.5 shrink-0 rounded-full" style={{ backgroundColor: GOLD }} aria-hidden />
-            <span className="text-[10px] font-semibold tracking-[0.22em] sm:text-[11px]" style={{ color: GOLD }}>
-              Course overview
-            </span>
-          </div>
+    <section id="courses-overview" className="luxury-section px-4 sm:px-6" style={{ backgroundColor: brand.surfaceMuted }} aria-labelledby="courses-overview-heading">
+      <div className={`mx-auto grid ${SECTION_MAX} items-center gap-8 lg:grid-cols-2 lg:gap-10`}>
+        <Reveal>
+          <SectionHeading
+            align="left"
+            eyebrow="Course overview"
+            title="Become a Certified Pilates & Movement Teacher"
+            description="Build teaching confidence through structured curricula, mentorship, and real studio hours."
+          />
 
-          <h2
-            id="courses-overview-heading"
-            className="mt-7 font-[family-name:var(--font-playfair)] text-[2rem] font-bold leading-tight tracking-tight sm:text-4xl md:text-[2.35rem]"
-            style={{ color: GOLD }}
-          >
-            Become a Certified Pilates &amp; Movement Teacher
-          </h2>
-
-          <p className="mt-6 text-[16px] leading-relaxed text-neutral-600 dark:text-slate-300 md:text-[17px]">
-            Build teaching confidence through structured curricula, mentorship, and real studio hours. Graduate with
-            coursework that honours anatomy, safe progressions, and the art of cueing bodies of every age.
-          </p>
-
-          <ul className="mt-10 space-y-5">
+          <ul className="mt-6 space-y-3">
             {features.map(({ label, Icon }) => (
-              <li key={label} className="flex items-start gap-4">
-                <span className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-full" style={{ backgroundColor: "rgba(78,205,196,0.18)", color: brand.tealIcon }}>
-                  <Icon className="text-xl" aria-hidden />
+              <li key={label} className="flex items-center gap-3">
+                <span
+                  className="flex size-9 shrink-0 items-center justify-center rounded-xl text-white"
+                  style={{ backgroundColor: brand.primary }}
+                >
+                  <Icon className="text-lg" aria-hidden />
                 </span>
-                <span className="pt-1 font-[family-name:var(--font-playfair)] text-lg font-semibold" style={{ color: GOLD }}>
+                <span className="font-medium" style={{ color: brand.navy }}>
                   {label}
                 </span>
               </li>
             ))}
           </ul>
 
-          <Link
-            href="#courses-programs"
-            className="mt-11 inline-flex rounded-full px-11 py-3.5 text-[15px] font-semibold text-white shadow-md transition-[filter] hover:brightness-[1.06]"
-            style={{
-              background: `linear-gradient(90deg, ${brand.teal} 0%, ${brand.tealAccent} 100%)`,
-            }}
-          >
-            Learn More
-          </Link>
-        </div>
-
-        <div className="order-1 lg:order-2">
-          <div className="relative mx-auto aspect-[4/5] max-w-xl overflow-hidden rounded-[2rem] shadow-[0_28px_64px_-28px_rgba(0,0,0,0.22)] lg:aspect-[592/656] lg:max-w-none">
-            <Image src={THUMB.coursesOv} alt="Hands-on Pilates teacher mentoring in the studio" fill className="object-cover object-center" sizes="(max-width: 1024px) 100vw, 50vw" priority />
+          <div className="mt-8">
+            <PremiumButton href="#courses-programs" className="px-8 py-2.5">
+              Learn More
+            </PremiumButton>
           </div>
-        </div>
+        </Reveal>
+
+        <Reveal delay={0.1}>
+          <div className="relative mx-auto aspect-[4/3] max-w-lg overflow-hidden rounded-[20px] shadow-[var(--luxury-shadow)] lg:max-w-none">
+            <Image
+              src={THUMB.coursesOv}
+              alt="Hands-on Pilates teacher mentoring in the studio"
+              fill
+              className="object-cover object-center"
+              sizes="(max-width: 1024px) 100vw, 50vw"
+              priority
+            />
+          </div>
+        </Reveal>
       </div>
     </section>
   );

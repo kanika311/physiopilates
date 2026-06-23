@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Cormorant_Garamond, Inter } from "next/font/google";
 import FloatingActions from "@/components/FloatingActions";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+import SiteChrome from "@/components/luxury/SiteChrome";
 import MotionProviders from "@/components/providers/MotionProviders";
 import ThemeProvider from "@/components/providers/ThemeProvider";
 import "./globals.css";
@@ -37,10 +36,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${cormorant.variable} scroll-smooth`} suppressHydrationWarning>
       <body
-        className={`${inter.className} flex min-h-dvh min-w-0 flex-col bg-white antialiased text-[#12344D]`}
+        className={`${inter.className} flex min-h-dvh min-w-0 flex-col bg-white antialiased text-[#374151]`}
       >
         <ThemeProvider>
-         
+          <SiteChrome />
           <main className="min-w-0 flex-1">
             <MotionProviders>{children}</MotionProviders>
           </main>
