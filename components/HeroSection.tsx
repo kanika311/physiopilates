@@ -6,21 +6,15 @@ import Link from "next/link";
 import axios from "axios";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useCallback, useEffect, useState } from "react";
-import { brand } from "@/lib/brand";
+import { brand, SERIF } from "@/lib/brand";
+import { contactWhatsAppUrl } from "@/lib/contact";
+import { HERO_HOME } from "@/lib/siteImages";
 
-const GOLD = brand.gold;
-const TEAL = brand.tealAccent;
+const AUTOPLAY_MS = 6000;
 
-const AUTOPLAY_MS = 2500;
-
-const HERO_TITLE_CLASS =
-  "mx-auto mt-6 max-w-[min(100%,21rem)] text-balance text-[clamp(1.35rem,4.85vw,1.9rem)] font-bold leading-[1.16] tracking-tight text-white sm:mt-8 sm:max-w-5xl sm:text-5xl sm:leading-[1.12] md:text-6xl lg:text-7xl lg:leading-[1.08]";
-
-const HERO_SUBTITLE_CLASS =
-  "mx-auto mt-6 max-w-[min(100%,22rem)] text-balance px-1 text-[0.9375rem] font-light italic leading-relaxed text-white/95 sm:mt-8 sm:max-w-3xl sm:px-2 sm:text-lg md:text-xl";
-
-const heroSectionClasses =
-  "relative isolate h-[100svh] min-h-[520px] w-full max-w-[100vw] overflow-hidden";
+const HERO_HEADLINE = "Move Better. Heal Stronger. Live Fully.";
+const HERO_DESC =
+  "Delhi NCR's premier physiotherapy & Pilates studio — expert-led recovery, posture correction, and mindful movement under one roof.";
 
 interface HeroSlide {
   _id: string;
@@ -28,243 +22,158 @@ interface HeroSlide {
   subtitle: string;
   image: string;
   badge?: string;
-  buttonText?: string;
-  buttonLink?: string;
   status?: boolean;
 }
 
+const FALLBACK: HeroSlide[] = [
+  { _id: "f1", title: "", subtitle: "", image: HERO_HOME[0] },
+  { _id: "f2", title: "", subtitle: "", image: HERO_HOME[1] },
+];
+
 export default function HeroSection() {
-  const [slides, setSlides] =
-    useState<HeroSlide[]>([]);
+  const [slides, setSlides] = useState<HeroSlide[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [index, setIndex] = useState(0);
 
-  const [loading, setLoading] =
-    useState(true);
-
-  const [index, setIndex] =
-    useState(0);
-
-  const count = slides.length;
+  const display = slides.length ? slides : FALLBACK;
+  const count = display.length;
 
   const go = useCallback(
-    (dir: -1 | 1) => {
-      setIndex((prev) => (prev + dir + count) % count);
-    },
-    [count]
+    (dir: -1 | 1) => setIndex((prev) => (prev + dir + count) % count),
+    [count],
   );
 
   useEffect(() => {
-    fetchCarousel();
+    axios
+      .get("/api/carousel")
+      .then((res) => {
+        const active = (res.data as HeroSlide[]).filter((s) => s.status !== false && s.image);
+        setSlides(active.length ? active : FALLBACK);
+      })
+      .catch(() => setSlides(FALLBACK))
+      .finally(() => setLoading(false));
   }, []);
 
-  const fetchCarousel = async () => {
-    try {
-      const res = await axios.get(
-        "/api/carousel"
-      );
-
-      setSlides(res.data);
-    } catch (error) {
-      console.error(
-        "Carousel Error:",
-        error
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    if (count < 2) return;
-
-    const timer =
-      window.setInterval(() => {
-        go(1);
-      }, AUTOPLAY_MS);
-
-    return () =>
-      window.clearInterval(timer);
-  }, [count, go]);
-
-  if (loading) {
-    return (
-      <section className="flex h-screen items-center justify-center bg-black">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-white border-t-transparent" />
-      </section>
-    );
-  }
-
-  if (!slides.length) {
-    return null;
-  }
+    if (loading || count < 2) return;
+    const t = window.setInterval(() => go(1), AUTOPLAY_MS);
+    return () => clearInterval(t);
+  }, [count, go, loading]);
 
   return (
     <section
-      className={
-        heroSectionClasses
-      }
+      className="relative isolate h-[clamp(520px,88svh,920px)] w-full overflow-hidden bg-[#12344D]"
       aria-labelledby="hero-heading"
     >
-      <div className="absolute inset-0 overflow-hidden">
+      {/* Slides */}
+      <div className="absolute inset-0">
         <div
-          className="flex h-full w-full transition-transform duration-700 ease-out"
-          style={{
-            transform: `translateX(-${
-              index * 100
-            }%)`,
-          }}
+          className="flex h-full w-full transition-transform duration-[900ms] ease-out"
+          style={{ transform: `translateX(-${index * 100}%)` }}
         >
-          {slides.map(
-            (slide, i) => (
-              <div
-                key={slide._id}
-                className="relative h-full min-w-full"
-              >
-                {/* Background */}
-                <div className="absolute inset-0">
-                  <Image
-                    src={
-                      slide.image
-                    }
-                    alt={
-                      slide.title
-                    }
-                    fill
-                    priority={
-                      i === 0
-                    }
-                    sizes="100vw"
-                    className="object-cover object-center"
-                    unoptimized
-                  />
-                </div>
-
-                {/* Overlay */}
-                <div className="absolute inset-0 bg-black/60" />
-
-                {/* Content */}
-                <div className="relative z-10 flex h-full items-center justify-center px-4 text-center">
-                  <div className="max-w-4xl">
-                    {slide.badge && (
-                      <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-white/30 bg-black/40 px-5 py-2 backdrop-blur">
-                        <span
-                          className="h-2 w-2 rounded-full"
-                          style={{
-                            backgroundColor:
-                              TEAL,
-                          }}
-                        />
-
-                        <span className="text-xs font-semibold uppercase tracking-widest text-white">
-                          {
-                            slide.badge
-                          }
-                        </span>
-                      </div>
-                    )}
-
-                    <h1
-                      id="hero-heading"
-                      className={
-                        HERO_TITLE_CLASS
-                      }
-                    >
-                      {
-                        slide.title
-                      }
-                    </h1>
-
-                    <p
-                      className={
-                        HERO_SUBTITLE_CLASS
-                      }
-                    >
-                      {
-                        slide.subtitle
-                      }
-                    </p>
-
-                    <div className="mt-8">
-                      <Link
-                        href={
-                          slide.buttonLink ||
-                          "#"
-                        }
-                        className="inline-flex rounded-full px-8 py-4 font-bold text-white shadow-lg transition hover:opacity-90"
-                        style={{
-                          backgroundColor:
-                            GOLD,
-                        }}
-                      >
-                        {slide.buttonText ||
-                          "Learn More"}
-                      </Link>
-                    </div>
-
-                    <div className="mt-10">
-                      <div
-                        className="mx-auto h-1 w-28 rounded-full"
-                        style={{
-                          background: `linear-gradient(90deg, ${TEAL} 0%, ${GOLD} 100%)`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )
-          )}
+          {display.map((slide, i) => (
+            <div key={slide._id} className="relative h-full min-w-full">
+              <Image
+                src={slide.image}
+                alt="Physiotherapy and Pilates studio"
+                fill
+                priority={i === 0}
+                sizes="100vw"
+                className="object-cover object-center scale-105"
+                unoptimized
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#12344D]/88 via-[#12344D]/55 to-[#12344D]/25" />
+            </div>
+          ))}
         </div>
-
-        {/* Prev / Next arrows */}
-        {count > 1 && (
-          <>
-            <button
-              type="button"
-              onClick={() => go(-1)}
-              aria-label="Previous slide"
-              className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 sm:left-6 sm:h-12 sm:w-12"
-            >
-              <ChevronLeft size={24} strokeWidth={2.5} />
-            </button>
-
-            <button
-              type="button"
-              onClick={() => go(1)}
-              aria-label="Next slide"
-              className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/30 bg-black/40 text-white backdrop-blur-sm transition hover:bg-black/60 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 sm:right-6 sm:h-12 sm:w-12"
-            >
-              <ChevronRight size={24} strokeWidth={2.5} />
-            </button>
-          </>
-        )}
-
-        {/* Dots */}
-        {count > 1 && (
-          <div className="absolute bottom-12 left-0 right-0 z-20 flex justify-center gap-3">
-            {slides.map(
-              (
-                slide,
-                i
-              ) => (
-                <button
-                  key={
-                    slide._id
-                  }
-                  type="button"
-                  onClick={() =>
-                    setIndex(i)
-                  }
-                  className={`h-3 w-3 rounded-full transition ${
-                    i === index
-                      ? "bg-white"
-                      : "bg-white/40"
-                  }`}
-                />
-              )
-            )}
-          </div>
-        )}
       </div>
+
+      {/* Content */}
+      <div className="relative z-10 mx-auto flex h-full max-w-[1320px] items-center px-5 sm:px-8 lg:px-10">
+        <div className="max-w-2xl text-white">
+          <p
+            className="text-[11px] font-semibold uppercase tracking-[0.38em]"
+            style={{ color: brand.gold }}
+          >
+            Physio Pilates · Delhi NCR
+          </p>
+
+          <h1
+            id="hero-heading"
+            className="mt-5 text-[clamp(2.25rem,5.5vw,4.25rem)] font-semibold leading-[1.08] tracking-tight"
+            style={{ fontFamily: SERIF }}
+          >
+            {HERO_HEADLINE}
+          </h1>
+
+          <p className="mt-6 max-w-xl text-[15px] leading-relaxed text-white/88 md:text-[17px]">
+            {HERO_DESC}
+          </p>
+
+          <div className="mt-10 flex flex-wrap gap-4">
+            <Link
+              href="/contact"
+              className="inline-flex min-w-[168px] items-center justify-center rounded-full px-8 py-3.5 text-[14px] font-semibold text-white shadow-lg transition hover:opacity-92"
+              style={{ backgroundColor: brand.primary }}
+            >
+              Book Appointment
+            </Link>
+            <a
+              href={contactWhatsAppUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-w-[168px] items-center justify-center rounded-full border-2 border-white/85 px-8 py-3.5 text-[14px] font-semibold text-white transition hover:bg-white/10"
+            >
+              WhatsApp Us
+            </a>
+          </div>
+
+          <div
+            className="mt-12 h-px w-24"
+            style={{ background: `linear-gradient(90deg, ${brand.gold}, transparent)` }}
+            aria-hidden
+          />
+        </div>
+      </div>
+
+      {/* Controls */}
+      {count > 1 && !loading && (
+        <>
+          <button
+            type="button"
+            onClick={() => go(-1)}
+            aria-label="Previous slide"
+            className="absolute left-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20 sm:left-8"
+          >
+            <ChevronLeft size={22} />
+          </button>
+          <button
+            type="button"
+            onClick={() => go(1)}
+            aria-label="Next slide"
+            className="absolute right-4 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/25 bg-white/10 text-white backdrop-blur-sm transition hover:bg-white/20 sm:right-8"
+          >
+            <ChevronRight size={22} />
+          </button>
+          <div className="absolute bottom-8 left-0 right-0 z-20 flex justify-center gap-2">
+            {display.map((s, i) => (
+              <button
+                key={s._id}
+                type="button"
+                aria-label={`Slide ${i + 1}`}
+                onClick={() => setIndex(i)}
+                className={`h-1.5 rounded-full transition-all ${i === index ? "w-8 bg-white" : "w-1.5 bg-white/40"}`}
+              />
+            ))}
+          </div>
+        </>
+      )}
+
+      {loading ? (
+        <div className="absolute inset-0 z-30 flex items-center justify-center bg-[#12344D]/40 backdrop-blur-[2px]">
+          <div className="h-10 w-10 animate-spin rounded-full border-2 border-white/30 border-t-white" />
+        </div>
+      ) : null}
     </section>
   );
 }

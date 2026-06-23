@@ -21,10 +21,9 @@ import {
 import { brand } from "@/lib/brand";
 import MailtoLink from "@/components/MailtoLink";
 
-const GOLD = brand.sage;
+const TEAL = brand.primary;
 
-const footerSans =
-  "font-[family-name:var(--font-montserrat),ui-sans-serif,system-ui,sans-serif] not-italic";
+const footerSans = "font-[family-name:var(--font-inter),ui-sans-serif,system-ui,sans-serif]";
 
 const servicesLinks = [
   { label: "Physiotherapy", href: "/physiotherapy" },
@@ -60,19 +59,19 @@ export default function Footer() {
 
   return (
     <footer id="contact" className={`relative ${footerSans}`}>
-      <div className="h-1 w-full bg-[#f0ebe3] dark:bg-slate-800" aria-hidden />
+      <div className="h-px w-full" style={{ backgroundColor: brand.border }} aria-hidden />
 
-      <div className="bg-[#fdfbf7] px-5 py-14 dark:bg-[#0f172a] sm:px-6 md:py-16">
-        <div className="mx-auto grid min-w-0 max-w-6xl gap-10 sm:gap-12 md:grid-cols-2 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)_minmax(0,0.92fr)_minmax(0,1.28fr)] lg:gap-x-8 xl:gap-x-11">
+      <div className="bg-white px-5 py-16 sm:px-8 md:py-20">
+        <div className="mx-auto grid min-w-0 max-w-[1320px] gap-12 md:grid-cols-2 lg:grid-cols-4 lg:gap-10">
           <div className="flex min-w-0 flex-col items-start gap-3">
             <Image src="/logo.png" alt="Physio Pilates" width={140} height={140} className="h-auto w-[120px] sm:w-[132px]" />
-            <p className="mt-4 max-w-md text-[15px] font-medium leading-relaxed text-neutral-700 dark:text-slate-300 sm:text-[16px]">
+            <p className="mt-4 max-w-md text-[15px] leading-relaxed" style={{ color: brand.textMuted }}>
               Transform your life through mindful movement, expert care & holistic healing.
             </p>
           </div>
 
           <div id="services" className="min-w-0">
-            <h3 className={`${footerSans} text-base font-semibold leading-snug text-neutral-900 dark:text-white sm:text-[17px]`}>
+            <h3 className={`${footerSans} text-base font-semibold`} style={{ color: brand.navy }}>
               Services
             </h3>
             <ul className="mt-5 space-y-3.5">
@@ -80,12 +79,10 @@ export default function Footer() {
                 <li key={label}>
                   <Link
                     href={href}
-                    className={`${footerSans} group flex items-center gap-2 text-[15px] font-semibold leading-relaxed text-neutral-700 no-underline transition-colors hover:text-neutral-950 dark:text-slate-200 dark:hover:text-white sm:text-base`}
+                    className={`${footerSans} group flex items-center gap-2 text-[15px] font-medium no-underline transition-colors hover:opacity-80`}
+                    style={{ color: brand.textMuted }}
                   >
-                    <FiChevronRight
-                      className="text-base shrink-0 text-[#6B8F71] dark:text-emerald-300"
-                      aria-hidden
-                    />
+                    <FiChevronRight className="shrink-0 text-base" style={{ color: TEAL }} aria-hidden />
                     {label}
                   </Link>
                 </li>
@@ -94,7 +91,7 @@ export default function Footer() {
           </div>
 
           <div id="company" className="min-w-0">
-            <h3 className={`${footerSans} text-base font-semibold leading-snug text-neutral-900 dark:text-white sm:text-[17px]`}>
+            <h3 className={`${footerSans} text-base font-semibold`} style={{ color: brand.navy }}>
               Company
             </h3>
             <ul className="mt-5 space-y-3.5">
@@ -102,12 +99,10 @@ export default function Footer() {
                 <li key={label}>
                   <Link
                     href={href}
-                    className={`${footerSans} group flex items-center gap-2 text-[15px] font-semibold leading-relaxed text-neutral-700 no-underline transition-colors hover:text-neutral-950 dark:text-slate-200 dark:hover:text-white sm:text-base`}
+                    className={`${footerSans} group flex items-center gap-2 text-[15px] font-medium no-underline transition-colors hover:opacity-80`}
+                    style={{ color: brand.textMuted }}
                   >
-                    <FiChevronRight
-                      className="text-base shrink-0 text-[#6B8F71] dark:text-emerald-300"
-                      aria-hidden
-                    />
+                    <FiChevronRight className="shrink-0 text-base" style={{ color: TEAL }} aria-hidden />
                     {label}
                   </Link>
                 </li>
@@ -116,7 +111,7 @@ export default function Footer() {
           </div>
 
           <div className="min-w-0">
-            <h3 className={`${footerSans} text-base font-semibold leading-snug text-neutral-900 dark:text-white sm:text-[17px]`}>
+            <h3 className={`${footerSans} text-base font-semibold`} style={{ color: brand.navy }}>
               {isContactPage ? "Connect with us" : "Contact Us"}
             </h3>
             {isContactPage ? (
@@ -128,7 +123,7 @@ export default function Footer() {
             ) : (
               <ul className="mt-5 space-y-4 text-[15px] leading-relaxed sm:text-base">
                 <li className="flex gap-3 sm:gap-4">
-                  <FiMapPin className="mt-0.5 shrink-0 text-lg text-[#6B8F71] dark:text-emerald-300" aria-hidden />
+                  <FiMapPin className="mt-0.5 shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
                   <address className="min-w-0 flex-1 not-italic leading-relaxed [overflow-wrap:anywhere]">
                     <span className="font-semibold tracking-[0.01em] text-[14px] text-neutral-900 dark:text-white sm:text-[15px]">
                       {contactAddressPlain}
@@ -136,7 +131,7 @@ export default function Footer() {
                   </address>
                 </li>
                 <li className="flex min-w-0 items-center gap-3 sm:gap-4">
-                  <FiPhone className="shrink-0 text-lg text-[#6B8F71] dark:text-emerald-300" aria-hidden />
+                  <FiPhone className="shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
                   <a
                     href={`tel:${contactPhoneHref}`}
                     className="min-w-0 font-semibold text-neutral-900 no-underline transition-colors hover:text-neutral-950 hover:underline dark:text-white dark:hover:text-slate-200"
@@ -145,7 +140,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li className="flex min-w-0 items-start gap-3 sm:gap-4">
-                  <FiMail className="mt-0.5 shrink-0 text-lg text-[#6B8F71] dark:text-emerald-300" aria-hidden />
+                  <FiMail className="mt-0.5 shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
                   <MailtoLink
                     email={contactEmailDisplay}
                     className="min-w-0 flex-1 md:text-[14px] font-semibold leading-snug text-neutral-900 underline underline-offset-4 decoration-neutral-400/80 transition-colors hover:text-neutral-950 hover:decoration-neutral-500 dark:text-white dark:decoration-slate-500 dark:hover:text-slate-200 sm:text-[15px]"
@@ -174,7 +169,7 @@ export default function Footer() {
 
       <div
         className={`${footerSans} px-5 py-4 text-center text-[13px] font-medium leading-snug text-white sm:py-[1.125rem] sm:text-sm`}
-        style={{ backgroundColor: GOLD }}
+        style={{ backgroundColor: brand.navy }}
       >
         <p className="max-w-4xl mx-auto">
           © {new Date().getFullYear()} Physio Pilates. All rights reserved. | Powered by{" "}

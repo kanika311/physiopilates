@@ -3,11 +3,14 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --navbar-height: 68px;
+  --navbar-height: 72px;
   --page-bg: #ffffff;
-  --page-fg: #171717;
-  --muted-surface: #fdfbf7;
-  --accent: #6b8f71;
+  --page-fg: #12344d;
+  --muted-surface: #f7fafa;
+  --accent: #0f6d6d;
+  --accent-gold: #d4b06a;
+  --luxury-shadow: 0 8px 40px -12px rgb(15 109 109 / 0.12);
+  --luxury-radius: 18px;
 
   /* Admin — derived from brand tokens only */
   --admin-bg: #fafafa;
@@ -76,8 +79,31 @@ p {
 }
 
 ::selection {
-  background-color: rgb(107 143 113 / 0.28);
+  background-color: rgb(15 109 109 / 0.18);
   color: inherit;
+}
+
+.luxury-card {
+  border-radius: var(--luxury-radius);
+  background: #ffffff;
+  border: 1px solid rgb(18 52 77 / 0.06);
+  box-shadow: var(--luxury-shadow);
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.luxury-card:hover {
+  box-shadow: 0 16px 48px -16px rgb(15 109 109 / 0.18);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luxury-card:hover {
+    transform: none;
+  }
+}
+
+.luxury-section {
+  padding-block: clamp(4rem, 8vw, 7.5rem);
 }
 
 /* Hero carousel: teal bar fills left → right over each autoplay interval */

@@ -9,9 +9,9 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FiChevronDown, FiMenu, FiX } from "react-icons/fi";
 import { brand } from "@/lib/brand";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import ThemeToggle from "@/components/ThemeToggle";
 
-const ACCENT = brand.sage;
+const TEAL = brand.primary;
+const NAVY = brand.navy;
 
 type NavLink = {
   label: string;
@@ -47,6 +47,7 @@ export default function Navbar() {
   const [servicesMenuOpen, setServicesMenuOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const svcMenuCloseTimerRef = useRef<number | undefined>(undefined);
+  const servicesMenuRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
 
   const railRef = useRef<HTMLDivElement | null>(null);
@@ -167,7 +168,7 @@ export default function Navbar() {
   }, [mobileOpen, publishNavHeight]);
 
   const navFont =
-    "font-[family-name:var(--font-montserrat),ui-sans-serif,system-ui,sans-serif] not-italic font-semibold tracking-[0.06em]";
+    "font-[family-name:var(--font-inter),ui-sans-serif,system-ui,sans-serif] not-italic font-semibold tracking-[0.06em]";
   const navMobileSize = "text-[15px] leading-6";
   const navDesktopSize =
     "whitespace-nowrap text-[12px] leading-tight xl:text-[13px] xl:leading-snug 2xl:text-sm 2xl:leading-normal";
@@ -187,17 +188,18 @@ export default function Navbar() {
 
   useEffect(() => {
     if (!servicesMenuOpen) return undefined;
-    function close() {
-      setServicesMenuOpen(false);
-    }
     function onEsc(e: KeyboardEvent) {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") setServicesMenuOpen(false);
+    }
+    function onClickOutside(e: MouseEvent) {
+      const root = servicesMenuRef.current;
+      if (root && !root.contains(e.target as Node)) setServicesMenuOpen(false);
     }
     window.addEventListener("keydown", onEsc);
-    window.addEventListener("scroll", close, { passive: true });
+    document.addEventListener("mousedown", onClickOutside);
     return () => {
       window.removeEventListener("keydown", onEsc);
-      window.removeEventListener("scroll", close);
+      document.removeEventListener("mousedown", onClickOutside);
     };
   }, [servicesMenuOpen]);
 
@@ -217,7 +219,7 @@ export default function Navbar() {
     <header
       ref={headerRef}
       className={[
-        "sticky top-0 z-[100] w-full border-b border-neutral-200/90 bg-white shadow-sm dark:border-slate-600 dark:bg-[#1e293b]",
+        "sticky top-0 z-[100] w-full overflow-visible border-b border-[rgb(18_52_77/0.08)] bg-white/95 shadow-sm backdrop-blur-md",
         "transition-shadow duration-200 ease-out",
         headerPad,
         mobileOpen ? "z-[520]" : "",
@@ -254,7 +256,7 @@ export default function Navbar() {
           <motion.span
             aria-hidden
             className="pointer-events-none absolute bottom-[2px] z-0 h-[3px] rounded-full bg-[transparent]"
-            style={{ backgroundColor: ACCENT }}
+            style={{ backgroundColor: TEAL }}
             initial={false}
             animate={{
               left: pill.left,
@@ -270,7 +272,7 @@ export default function Navbar() {
               linkRefs.current[0] = el;
             }}
             className={desktopRailLinkClass(routeActive(pathname, ABOUT_LINK.pathnameMatch))}
-            style={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? { color: ACCENT } : undefined}
+            style={{ color: routeActive(pathname, ABOUT_LINK.pathnameMatch) ? TEAL : NAVY }}
             aria-current={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? "page" : undefined}
             onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
             onFocus={(e) => movePillTo(e.currentTarget, true)}
@@ -279,6 +281,7 @@ export default function Navbar() {
           </Link>
 
           <div
+            ref={servicesMenuRef}
             className="relative flex items-center py-0.5"
             onMouseEnter={openServicesMenuHover}
             onMouseLeave={scheduleCloseServicesMenu}
@@ -289,7 +292,7 @@ export default function Navbar() {
                 linkRefs.current[1] = el;
               }}
               className={`${desktopRailLinkClass(servicesRouteActive || servicesMenuOpen)} inline-flex cursor-pointer items-center gap-0.5 border-0 bg-transparent p-0`}
-              style={servicesRouteActive ? { color: ACCENT } : undefined}
+              style={{ color: servicesRouteActive || servicesMenuOpen ? TEAL : NAVY }}
               aria-expanded={servicesMenuOpen}
               aria-haspopup="menu"
               aria-controls="desktop-services-menu"
@@ -309,30 +312,35 @@ export default function Navbar() {
             </button>
             {servicesMenuOpen ? (
               <div
-                id="desktop-services-menu"
-                role="menu"
-                aria-orientation="vertical"
-                className="absolute left-1/2 top-full z-[60] mt-2 w-max min-w-[13.75rem] -translate-x-1/2 rounded-xl border border-neutral-200/90 bg-white py-1.5 shadow-[0_20px_52px_-24px_rgba(0,0,0,0.28)] dark:border-slate-600 dark:bg-[#1e293b]"
+                className="absolute left-1/2 top-full z-[200] min-w-[13.75rem] -translate-x-1/2 pt-2"
                 onMouseEnter={openServicesMenuHover}
+                onMouseLeave={scheduleCloseServicesMenu}
               >
-                {SERVICE_LINKS.map(({ label, href, pathnameMatch }) => {
-                  const active = routeActive(pathname, pathnameMatch);
-                  return (
-                    <Link
-                      key={label}
-                      href={href}
-                      role="menuitem"
-                      className={`${navFont} block rounded-lg px-4 py-2.5 text-left text-[13px] font-semibold transition-colors xl:text-[14px] ${
-                        active ? "bg-[rgba(107,143,113,0.14)]" : "text-neutral-800 hover:bg-neutral-50 dark:text-slate-100 dark:hover:bg-slate-700/50"
-                      }`}
-                      style={active ? { color: ACCENT } : undefined}
-                      aria-current={active ? "page" : undefined}
-                      onClick={() => setServicesMenuOpen(false)}
-                    >
-                      {label}
-                    </Link>
-                  );
-                })}
+                <div
+                  id="desktop-services-menu"
+                  role="menu"
+                  aria-orientation="vertical"
+                  className="rounded-[14px] border border-[rgb(18_52_77/0.08)] bg-white py-1.5 shadow-[var(--luxury-shadow)]"
+                >
+                  {SERVICE_LINKS.map(({ label, href, pathnameMatch }) => {
+                    const active = routeActive(pathname, pathnameMatch);
+                    return (
+                      <Link
+                        key={label}
+                        href={href}
+                        role="menuitem"
+                        className={`${navFont} block rounded-lg px-4 py-2.5 text-left text-[13px] font-semibold transition-colors xl:text-[14px] ${
+                          active ? "bg-[rgb(15_109_109/0.08)]" : "hover:bg-[rgb(15_109_109/0.05)]"
+                        }`}
+                        style={{ color: active ? TEAL : NAVY }}
+                        aria-current={active ? "page" : undefined}
+                        onClick={() => setServicesMenuOpen(false)}
+                      >
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
               </div>
             ) : null}
           </div>
@@ -348,7 +356,7 @@ export default function Navbar() {
                   linkRefs.current[idx] = el;
                 }}
                 className={desktopRailLinkClass(active)}
-                style={active ? { color: ACCENT } : undefined}
+                style={{ color: active ? TEAL : NAVY }}
                 aria-current={active ? "page" : undefined}
                 onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
                 onFocus={(e) => movePillTo(e.currentTarget, true)}
@@ -360,7 +368,6 @@ export default function Navbar() {
         </nav>
 
         <div className="relative z-[2] flex min-h-9 shrink-0 items-center justify-end gap-1.5 lg:col-start-3 lg:row-start-1 lg:justify-self-end">
-          <ThemeToggle />
           <button
             type="button"
             className="inline-flex min-h-9 min-w-9 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-800 shadow-sm transition-colors hover:bg-neutral-50 dark:border-slate-500 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 lg:hidden mi-hover"
@@ -420,7 +427,7 @@ export default function Navbar() {
                             ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600"
                             : "text-neutral-800 hover:bg-white/90 dark:text-slate-100 dark:hover:bg-slate-800/80",
                         ].join(" ")}
-                        style={routeActive(pathname, "/about") ? { color: ACCENT } : undefined}
+                        style={routeActive(pathname, "/about") ? { color: TEAL } : undefined}
                         aria-current={routeActive(pathname, "/about") ? "page" : undefined}
                       >
                         About
@@ -432,7 +439,7 @@ export default function Navbar() {
                         className={`${navFont} ${navMobileSize} flex w-full items-center justify-between rounded-xl px-3 py-3.5 text-left text-neutral-800 no-underline active:bg-neutral-200/50 hover:bg-white/90 dark:text-slate-100 dark:active:bg-slate-700/50 dark:hover:bg-slate-800/80 ${
                           servicesRouteActive ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600" : ""
                         }`}
-                        style={servicesRouteActive ? { color: ACCENT } : undefined}
+                        style={servicesRouteActive ? { color: TEAL } : undefined}
                         onClick={() => setMobileServicesOpen((o) => !o)}
                       >
                         Services
@@ -452,7 +459,7 @@ export default function Navbar() {
                                 `${navFont} ${navMobileSize} block rounded-lg px-3 py-2.5 no-underline active:bg-neutral-200/50`,
                                 active ? "bg-white font-semibold shadow-sm ring-1 ring-black/[0.05] dark:bg-[#334155] dark:ring-slate-500" : "text-neutral-800 hover:bg-white/85 dark:text-slate-100 dark:hover:bg-slate-700/50",
                               ].join(" ")}
-                              style={active ? { color: ACCENT } : undefined}
+                              style={{ color: active ? TEAL : NAVY }}
                               aria-current={active ? "page" : undefined}
                             >
                               {label}
@@ -471,7 +478,7 @@ export default function Navbar() {
                               `${navFont} ${navMobileSize} block rounded-xl px-3 py-3.5 no-underline active:bg-neutral-200/50`,
                               active ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600" : "text-neutral-800 hover:bg-white/90 dark:text-slate-100 dark:hover:bg-slate-800/80",
                             ].join(" ")}
-                            style={active ? { color: ACCENT } : undefined}
+                            style={{ color: active ? TEAL : NAVY }}
                             aria-current={active ? "page" : undefined}
                           >
                             {label}

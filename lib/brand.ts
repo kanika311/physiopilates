@@ -1,24 +1,42 @@
-/** Physio Pilates design tokens — aligned across sections */
+/** Premium wellness design tokens */
 export const brand = {
-  /** Primary UI accent (light + dark) */
-  sage: "#6B8F71",
-  sageMuted: "#5a7a5f",
-  gold: "#c09e6b",
-  goldHeading: "#b39359",
-  goldFooterBar: "#b89b66",
-  goldButton: "#c5a974",
-  goldHeadingWarm: "#bfa16d",
-  teal: "#48cfcb",
-  tealAccent: "#56d8e4",
-  tealIcon: "#4ecdc4",
-  cream: "#fdfbf7",
-  creamWarm: "#fdfbf6",
-  canvas: "#fafafa",
-  textBody: "#5c5c5c",
-  textMuted: "#7a7a7a",
-  textWarmGray: "#7a746e",
-  mintBg: "#d1f7f1",
-  whatsapp: "#25d366",
+  primary: "#0F6D6D",
+  primaryHover: "#0c5858",
+  primaryMuted: "rgb(15 109 109 / 0.72)",
+  navy: "#12344D",
+  ink: "#111111",
+  gold: "#D4B06A",
+  goldMuted: "rgb(212 176 106 / 0.35)",
+  white: "#FFFFFF",
+  surface: "#FFFFFF",
+  surfaceMuted: "#F7FAFA",
+  border: "rgb(18 52 77 / 0.08)",
+  shadow: "0 8px 40px -12px rgb(15 109 109 / 0.12)",
+  shadowHover: "0 16px 48px -16px rgb(15 109 109 / 0.18)",
+  radius: "18px",
+  radiusLg: "20px",
+  /** Legacy aliases */
+  sage: "#0F6D6D",
+  sageMuted: "#0c5858",
+  goldHeading: "#12344D",
+  goldFooterBar: "#0F6D6D",
+  goldButton: "#0F6D6D",
+  goldHeadingWarm: "#0F6D6D",
+  teal: "#0F6D6D",
+  tealAccent: "#0F6D6D",
+  tealIcon: "#0F6D6D",
+  cream: "#FFFFFF",
+  creamWarm: "#FFFFFF",
+  canvas: "#FFFFFF",
+  textBody: "#12344D",
+  textMuted: "rgb(18 52 77 / 0.68)",
+  textWarmGray: "rgb(18 52 77 / 0.55)",
+  mintBg: "#F0F7F7",
+  whatsapp: "#25D366",
 } as const;
 
 export type BrandTokens = typeof brand;
+
+export const SERIF = 'var(--font-cormorant), "Georgia", serif';
+export const SANS = 'var(--font-inter), ui-sans-serif, system-ui, sans-serif';
+export const SECTION_MAX = "max-w-[1320px]";
