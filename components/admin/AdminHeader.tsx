@@ -33,7 +33,7 @@ export default function AdminHeader({
             <Menu size={22} style={{ color: "var(--page-fg)" }} />
           </button>
 
-          <div>
+          {/* <div>
             <h1
               className="text-xl font-bold tracking-tight md:text-2xl"
               style={{ color: "var(--page-fg)" }}
@@ -47,7 +47,7 @@ export default function AdminHeader({
             >
               Welcome back, Admin
             </p>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex items-center gap-2 md:gap-3">

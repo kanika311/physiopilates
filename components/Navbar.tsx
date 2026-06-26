@@ -170,11 +170,11 @@ export default function Navbar() {
   const navFont =
     "font-[family-name:var(--font-inter),ui-sans-serif,system-ui,sans-serif] not-italic font-semibold";
   const navMobileSize = "text-[17px] leading-7";
-  const navDesktopSize = "whitespace-nowrap text-[17px] leading-snug";
-  const desktopLinkBase = `${navFont} ${navDesktopSize} nav-link rounded-md px-2.5 py-1.5 no-underline transition-colors duration-200 relative z-[1]`;
+  const navDesktopSize = "whitespace-nowrap text-[15px] leading-snug";
+  const desktopLinkBase = `${navFont} ${navDesktopSize} nav-link rounded-md px-2 py-1 no-underline transition-colors duration-200 relative z-[1]`;
 
-  /** Fixed vertical rhythm — no scroll-based height changes */
-  const headerPad = "py-2 sm:py-2.5";
+  /** Fixed vertical rhythm — thin bar, readable brand */
+  const headerPad = "py-1.5 sm:py-2";
 
   useEffect(() => {
     window.addEventListener("resize", syncPillActive, { passive: true });
@@ -212,7 +212,7 @@ export default function Navbar() {
   }
 
   /** Mobile drawer + overlay sit below sticky header via measured `--navbar-height` */
-  const belowNavTop = `top-[calc(var(--navbar-height,3.75rem)+env(safe-area-inset-top,0px))]`;
+  const belowNavTop = `top-[calc(var(--navbar-height,3.5rem)+env(safe-area-inset-top,0px))]`;
 
   return (
     <header
@@ -229,19 +229,27 @@ export default function Navbar() {
       <div className="relative mx-auto flex w-full max-w-[1480px] items-center justify-between gap-4 px-4 sm:gap-6 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:justify-items-stretch lg:px-8 xl:gap-10">
         <Link
           href="/"
-          className="relative z-[2] flex min-h-0 min-w-0 shrink-0 items-center leading-none no-underline mi-hover lg:justify-self-start"
+          className="relative z-[2] flex min-h-0 min-w-0 shrink-0 items-center gap-2 leading-none no-underline sm:gap-2.5 mi-hover lg:justify-self-start"
           aria-label="Physio Pilates home"
           onClick={() => setMobileOpen(false)}
         >
-          <Image
-            src="/logo.png"
-            alt="Physio Pilatees"
-            width={160}
-            height={40}
-            className=" min-h-[60px] max-h-[90px] w-auto max-w-[min(220px,calc(100vw-8.75rem))] object-contain object-left "
-            sizes="220px"
-            priority
-          />
+          <span className="relative block h-9 w-9 shrink-0 overflow-hidden rounded-full sm:h-10 sm:w-10">
+            <Image
+              src="/logo.png"
+              alt=""
+              fill
+              className="object-cover object-[center_12%] scale-[1.85] origin-top"
+              sizes="40px"
+              priority
+              aria-hidden
+            />
+          </span>
+          <span
+            className="font-[family-name:var(--font-cormorant),Georgia,serif] text-[1.05rem] font-semibold leading-none tracking-tight sm:text-[1.125rem]"
+            style={{ color: NAVY }}
+          >
+            Physio Pilates
+          </span>
         </Link>
 
         <nav
@@ -366,10 +374,10 @@ export default function Navbar() {
           })}
         </nav>
 
-        <div className="relative z-[2] flex min-h-9 shrink-0 items-center justify-end gap-1.5 lg:col-start-3 lg:row-start-1 lg:justify-self-end">
+        <div className="relative z-[2] flex min-h-8 shrink-0 items-center justify-end gap-1.5 lg:col-start-3 lg:row-start-1 lg:justify-self-end">
           <button
             type="button"
-            className="inline-flex min-h-9 min-w-9 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-800 shadow-sm transition-colors hover:bg-neutral-50 dark:border-slate-500 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 lg:hidden mi-hover"
+            className="inline-flex min-h-8 min-w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-800 shadow-sm transition-colors hover:bg-neutral-50 dark:border-slate-500 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 lg:hidden mi-hover"
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav-panel"
             onClick={() => setMobileOpen((o) => !o)}

@@ -72,9 +72,11 @@ export async function getGalleryImages(): Promise<
      */
     if (result.success) {
       /**
-       * FORMAT DATABASE DATA
+       * FORMAT DATABASE DATA — ONLY ACTIVE ITEMS RENDER ON THE WEBSITE
        */
-      return result.data.map(
+      return result.data
+        .filter((item: any) => item.isActive !== false)
+        .map(
         (item: any) => ({
           /**
            * DATABASE ID

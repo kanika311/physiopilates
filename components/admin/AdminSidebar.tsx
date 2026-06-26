@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import NextImage from "next/image";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
@@ -15,6 +16,7 @@ import {
   Menu,
   X,
   Shield,
+  GraduationCap,
 } from "lucide-react";
 
 const menuItems = [
@@ -28,6 +30,12 @@ const menuItems = [
     icon: FolderKanban,
     href: "/admin/courses",
   },
+  {
+    title: "Services",
+    icon: FolderKanban,
+    href: "/admin/services",
+  },
+
   {
     title: "Gallery",
     icon: Images,
@@ -46,19 +54,14 @@ const menuItems = [
     href: "/admin/blogs/create",
   },
   {
-    title: "Create Gallery",
-    icon: Images,
-    href: "/admin/gallery/create",
-  },
-  {
     title: "Contact",
     icon: Image,
     href: "/admin/contact",
   },
   {
-    title: "Messages",
-    icon: MessageSquare,
-    href: "/admin/messages",
+    title: "Students",
+    icon: GraduationCap,
+    href: "/admin/staff",
   },
 ];
 
@@ -88,9 +91,12 @@ export default function AdminSidebar() {
           >
             <Shield size={18} />
           </div>
-          <h2 className="text-lg font-bold tracking-tight">
-            Admin CMS
+          <div className="flex ">
+            <NextImage src="/logo.png" alt="logo" width={32} height={32} />
+          <h2 className="text-md font-bold tracking-tight text-tale">
+            Admin
           </h2>
+          </div>
         </div>
 
         <button
@@ -145,29 +151,28 @@ export default function AdminSidebar() {
 
         {/* Logo */}
         <div
-          className="relative border-b p-6"
+          className="relative border-b p-4"
           style={{ borderColor: "rgb(255 255 255 / 0.08)" }}
-        >
-          <div className="flex items-center gap-3">
-            <div
-              className="flex h-11 w-11 items-center justify-center rounded-[14px] shadow-lg"
-              style={{
-                backgroundColor: "var(--admin-accent)",
-                boxShadow: "0 8px 24px rgb(107 143 113 / 0.35)",
-              }}
-            >
-              <Shield size={22} className="text-white" />
+          >
+          <div className="flex items-center gap-2.5">
+            <div className="shrink-0 rounded-lg bg-white p-1 shadow-md">
+              <NextImage
+                src="/logo.png"
+                alt="Physio Pilates"
+                width={70}
+                height={70}
+                className="h-auto w-[52px] object-contain"
+                priority
+              />
             </div>
-            <div>
-              <h1 className="text-xl font-bold tracking-tight text-white">
-                Admin CMS
-              </h1>
-              <p
-                className="text-xs font-medium"
+            <div className="flex flex-col leading-tight">
+              <span className="text-base font-bold leading-none text-white">Admin</span>
+              <span
+                className="mt-1 text-[11px] font-medium"
                 style={{ color: "rgb(255 255 255 / 0.45)" }}
               >
                 Management Panel
-              </p>
+              </span>
             </div>
           </div>
         </div>

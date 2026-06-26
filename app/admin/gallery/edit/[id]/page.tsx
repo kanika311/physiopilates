@@ -30,7 +30,7 @@ export default function EditGalleryPage() {
     image: "",
     alt: "",
     categories: "",
-    badge: "",
+    TitleOverImage: "",
   });
 
   useEffect(() => {
@@ -46,7 +46,7 @@ export default function EditGalleryPage() {
         image: item.image || "",
         alt: item.alt || "",
         categories: item.categories?.[0] || "",
-        badge: item.badge || "",
+        TitleOverImage: item.TitleOverImage || "",
       });
       setPreview(item.image || "");
     } catch (error) {
@@ -82,7 +82,7 @@ export default function EditGalleryPage() {
         image: formData.image,
         alt: formData.alt,
         categories: [formData.categories],
-        badge: formData.badge,
+        TitleOverImage: formData.TitleOverImage,
       };
       const response = await axios.put(
         `/api/admin/gallary/${id}`,
@@ -177,12 +177,12 @@ export default function EditGalleryPage() {
           </AdminSelect>
         </AdminField>
 
-        <AdminField label="Badge">
+        <AdminField label="TitleOverImage">
           <AdminInput
             type="text"
-            value={formData.badge}
+            value={formData.TitleOverImage}
             onChange={(e) =>
-              setFormData({ ...formData, badge: e.target.value })
+              setFormData({ ...formData, TitleOverImage: e.target.value })
             }
             placeholder="Featured, New, Popular..."
           />

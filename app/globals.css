@@ -3,7 +3,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --navbar-height: 72px;
+  --navbar-height: 52px;
   --page-bg: #ffffff;
   --page-fg: #374151;
   --text-body: #374151;
