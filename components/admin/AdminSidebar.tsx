@@ -14,6 +14,8 @@ import {
   MessageSquare,
   Menu,
   X,
+   Briefcase, 
+  Settings,
   Shield,
 } from "lucide-react";
 
@@ -55,11 +57,24 @@ const menuItems = [
     icon: Image,
     href: "/admin/contact",
   },
+
+  {
+  title: "Services",
+  icon: Briefcase,
+  href: "/admin/services",
+},
+  
+  {
+  title: "Header Settings",
+  icon: Settings,
+  href: "/admin/header-settings",
+},
   {
     title: "Messages",
     icon: MessageSquare,
     href: "/admin/messages",
   },
+
 ];
 
 export default function AdminSidebar() {
@@ -173,7 +188,7 @@ export default function AdminSidebar() {
         </div>
 
         {/* Menu */}
-        <div className="relative p-4 pb-32">
+      <div className="relative p-4 pb-52 overflow-y-auto h-[calc(100vh-120px)]">
           <ul className="space-y-1">
             {menuItems.map((item, index) => {
               const Icon = item.icon;

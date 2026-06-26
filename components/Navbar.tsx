@@ -11,7 +11,8 @@ import { brand } from "@/lib/brand";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
 import ThemeToggle from "@/components/ThemeToggle";
 
-const ACCENT = brand.sage;
+
+
 
 type NavLink = {
   label: string;
@@ -49,6 +50,60 @@ export default function Navbar() {
   const svcMenuCloseTimerRef = useRef<number | undefined>(undefined);
   const headerRef = useRef<HTMLElement | null>(null);
 
+  const [headerSettings, setHeaderSettings] = useState<any>(null);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+
+  const cached = localStorage.getItem("headerSettings");
+
+  if (cached) {
+    setHeaderSettings(JSON.parse(cached));
+    setLoading(false);
+  }
+
+  fetchHeader();
+
+}, []);
+
+async function fetchHeader() {
+
+  const res = await fetch("/api/header-settings");
+
+  const data = await res.json();
+
+  if (data.success) {
+
+    setHeaderSettings(data.data);
+
+    localStorage.setItem(
+      "headerSettings",
+      JSON.stringify(data.data)
+    );
+  }
+
+}
+
+const aboutLink =
+  headerSettings?.navLinks?.find(
+    (item: any) => item.type === "about"
+  ) || ABOUT_LINK;
+
+const serviceLinks =
+  headerSettings?.navLinks?.filter(
+    (item: any) => item.type === "service"
+  ) || SERVICE_LINKS;
+
+const otherLinks =
+  headerSettings?.navLinks?.filter(
+    (item: any) => item.type === "other"
+  ) || OTHER_NAV_LINKS;
+
+const ACCENT =
+  headerSettings?.activeMenuColor ||
+  brand.sage;
+
+
   const railRef = useRef<HTMLDivElement | null>(null);
   const linkRefs = useRef<Array<HTMLElement | null>>([]);
   const [pill, setPill] = useState<{ left: number; width: number; opacity: number }>({
@@ -56,6 +111,7 @@ export default function Navbar() {
     width: 0,
     opacity: 0,
   });
+  
 
   const movePillTo = useCallback((el: HTMLElement | null, visible: boolean) => {
     const root = railRef.current;
@@ -90,7 +146,9 @@ export default function Navbar() {
   }, [movePillTo, pathname]);
 
   const reducedMotion = usePrefersReducedMotion() === true;
-  const servicesRouteActive = SERVICE_LINKS.some((s) => routeActive(pathname, s.pathnameMatch));
+ const servicesRouteActive = serviceLinks.some(
+  (s: any) => routeActive(pathname, s.pathnameMatch)
+);
 
   const publishNavHeight = useCallback(() => {
     const el = headerRef.current;
@@ -233,7 +291,7 @@ export default function Navbar() {
           onClick={() => setMobileOpen(false)}
         >
           <Image
-            src="/logo.png"
+         src={headerSettings?.siteLogo || "/logo.png"}
             alt="Physio Pilatees"
             width={160}
             height={40}
@@ -264,19 +322,29 @@ export default function Navbar() {
             transition={{ type: reducedMotion ? "tween" : "spring", stiffness: 520, damping: 38, duration: reducedMotion ? 0.08 : undefined }}
           />
 
-          <Link
-            href={ABOUT_LINK.href}
-            ref={(el) => {
-              linkRefs.current[0] = el;
-            }}
-            className={desktopRailLinkClass(routeActive(pathname, ABOUT_LINK.pathnameMatch))}
-            style={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? { color: ACCENT } : undefined}
-            aria-current={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? "page" : undefined}
-            onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
-            onFocus={(e) => movePillTo(e.currentTarget, true)}
-          >
-            {ABOUT_LINK.label}
-          </Link>
+       <Link
+  href={aboutLink.href}
+  ref={(el) => {
+    linkRefs.current[0] = el;
+  }}
+  className={desktopRailLinkClass(
+    routeActive(pathname, aboutLink.pathnameMatch)
+  )}
+  style={
+    routeActive(pathname, aboutLink.pathnameMatch)
+      ? { color: ACCENT }
+      : undefined
+  }
+  aria-current={
+    routeActive(pathname, aboutLink.pathnameMatch)
+      ? "page"
+      : undefined
+  }
+  onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
+  onFocus={(e) => movePillTo(e.currentTarget, true)}
+>
+  {aboutLink.label}
+</Link>
 
           <div
             className="relative flex items-center py-0.5"
@@ -315,7 +383,8 @@ export default function Navbar() {
                 className="absolute left-1/2 top-full z-[60] mt-2 w-max min-w-[13.75rem] -translate-x-1/2 rounded-xl border border-neutral-200/90 bg-white py-1.5 shadow-[0_20px_52px_-24px_rgba(0,0,0,0.28)] dark:border-slate-600 dark:bg-[#1e293b]"
                 onMouseEnter={openServicesMenuHover}
               >
-                {SERVICE_LINKS.map(({ label, href, pathnameMatch }) => {
+                {serviceLinks.map(
+  ({ label, href, pathnameMatch }: any) => {
                   const active = routeActive(pathname, pathnameMatch);
                   return (
                     <Link
@@ -337,7 +406,8 @@ export default function Navbar() {
             ) : null}
           </div>
 
-          {OTHER_NAV_LINKS.map(({ label, href, pathnameMatch }, i) => {
+          {otherLinks.map(
+  ({ label, href, pathnameMatch }: any, i: number) => {
             const idx = 2 + i;
             const active = routeActive(pathname, pathnameMatch);
             return (
@@ -438,46 +508,77 @@ export default function Navbar() {
                         Services
                         <FiChevronDown className={`size-4 opacity-55 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} aria-hidden />
                       </button>
-                      <div className={`ml-4 flex flex-col gap-1 border-l border-neutral-200/90 pl-3 dark:border-slate-600 ${mobileServicesOpen ? "pb-1" : "hidden"}`}>
-                        {SERVICE_LINKS.map(({ label, href, pathnameMatch }) => {
-                          const active = routeActive(pathname, pathnameMatch);
-                          return (
-                            <Link
-                              key={label}
-                              href={href}
-                              onClick={() => {
-                                setMobileOpen(false);
-                              }}
-                              className={[
-                                `${navFont} ${navMobileSize} block rounded-lg px-3 py-2.5 no-underline active:bg-neutral-200/50`,
-                                active ? "bg-white font-semibold shadow-sm ring-1 ring-black/[0.05] dark:bg-[#334155] dark:ring-slate-500" : "text-neutral-800 hover:bg-white/85 dark:text-slate-100 dark:hover:bg-slate-700/50",
-                              ].join(" ")}
-                              style={active ? { color: ACCENT } : undefined}
-                              aria-current={active ? "page" : undefined}
-                            >
-                              {label}
-                            </Link>
-                          );
-                        })}
-                      </div>
-                      {OTHER_NAV_LINKS.map(({ label, href, pathnameMatch }) => {
-                        const active = routeActive(pathname, pathnameMatch);
-                        return (
-                          <Link
-                            key={label}
-                            href={href}
-                            onClick={() => setMobileOpen(false)}
-                            className={[
-                              `${navFont} ${navMobileSize} block rounded-xl px-3 py-3.5 no-underline active:bg-neutral-200/50`,
-                              active ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600" : "text-neutral-800 hover:bg-white/90 dark:text-slate-100 dark:hover:bg-slate-800/80",
-                            ].join(" ")}
-                            style={active ? { color: ACCENT } : undefined}
-                            aria-current={active ? "page" : undefined}
-                          >
-                            {label}
-                          </Link>
-                        );
-                      })}
+                      <div
+  className={`ml-4 flex flex-col gap-1 border-l border-neutral-200/90 pl-3 dark:border-slate-600 ${
+    mobileServicesOpen ? "pb-1" : "hidden"
+  }`}
+>
+  {serviceLinks.map((item: any, index: number) => {
+    const active = routeActive(
+      pathname,
+      item.pathnameMatch
+    );
+
+    return (
+      <Link
+        key={item.label || index}
+        href={item.href}
+        onClick={() => {
+          setMobileOpen(false);
+          setMobileServicesOpen(false);
+        }}
+        className={[
+          `${navFont} ${navMobileSize} block rounded-lg px-3 py-2.5 no-underline active:bg-neutral-200/50`,
+          active
+            ? "bg-white font-semibold shadow-sm ring-1 ring-black/[0.05] dark:bg-[#334155] dark:ring-slate-500"
+            : "text-neutral-800 hover:bg-white/85 dark:text-slate-100 dark:hover:bg-slate-700/50",
+        ].join(" ")}
+        style={
+          active
+            ? { color: ACCENT }
+            : undefined
+        }
+        aria-current={
+          active ? "page" : undefined
+        }
+      >
+        {item.label}
+      </Link>
+    );
+  })}
+</div>
+                   {otherLinks.map((item: any, index: number) => {
+  const active = routeActive(
+    pathname,
+    item.pathnameMatch
+  );
+
+  return (
+    <Link
+      key={item.label || index}
+      href={item.href}
+      onClick={() => {
+        setMobileOpen(false);
+      }}
+      className={[
+        `${navFont} ${navMobileSize} block rounded-xl px-3 py-3.5 no-underline active:bg-neutral-200/50`,
+        active
+          ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600"
+          : "text-neutral-800 hover:bg-white/90 dark:text-slate-100 dark:hover:bg-slate-800/80",
+      ].join(" ")}
+      style={
+        active
+          ? { color: ACCENT }
+          : undefined
+      }
+      aria-current={
+        active ? "page" : undefined
+      }
+    >
+      {item.label}
+    </Link>
+  );
+})}
                     </nav>
                   </motion.aside>
                 </div>
