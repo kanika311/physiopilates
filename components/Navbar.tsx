@@ -9,10 +9,14 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FiChevronDown, FiMenu, FiX } from "react-icons/fi";
 import { brand } from "@/lib/brand";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
-import ThemeToggle from "@/components/ThemeToggle";
+
+<<<<<<< HEAD
 
 
-
+=======
+const TEAL = brand.primary;
+const NAVY = brand.navy;
+>>>>>>> 631004f711992aaec971d8e7cae76cae5526e264
 
 type NavLink = {
   label: string;
@@ -48,6 +52,7 @@ export default function Navbar() {
   const [servicesMenuOpen, setServicesMenuOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const svcMenuCloseTimerRef = useRef<number | undefined>(undefined);
+  const servicesMenuRef = useRef<HTMLDivElement | null>(null);
   const headerRef = useRef<HTMLElement | null>(null);
 
   const [headerSettings, setHeaderSettings] = useState<any>(null);
@@ -225,14 +230,13 @@ const ACCENT =
   }, [mobileOpen, publishNavHeight]);
 
   const navFont =
-    "font-[family-name:var(--font-montserrat),ui-sans-serif,system-ui,sans-serif] not-italic font-semibold tracking-[0.06em]";
-  const navMobileSize = "text-[15px] leading-6";
-  const navDesktopSize =
-    "whitespace-nowrap text-[12px] leading-tight xl:text-[13px] xl:leading-snug 2xl:text-sm 2xl:leading-normal";
-  const desktopLinkBase = `${navFont} ${navDesktopSize} rounded-md px-2 py-1 no-underline transition-colors duration-200 xl:px-2.5 relative z-[1]`;
+    "font-[family-name:var(--font-inter),ui-sans-serif,system-ui,sans-serif] not-italic font-semibold";
+  const navMobileSize = "text-[17px] leading-7";
+  const navDesktopSize = "whitespace-nowrap text-[15px] leading-snug";
+  const desktopLinkBase = `${navFont} ${navDesktopSize} nav-link rounded-md px-2 py-1 no-underline transition-colors duration-200 relative z-[1]`;
 
-  /** Fixed vertical rhythm — no scroll-based height changes */
-  const headerPad = "py-2 sm:py-2.5";
+  /** Fixed vertical rhythm — thin bar, readable brand */
+  const headerPad = "py-1.5 sm:py-2";
 
   useEffect(() => {
     window.addEventListener("resize", syncPillActive, { passive: true });
@@ -245,37 +249,38 @@ const ACCENT =
 
   useEffect(() => {
     if (!servicesMenuOpen) return undefined;
-    function close() {
-      setServicesMenuOpen(false);
-    }
     function onEsc(e: KeyboardEvent) {
-      if (e.key === "Escape") close();
+      if (e.key === "Escape") setServicesMenuOpen(false);
+    }
+    function onClickOutside(e: MouseEvent) {
+      const root = servicesMenuRef.current;
+      if (root && !root.contains(e.target as Node)) setServicesMenuOpen(false);
     }
     window.addEventListener("keydown", onEsc);
-    window.addEventListener("scroll", close, { passive: true });
+    document.addEventListener("mousedown", onClickOutside);
     return () => {
       window.removeEventListener("keydown", onEsc);
-      window.removeEventListener("scroll", close);
+      document.removeEventListener("mousedown", onClickOutside);
     };
   }, [servicesMenuOpen]);
 
   function desktopRailLinkClass(active: boolean) {
     return [
       desktopLinkBase,
-      active ? "" : "text-neutral-800 hover:text-neutral-950 dark:text-slate-100 dark:hover:text-white",
+      active ? "" : "hover:opacity-90",
     ]
       .filter(Boolean)
       .join(" ");
   }
 
   /** Mobile drawer + overlay sit below sticky header via measured `--navbar-height` */
-  const belowNavTop = `top-[calc(var(--navbar-height,3.75rem)+env(safe-area-inset-top,0px))]`;
+  const belowNavTop = `top-[calc(var(--navbar-height,3.5rem)+env(safe-area-inset-top,0px))]`;
 
   return (
     <header
       ref={headerRef}
       className={[
-        "sticky top-0 z-[100] w-full border-b border-neutral-200/90 bg-white shadow-sm dark:border-slate-600 dark:bg-[#1e293b]",
+        "sticky top-0 z-[100] w-full overflow-visible border-b border-[rgb(18_52_77/0.08)] bg-white/95 shadow-sm backdrop-blur-md",
         "transition-shadow duration-200 ease-out",
         headerPad,
         mobileOpen ? "z-[520]" : "",
@@ -286,10 +291,11 @@ const ACCENT =
       <div className="relative mx-auto flex w-full max-w-[1480px] items-center justify-between gap-4 px-4 sm:gap-6 sm:px-6 lg:grid lg:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] lg:items-center lg:justify-items-stretch lg:px-8 xl:gap-10">
         <Link
           href="/"
-          className="relative z-[2] flex min-h-0 min-w-0 shrink-0 items-center leading-none no-underline mi-hover lg:justify-self-start"
+          className="relative z-[2] flex min-h-0 min-w-0 shrink-0 items-center gap-2 leading-none no-underline sm:gap-2.5 mi-hover lg:justify-self-start"
           aria-label="Physio Pilates home"
           onClick={() => setMobileOpen(false)}
         >
+<<<<<<< HEAD
           <Image
          src={headerSettings?.siteLogo || "/logo.png"}
             alt="Physio Pilatees"
@@ -299,6 +305,25 @@ const ACCENT =
             sizes="220px"
             priority
           />
+=======
+          <span className="relative block h-9 w-9 shrink-0 overflow-hidden rounded-full sm:h-10 sm:w-10">
+            <Image
+              src="/logo.png"
+              alt=""
+              fill
+              className="object-cover object-[center_12%] scale-[1.85] origin-top"
+              sizes="40px"
+              priority
+              aria-hidden
+            />
+          </span>
+          <span
+            className="font-[family-name:var(--font-cormorant),Georgia,serif] text-[1.05rem] font-semibold leading-none tracking-tight sm:text-[1.125rem]"
+            style={{ color: NAVY }}
+          >
+            Physio Pilates
+          </span>
+>>>>>>> 631004f711992aaec971d8e7cae76cae5526e264
         </Link>
 
         <nav
@@ -312,7 +337,7 @@ const ACCENT =
           <motion.span
             aria-hidden
             className="pointer-events-none absolute bottom-[2px] z-0 h-[3px] rounded-full bg-[transparent]"
-            style={{ backgroundColor: ACCENT }}
+            style={{ backgroundColor: TEAL }}
             initial={false}
             animate={{
               left: pill.left,
@@ -322,6 +347,7 @@ const ACCENT =
             transition={{ type: reducedMotion ? "tween" : "spring", stiffness: 520, damping: 38, duration: reducedMotion ? 0.08 : undefined }}
           />
 
+<<<<<<< HEAD
        <Link
   href={aboutLink.href}
   ref={(el) => {
@@ -345,8 +371,24 @@ const ACCENT =
 >
   {aboutLink.label}
 </Link>
+=======
+          <Link
+            href={ABOUT_LINK.href}
+            ref={(el) => {
+              linkRefs.current[0] = el;
+            }}
+            className={desktopRailLinkClass(routeActive(pathname, ABOUT_LINK.pathnameMatch))}
+            data-active={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? "true" : undefined}
+            aria-current={routeActive(pathname, ABOUT_LINK.pathnameMatch) ? "page" : undefined}
+            onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
+            onFocus={(e) => movePillTo(e.currentTarget, true)}
+          >
+            {ABOUT_LINK.label}
+          </Link>
+>>>>>>> 631004f711992aaec971d8e7cae76cae5526e264
 
           <div
+            ref={servicesMenuRef}
             className="relative flex items-center py-0.5"
             onMouseEnter={openServicesMenuHover}
             onMouseLeave={scheduleCloseServicesMenu}
@@ -357,7 +399,7 @@ const ACCENT =
                 linkRefs.current[1] = el;
               }}
               className={`${desktopRailLinkClass(servicesRouteActive || servicesMenuOpen)} inline-flex cursor-pointer items-center gap-0.5 border-0 bg-transparent p-0`}
-              style={servicesRouteActive ? { color: ACCENT } : undefined}
+              data-active={servicesRouteActive || servicesMenuOpen ? "true" : undefined}
               aria-expanded={servicesMenuOpen}
               aria-haspopup="menu"
               aria-controls="desktop-services-menu"
@@ -377,12 +419,11 @@ const ACCENT =
             </button>
             {servicesMenuOpen ? (
               <div
-                id="desktop-services-menu"
-                role="menu"
-                aria-orientation="vertical"
-                className="absolute left-1/2 top-full z-[60] mt-2 w-max min-w-[13.75rem] -translate-x-1/2 rounded-xl border border-neutral-200/90 bg-white py-1.5 shadow-[0_20px_52px_-24px_rgba(0,0,0,0.28)] dark:border-slate-600 dark:bg-[#1e293b]"
+                className="absolute left-1/2 top-full z-[200] min-w-[13.75rem] -translate-x-1/2 pt-2"
                 onMouseEnter={openServicesMenuHover}
+                onMouseLeave={scheduleCloseServicesMenu}
               >
+<<<<<<< HEAD
                 {serviceLinks.map(
   ({ label, href, pathnameMatch }: any) => {
                   const active = routeActive(pathname, pathnameMatch);
@@ -402,6 +443,33 @@ const ACCENT =
                     </Link>
                   );
                 })}
+=======
+                <div
+                  id="desktop-services-menu"
+                  role="menu"
+                  aria-orientation="vertical"
+                  className="rounded-[14px] border border-[rgb(18_52_77/0.08)] bg-white py-1.5 shadow-[var(--luxury-shadow)]"
+                >
+                  {SERVICE_LINKS.map(({ label, href, pathnameMatch }) => {
+                    const active = routeActive(pathname, pathnameMatch);
+                    return (
+                      <Link
+                        key={label}
+                        href={href}
+                        role="menuitem"
+                        className={`${navFont} nav-link block rounded-lg px-4 py-2.5 text-left text-[15px] font-semibold transition-colors ${
+                          active ? "bg-[rgb(15_109_109/0.08)]" : "hover:bg-[rgb(15_109_109/0.05)]"
+                        }`}
+                        data-active={active ? "true" : undefined}
+                        aria-current={active ? "page" : undefined}
+                        onClick={() => setServicesMenuOpen(false)}
+                      >
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
+>>>>>>> 631004f711992aaec971d8e7cae76cae5526e264
               </div>
             ) : null}
           </div>
@@ -418,7 +486,7 @@ const ACCENT =
                   linkRefs.current[idx] = el;
                 }}
                 className={desktopRailLinkClass(active)}
-                style={active ? { color: ACCENT } : undefined}
+                data-active={active ? "true" : undefined}
                 aria-current={active ? "page" : undefined}
                 onMouseEnter={(e) => movePillTo(e.currentTarget, true)}
                 onFocus={(e) => movePillTo(e.currentTarget, true)}
@@ -429,11 +497,10 @@ const ACCENT =
           })}
         </nav>
 
-        <div className="relative z-[2] flex min-h-9 shrink-0 items-center justify-end gap-1.5 lg:col-start-3 lg:row-start-1 lg:justify-self-end">
-          <ThemeToggle />
+        <div className="relative z-[2] flex min-h-8 shrink-0 items-center justify-end gap-1.5 lg:col-start-3 lg:row-start-1 lg:justify-self-end">
           <button
             type="button"
-            className="inline-flex min-h-9 min-w-9 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-800 shadow-sm transition-colors hover:bg-neutral-50 dark:border-slate-500 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 lg:hidden mi-hover"
+            className="inline-flex min-h-8 min-w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-800 shadow-sm transition-colors hover:bg-neutral-50 dark:border-slate-500 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 lg:hidden mi-hover"
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav-panel"
             onClick={() => setMobileOpen((o) => !o)}
@@ -485,12 +552,12 @@ const ACCENT =
                         href="/about"
                         onClick={() => setMobileOpen(false)}
                         className={[
-                          `${navFont} ${navMobileSize} flex items-center justify-between rounded-xl px-3 py-3.5 no-underline active:bg-neutral-200/50`,
+                          `${navFont} ${navMobileSize} nav-link flex items-center justify-between rounded-xl px-3 py-3.5 no-underline active:bg-neutral-100`,
                           routeActive(pathname, "/about")
-                            ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600"
-                            : "text-neutral-800 hover:bg-white/90 dark:text-slate-100 dark:hover:bg-slate-800/80",
+                            ? "bg-white shadow-sm ring-1 ring-black/[0.06]"
+                            : "hover:bg-white/90",
                         ].join(" ")}
-                        style={routeActive(pathname, "/about") ? { color: ACCENT } : undefined}
+                        data-active={routeActive(pathname, "/about") ? "true" : undefined}
                         aria-current={routeActive(pathname, "/about") ? "page" : undefined}
                       >
                         About
@@ -499,15 +566,16 @@ const ACCENT =
                       <button
                         type="button"
                         aria-expanded={mobileServicesOpen}
-                        className={`${navFont} ${navMobileSize} flex w-full items-center justify-between rounded-xl px-3 py-3.5 text-left text-neutral-800 no-underline active:bg-neutral-200/50 hover:bg-white/90 dark:text-slate-100 dark:active:bg-slate-700/50 dark:hover:bg-slate-800/80 ${
-                          servicesRouteActive ? "bg-white shadow-sm ring-1 ring-black/[0.06] dark:bg-[#1e293b] dark:ring-slate-600" : ""
+                        className={`${navFont} ${navMobileSize} nav-link flex w-full items-center justify-between rounded-xl px-3 py-3.5 text-left no-underline active:bg-neutral-100 hover:bg-white/90 ${
+                          servicesRouteActive ? "bg-white shadow-sm ring-1 ring-black/[0.06]" : ""
                         }`}
-                        style={servicesRouteActive ? { color: ACCENT } : undefined}
+                        data-active={servicesRouteActive ? "true" : undefined}
                         onClick={() => setMobileServicesOpen((o) => !o)}
                       >
                         Services
                         <FiChevronDown className={`size-4 opacity-55 transition-transform ${mobileServicesOpen ? "rotate-180" : ""}`} aria-hidden />
                       </button>
+<<<<<<< HEAD
                       <div
   className={`ml-4 flex flex-col gap-1 border-l border-neutral-200/90 pl-3 dark:border-slate-600 ${
     mobileServicesOpen ? "pb-1" : "hidden"
@@ -579,6 +647,48 @@ const ACCENT =
     </Link>
   );
 })}
+=======
+                      <div className={`ml-4 flex flex-col gap-1 border-l border-neutral-200/90 pl-3 dark:border-slate-600 ${mobileServicesOpen ? "pb-1" : "hidden"}`}>
+                        {SERVICE_LINKS.map(({ label, href, pathnameMatch }) => {
+                          const active = routeActive(pathname, pathnameMatch);
+                          return (
+                            <Link
+                              key={label}
+                              href={href}
+                              onClick={() => {
+                                setMobileOpen(false);
+                              }}
+                              className={[
+                                `${navFont} ${navMobileSize} nav-link block rounded-lg px-3 py-2.5 no-underline active:bg-neutral-100`,
+                                active ? "bg-white font-semibold shadow-sm ring-1 ring-black/[0.05]" : "hover:bg-white/85",
+                              ].join(" ")}
+                              data-active={active ? "true" : undefined}
+                              aria-current={active ? "page" : undefined}
+                            >
+                              {label}
+                            </Link>
+                          );
+                        })}
+                      </div>
+                      {OTHER_NAV_LINKS.map(({ label, href, pathnameMatch }) => {
+                        const active = routeActive(pathname, pathnameMatch);
+                        return (
+                          <Link
+                            key={label}
+                            href={href}
+                            onClick={() => setMobileOpen(false)}
+                            className={[
+                              `${navFont} ${navMobileSize} nav-link block rounded-xl px-3 py-3.5 no-underline active:bg-neutral-100`,
+                              active ? "bg-white shadow-sm ring-1 ring-black/[0.06]" : "hover:bg-white/90",
+                            ].join(" ")}
+                            data-active={active ? "true" : undefined}
+                            aria-current={active ? "page" : undefined}
+                          >
+                            {label}
+                          </Link>
+                        );
+                      })}
+>>>>>>> 631004f711992aaec971d8e7cae76cae5526e264
                     </nav>
                   </motion.aside>
                 </div>

@@ -201,56 +201,52 @@ export default function GalleryFilterGrid() {
                     group
                     relative
                     overflow-hidden
-                    rounded-xl
-                    sm:rounded-2xl
+                    rounded-[20px]
                     bg-neutral-100
                     aspect-[4/3]
                     sm:aspect-[5/4]
-                    shadow-[0_14px_40px_-28px_rgba(0,0,0,0.22)]
+                    shadow-[var(--luxury-shadow)]
                   "
                 >
                   <Image
                     src={item.src}
                     alt={item.alt}
-                    loading="lazy"
+                    fill
+                    unoptimized
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                     className="
-                      h-full
-                      w-full
                       object-cover
                       object-center
                       transition-transform
                       duration-500
-                      group-hover:scale-105
+                      group-hover:scale-110
                     "
                   />
 
-                  <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
+                  <div
+                    className="absolute inset-0 opacity-90 transition-opacity duration-300 group-hover:opacity-100"
+                    style={{
+                      background:
+                        "linear-gradient(to top, rgba(0,0,0,0.75), rgba(0,0,0,0.1))",
+                    }}
+                  />
 
-                  {item.badge && (
+                  {(item.badge || item.title) && (
                     <figcaption
                       className="
                         pointer-events-none
                         absolute
-                        bottom-2
-                        left-2
-                        sm:bottom-3
-                        sm:left-3
-                        rounded-full
-                        px-2.5
-                        py-1
-                        sm:px-3
-                        text-[10px]
-                        sm:text-xs
+                        inset-x-0
+                        bottom-0
+                        px-4
+                        py-3
+                        text-base
                         font-semibold
                         text-white
-                        shadow-md
                       "
-                      style={{
-                        backgroundColor:
-                          brand.teal,
-                      }}
+                      style={{ textShadow: "0 2px 12px rgba(0,0,0,0.55)" }}
                     >
-                      {item.badge}
+                      {item.badge || item.title}
                     </figcaption>
                   )}
                 </figure>

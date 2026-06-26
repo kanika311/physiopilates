@@ -1,61 +1,61 @@
 "use client";
 
 import { FiEye, FiTarget } from "react-icons/fi";
-import { brand } from "@/lib/brand";
+import { motion, useReducedMotion } from "framer-motion";
 
+import Reveal from "@/components/luxury/Reveal";
+import SectionHeading from "@/components/luxury/SectionHeading";
+import { StaggerGrid, StaggerItem } from "@/components/luxury/Stagger";
+import { brand, SECTION_MAX } from "@/lib/brand";
+
+const items = [
+  {
+    title: "Our Mission",
+    text: "To guide every individual on a journey of holistic recovery — combining physiotherapy with the mindfulness of Pilates to restore balance and strength.",
+    Icon: FiTarget,
+  },
+  {
+    title: "Our Vision",
+    text: "To create a world where wellness is a lifestyle — a community that embraces conscious movement, self-awareness, and inner harmony.",
+    Icon: FiEye,
+  },
+];
 
 export default function MissionVisionSection() {
+  const reduce = useReducedMotion();
+
   return (
-    <section id="purpose" className="bg-[#fdfbf7] px-4 py-16 dark:bg-[#0f172a] md:py-24">
-      <div className="mx-auto max-w-6xl text-center">
-        <div
-          className="inline-flex items-center gap-2 rounded-full bg-[rgba(179,147,89,0.14)] px-5 py-1.5 dark:bg-slate-800/90"
-        >
-          <span className="text-[10px] font-semibold uppercase tracking-[0.22em] text-[#b39359] dark:text-amber-200/95">
-            ● OUR PURPOSE
-          </span>
-        </div>
+    <section id="purpose" className="luxury-section px-4 sm:px-6" style={{ backgroundColor: brand.surfaceMuted }}>
+      <div className={`mx-auto ${SECTION_MAX} text-center`}>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Our purpose"
+            title="Mission & Vision"
+            description="The foundation of Physio Pilates lies in nurturing physical and mental wellness."
+          />
+        </Reveal>
 
-        <h2 className="mt-6 text-3xl font-bold text-[#b39359] dark:text-slate-100 sm:text-4xl md:text-[2.75rem]">
-          Mission & Vision
-        </h2>
-
-        <p className="mx-auto mt-5 max-w-2xl text-[15px] leading-relaxed text-neutral-600 dark:text-slate-300 md:text-lg">
-          The foundation of Physio Pilates lies in nurturing physical and mental wellness — empowering individuals to
-          find harmony between movement, strength, and mindfulness.
-        </p>
-
-        <div className="mt-14 grid gap-8 md:grid-cols-2">
-          <article className="flex flex-col items-center rounded-[2.5rem] border border-transparent bg-white px-8 py-12 text-center shadow-[0_24px_60px_-16px_rgba(0,0,0,0.12)] dark:border-[#334155] dark:bg-[#1e293b] dark:shadow-none md:px-12 md:py-14">
-            <div
-              className="flex size-20 items-center justify-center rounded-full dark:bg-teal-900/35"
-              style={{ backgroundColor: brand.mintBg }}
-            >
-              <FiTarget className="text-3xl text-[#4ecdc4] dark:text-teal-300" aria-hidden />
-            </div>
-            <h3 className="mt-8 text-xl font-bold text-[#b39359] dark:text-slate-100">Our Mission</h3>
-            <p className="mt-5 text-[15px] leading-relaxed text-neutral-600 dark:text-slate-300">
-              To guide every individual on a journey of holistic recovery and renewal — combining the precision of
-              physiotherapy with the mindfulness of Pilates. We aim to restore balance, enhance strength, and promote
-              healing through purposeful movement.
-            </p>
-          </article>
-
-          <article className="flex flex-col items-center rounded-[2.5rem] border border-transparent bg-white px-8 py-12 text-center shadow-[0_24px_60px_-16px_rgba(0,0,0,0.12)] dark:border-[#334155] dark:bg-[#1e293b] dark:shadow-none md:px-12 md:py-14">
-            <div
-              className="flex size-20 items-center justify-center rounded-full dark:bg-teal-900/35"
-              style={{ backgroundColor: brand.mintBg }}
-            >
-              <FiEye className="text-3xl text-[#4ecdc4] dark:text-teal-300" aria-hidden />
-            </div>
-            <h3 className="mt-8 text-xl font-bold text-[#b39359] dark:text-slate-100">Our Vision</h3>
-            <p className="mt-5 text-[15px] leading-relaxed text-neutral-600 dark:text-slate-300">
-              To create a world where wellness is not just recovery, but a lifestyle. We envision a community that embraces
-              conscious movement, self-awareness, and inner harmony — inspiring a healthier, stronger, and more balanced way
-              of living.
-            </p>
-          </article>
-        </div>
+        <StaggerGrid className="mt-10 grid gap-6 md:grid-cols-2">
+          {items.map(({ title, text, Icon }) => (
+            <StaggerItem key={title}>
+              <motion.article
+                className="luxury-card flex flex-col items-center p-7 text-center md:p-8"
+                whileHover={reduce ? undefined : { y: -4 }}
+              >
+                <span
+                  className="flex size-14 items-center justify-center rounded-xl text-white"
+                  style={{ backgroundColor: brand.primary }}
+                >
+                  <Icon className="text-2xl" aria-hidden />
+                </span>
+                <h3 className="mt-5 !text-xl font-semibold" style={{ color: brand.navy }}>
+                  {title}
+                </h3>
+                <p className="body-text mt-4 !text-[16px]">{text}</p>
+              </motion.article>
+            </StaggerItem>
+          ))}
+        </StaggerGrid>
       </div>
     </section>
   );

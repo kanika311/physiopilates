@@ -7,6 +7,7 @@
     "dev": "next dev",
     "dev:fresh": "node scripts/kill-listeners.mjs && npm run clean && next dev",
     "build": "next build",
+    "build:fresh": "node scripts/kill-listeners.mjs && npm run clean && next build",
     "start": "next start",
     "lint": "eslint"
   },

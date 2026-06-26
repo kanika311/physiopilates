@@ -47,9 +47,9 @@ export default function ServiceGallerySlider({
   const [index, setIndex] = useState(0);
 
   const slideKeys = useMemo(() => {
-    if (!grouped) return slides.map((s) => s.src);
-    return slideGroups!.map((g, i) => g.map((x) => x.src).join("|") || `${i}`);
-  }, [grouped, slideGroups, slides]);
+    if (!grouped) return slides.map((_, i) => `slide-${i}`);
+    return slideGroups!.map((_, i) => `slide-${i}`);
+  }, [grouped, slideGroups, slides.length]);
 
   const go = useCallback(
     (dir: -1 | 1) => {
@@ -104,9 +104,9 @@ export default function ServiceGallerySlider({
                     className="flex w-full min-w-full shrink-0 gap-3 sm:gap-4 md:gap-6"
                     aria-hidden={gi !== index}
                   >
-                    {group.map((img) => (
+                    {group.map((img, ii) => (
                       <figure
-                        key={`${slideKeys[gi]}-${img.src}`}
+                        key={`${gi}-${ii}`}
                         className="relative aspect-[4/3] min-h-0 flex-1 overflow-hidden rounded-2xl bg-neutral-200 shadow-[0_12px_40px_-24px_rgba(0,0,0,0.22)] sm:aspect-[5/4] md:rounded-[1.25rem]"
                       >
                         <Image
@@ -125,7 +125,7 @@ export default function ServiceGallerySlider({
               {!grouped &&
                 slides.map((slide, i) => (
                   <div
-                    key={slide.src}
+                    key={`slide-${i}`}
                     className="relative aspect-[3/4] w-full min-w-full shrink-0 md:aspect-[16/10]"
                     aria-hidden={i !== index}
                   >

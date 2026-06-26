@@ -3,11 +3,18 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --navbar-height: 68px;
+  --navbar-height: 52px;
   --page-bg: #ffffff;
-  --page-fg: #171717;
-  --muted-surface: #fdfbf7;
-  --accent: #6b8f71;
+  --page-fg: #374151;
+  --text-body: #374151;
+  --text-subtitle: #4b5563;
+  --heading-navy: #12344d;
+  --label-teal: #0f6d6d;
+  --muted-surface: #f7fafa;
+  --accent: #0f6d6d;
+  --accent-gold: #d4b06a;
+  --luxury-shadow: 0 8px 40px -12px rgb(15 109 109 / 0.12);
+  --luxury-radius: 18px;
 
   /* Admin — derived from brand tokens only */
   --admin-bg: #fafafa;
@@ -51,24 +58,116 @@ html {
 body {
   overflow-x: hidden;
   background-color: var(--page-bg);
-  color: var(--page-fg);
+  color: var(--text-body);
   color-scheme: light dark;
-  line-height: 1.625;
-  letter-spacing: 0.012em;
+  font-size: 18px;
+  line-height: 1.8;
+  letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-/* Calmer headings + bodies sitewide (Montserrat comes from layout <body>) */
+/* —— Premium typography —— */
 h1,
 h2,
 h3,
 h4,
 h5,
 h6 {
+  font-family: var(--font-cormorant), Georgia, serif;
+  font-weight: 600;
   text-wrap: balance;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.015em;
+  color: var(--heading-navy);
+}
+
+h1 {
+  font-weight: 700;
+  font-size: clamp(2.75rem, 5.5vw, 4.5rem);
+  line-height: 1.08;
+}
+
+h2 {
+  font-size: clamp(2.25rem, 4.2vw, 3.5rem);
+  line-height: 1.12;
+}
+
+h3 {
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.2;
+}
+
+/* White headings on dark/image backgrounds */
+.surface-dark :is(h1, h2, h3, h4, h5, h6),
+.heading-on-dark {
+  color: #ffffff !important;
+}
+
+.hero-heading-on-dark {
+  text-shadow:
+    0 2px 28px rgb(0 0 0 / 0.55),
+    0 1px 4px rgb(0 0 0 / 0.45);
+}
+
+.hero-subtitle-on-dark {
+  color: #ffffff !important;
+  font-weight: 500;
+  text-shadow:
+    0 2px 18px rgb(0 0 0 / 0.5),
+    0 1px 3px rgb(0 0 0 / 0.4);
+}
+
+.hero-text-panel {
+  background: transparent;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.section-label {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--label-teal);
+}
+
+.surface-dark .section-label,
+.section-label-on-dark {
+  color: #ffffff !important;
+  text-shadow:
+    0 2px 14px rgb(0 0 0 / 0.5),
+    0 1px 3px rgb(0 0 0 / 0.35);
+}
+
+.body-text {
+  font-size: 18px;
+  line-height: 1.8;
+  color: var(--text-body);
+}
+
+.subtitle-text {
+  font-size: 20px;
+  line-height: 1.7;
+  font-weight: 400;
+  color: var(--text-subtitle);
+}
+
+.surface-dark .subtitle-text,
+.subtitle-on-dark {
+  color: #ffffff;
+}
+
+.nav-link {
+  color: var(--heading-navy);
+  transition: color 0.2s ease;
+}
+
+.nav-link:hover,
+.nav-link:focus-visible,
+.nav-link[data-active="true"] {
+  color: var(--label-teal);
 }
 
 p {
@@ -76,8 +175,57 @@ p {
 }
 
 ::selection {
-  background-color: rgb(107 143 113 / 0.28);
+  background-color: rgb(15 109 109 / 0.18);
   color: inherit;
+}
+
+.luxury-section {
+  padding-block: clamp(2.5rem, 5.5vw, 5.625rem);
+}
+
+.premium-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 2px solid #0f6d6d;
+  border-radius: 12px;
+  background-color: #ffffff;
+  color: #0f6d6d !important;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-decoration: none;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease,
+    border-color 0.3s ease,
+    box-shadow 0.3s ease,
+    transform 0.3s ease;
+}
+
+.premium-btn:hover {
+  background-color: #0f6d6d;
+  color: #ffffff !important;
+  box-shadow: 0 12px 32px -12px rgb(15 109 109 / 0.35);
+}
+
+.luxury-card {
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1px solid rgb(18 52 77 / 0.06);
+  box-shadow: var(--luxury-shadow);
+  transition: box-shadow 0.35s ease, transform 0.35s ease;
+}
+
+.luxury-card:hover {
+  box-shadow: 0 20px 50px -18px rgb(15 109 109 / 0.22);
+  transform: translateY(-4px) scale(1.02);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .luxury-card:hover {
+    transform: none;
+  }
 }
 
 /* Hero carousel: teal bar fills left → right over each autoplay interval */

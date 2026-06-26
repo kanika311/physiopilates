@@ -1,401 +1,133 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
 import Image from "next/image";
-import Link from "next/link";
+import { motion, useReducedMotion } from "framer-motion";
+import { FiCheck, FiClock, FiPhone } from "react-icons/fi";
 
-import {
-  FiCheck,
-  FiClock,
-  FiPhone,
-} from "react-icons/fi";
+import PremiumButton from "@/components/luxury/PremiumButton";
+import Reveal from "@/components/luxury/Reveal";
+import SectionHeading from "@/components/luxury/SectionHeading";
+import { StaggerGrid, StaggerItem } from "@/components/luxury/Stagger";
+import { brand, SECTION_MAX } from "@/lib/brand";
+import { contactPhoneHref } from "@/lib/contact";
 
-import { brand } from "@/lib/brand";
-
-const GOLD_CARD = "#b89b72";
-const BG = "#faf8f4";
-
-/**
- * COURSE TYPE
- */
 type Course = {
   _id: string;
-
   title: string;
-
   image: string;
-
   imageAlt: string;
-
   duration: string;
-
   description: string;
-
   features: string[];
-
   price: string;
 };
 
 export default function CoursesProgramsSection() {
-  /**
-   * COURSES STATE
-   */
-  const [courses, setCourses] =
-    useState<Course[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
+  const reduce = useReducedMotion();
 
-  /**
-   * LOADING STATE
-   */
-  const [loading, setLoading] =
-    useState(true);
-
-  /**
-   * FETCH API
-   */
   useEffect(() => {
-    fetchCourses();
-  }, []);
-
-  /**
-   * FETCH COURSES
-   */
-  const fetchCourses =
-    async () => {
-      try {
-        /**
-         * API CALL
-         */
-        const response =
-          await fetch(
-            "/api/courses",
-            {
-              method:
-                "GET",
-
-              cache:
-                "no-store",
-            }
-          );
-
-        /**
-         * JSON RESPONSE
-         */
-        const result =
-          await response.json();
-
-        console.log(
-          "COURSES:",
-          result
-        );
-
-        /**
-         * SUCCESS
-         */
-        if (
-          result.success
-        ) {
-          /**
-           * FORMAT DATA
-           */
-          const formattedCourses =
-            result.data.map(
-              (
-                item: any
-              ) => ({
-                _id:
-                  item._id,
-
-                title:
-                  item.title ||
-                  "",
-
-                image:
-                  item.image,
-
-                imageAlt:
-                  item.imageAlt ||
-                  item.title,
-
-                duration:
-                  item.duration ||
-                  "",
-
-                description:
-                  item.description ||
-                  "",
-
-                features:
-                  item.features ||
-                  [],
-
-                price:
-                  item.price ||
-                  "",
-              })
-            );
-
-          /**
-           * SET COURSES
-           */
+    fetch("/api/courses", { cache: "no-store" })
+      .then((r) => r.json())
+      .then((result) => {
+        if (result.success) {
           setCourses(
-            formattedCourses
+            result.data.map((item: Record<string, unknown>) => ({
+              _id: String(item._id),
+              title: String(item.title ?? ""),
+              image: String(item.image ?? ""),
+              imageAlt: String(item.imageAlt ?? item.title ?? "Course"),
+              duration: String(item.duration ?? ""),
+              description: String(item.description ?? ""),
+              features: Array.isArray(item.features) ? (item.features as string[]) : [],
+              price: String(item.price ?? ""),
+            })),
           );
         }
-      } catch (error) {
-        console.log(
-          "Courses Error:",
-          error
-        );
-      } finally {
-        /**
-         * STOP LOADING
-         */
-        setLoading(false);
-      }
-    };
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
-    <section
-      id="courses-programs"
-      className="px-4 py-16 md:py-24 lg:py-28"
-      style={{
-        backgroundColor:
-          BG,
-      }}
-      aria-labelledby="courses-programs-heading"
-    >
-      <div className="mx-auto max-w-6xl">
-        {/* HEADER */}
-        <header className="text-center">
-          <div
-            className="inline-flex items-center gap-2 rounded-full border px-5 py-1.5 uppercase"
-            style={{
-              borderColor:
-                "rgba(184,155,114,0.55)",
+    <section id="courses-programs" className="luxury-section bg-white px-4 sm:px-6" aria-labelledby="courses-programs-heading">
+      <div className={`mx-auto ${SECTION_MAX}`}>
+        <Reveal>
+          <SectionHeading
+            eyebrow="Our courses"
+            title="Explore Our Teacher Training Programs"
+            description="Gain the knowledge, confidence, and guidance to become a certified instructor."
+          />
+        </Reveal>
 
-              backgroundColor:
-                "rgba(184,155,114,0.06)",
-            }}
-          >
-            <span
-              className="size-1.5 shrink-0 rounded-full"
-              style={{
-                backgroundColor:
-                  GOLD_CARD,
-              }}
-              aria-hidden
-            />
+        {loading ? (
+          <p className="subtitle-text mt-10 text-center">Loading courses...</p>
+        ) : null}
 
-            <span
-              className="text-[10px] font-semibold tracking-[0.26em]"
-              style={{
-                color:
-                  GOLD_CARD,
-              }}
-            >
-              Our Courses
-            </span>
-          </div>
-
-          <h2
-            id="courses-programs-heading"
-            className="mx-auto mt-7 max-w-3xl font-[family-name:var(--font-playfair)] text-[2rem] font-bold tracking-tight sm:text-4xl md:text-[2.4rem]"
-            style={{
-              color:
-                GOLD_CARD,
-            }}
-          >
-            Explore Our
-            Teacher
-            Training
-            Programs
-          </h2>
-
-          <p
-            className="mx-auto mt-5 max-w-2xl text-[16px] leading-relaxed"
-            style={{
-              color:
-                brand.textMuted,
-            }}
-          >
-            Gain the
-            knowledge,
-            confidence,
-            and guidance
-            to become a
-            certified
-            instructor.
-          </p>
-        </header>
-
-        {/* LOADING */}
-        {loading && (
-          <div className="mt-16 text-center text-neutral-500">
-            Loading
-            courses...
-          </div>
-        )}
-
-        {/* COURSES */}
-        {!loading && (
-          <div className="mt-14 grid gap-8 lg:grid-cols-2">
-            {courses.map(
-              (
-                course
-              ) => (
-                <article
-                  key={
-                    course._id
-                  }
-                  className="flex flex-col overflow-hidden rounded-[1.75rem] border border-neutral-100/90 bg-white shadow-[0_20px_50px_-32px_rgba(0,0,0,0.18)]"
+        {!loading && courses.length > 0 ? (
+          <StaggerGrid className="mt-10 grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
+            {courses.map((course) => (
+              <StaggerItem key={course._id}>
+                <motion.article
+                  className="luxury-card flex h-full flex-col overflow-hidden"
+                  whileHover={reduce ? undefined : { y: -4, scale: 1.01 }}
+                  transition={{ duration: 0.3 }}
                 >
-                  {/* IMAGE */}
-                  <div className="relative aspect-[16/10] w-full shrink-0">
+                  <div className="relative aspect-[5/3] w-full shrink-0 overflow-hidden">
                     <Image
-                      src={
-                        course.image
-                      }
-                      alt={
-                        course.imageAlt
-                      }
-                      width={600}
-                      height={300}
-                      className="h-full w-full object-cover object-center"
+                      src={course.image}
+                      alt={course.imageAlt}
+                      fill
+                      unoptimized
+                      className="object-cover object-center"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     />
                   </div>
 
-                  {/* CONTENT */}
-                  <div className="flex flex-1 flex-col px-6 pb-8 pt-7 md:px-8">
-                    {/* TITLE */}
-                    <h3
-                      className="font-[family-name:var(--font-playfair)] text-xl font-bold leading-snug md:text-[1.35rem]"
-                      style={{
-                        color:
-                          GOLD_CARD,
-                      }}
-                    >
-                      {
-                        course.title
-                      }
+                  <div className="flex flex-1 flex-col p-5">
+                    <h3 className="!text-[1.2rem] !leading-snug font-semibold" style={{ color: brand.navy }}>
+                      {course.title}
                     </h3>
 
-                    {/* DURATION */}
-                    <p
-                      className="mt-3 flex items-center gap-2 text-[14px] font-medium"
-                      style={{
-                        color:
-                          brand.tealIcon,
-                      }}
-                    >
-                      <FiClock
-                        className="size-4 shrink-0 opacity-90"
-                        aria-hidden
-                      />
-
-                      <span>
-                        {
-                          course.duration
-                        }
-                      </span>
+                    <p className="mt-2 flex items-center gap-2 text-sm font-medium" style={{ color: brand.primary }}>
+                      <FiClock className="size-4 shrink-0" aria-hidden />
+                      <span>{course.duration}</span>
                     </p>
 
-                    {/* DESCRIPTION */}
-                    <p
-                      className="mt-4 text-[15px] leading-relaxed"
-                      style={{
-                        color:
-                          "#718096",
-                      }}
-                    >
-                      {
-                        course.description
-                      }
-                    </p>
+                    <p className="body-text mt-3 line-clamp-3 !text-[16px]">{course.description}</p>
 
-                    {/* FEATURES */}
-                    <ul className="mt-6 space-y-3">
-                      {course.features.map(
-                        (
-                          feature
-                        ) => (
-                          <li
-                            key={
-                              feature
-                            }
-                            className="flex items-start gap-2.5 text-[14px]"
-                            style={{
-                              color:
-                                "#718096",
-                            }}
-                          >
-                            <FiCheck
-                              className="mt-0.5 shrink-0 text-base"
-                              style={{
-                                color:
-                                  brand.tealIcon,
-                              }}
-                              aria-hidden
-                            />
-
-                            <span>
-                              {
-                                feature
-                              }
-                            </span>
+                    {course.features.length > 0 ? (
+                      <ul className="mt-4 space-y-2">
+                        {course.features.slice(0, 3).map((feature) => (
+                          <li key={feature} className="flex items-start gap-2 text-sm" style={{ color: brand.textBody }}>
+                            <FiCheck className="mt-0.5 shrink-0" style={{ color: brand.primary }} aria-hidden />
+                            <span>{feature}</span>
                           </li>
-                        )
-                      )}
-                    </ul>
+                        ))}
+                      </ul>
+                    ) : null}
 
-                    {/* FOOTER */}
-                    <div className="mt-auto flex flex-wrap items-center justify-between gap-4 border-t border-neutral-100 pt-7">
-                      {/* PRICE */}
-                      <p
-                        className="font-[family-name:var(--font-playfair)] text-2xl font-bold"
-                        style={{
-                          color:
-                            GOLD_CARD,
-                        }}
-                      >
-                        {
-                          course.price
-                        }
+                    <div className="mt-auto flex flex-wrap items-center justify-between gap-3 border-t pt-4" style={{ borderColor: brand.border }}>
+                      <p className="text-xl font-bold" style={{ color: brand.gold }}>
+                        {course.price}
                       </p>
-
-                      {/* BUTTON */}
-                      <Link
-                        href="tel:+919717505326"
-                        className="inline-flex shrink-0 items-center gap-2 rounded-full px-6 py-2.5 text-[14px] font-semibold text-white shadow-md"
-                        style={{
-                          backgroundColor:
-                            brand.teal,
-                        }}
-                      >
-                        <FiPhone
-                          className="size-4"
-                          aria-hidden
-                        />
-
+                      <PremiumButton href={`tel:${contactPhoneHref}`} external className="px-5 py-2 text-[13px]">
+                        <FiPhone className="size-4" aria-hidden />
                         Call Now
-                      </Link>
+                      </PremiumButton>
                     </div>
                   </div>
-                </article>
-              )
-            )}
-          </div>
-        )}
+                </motion.article>
+              </StaggerItem>
+            ))}
+          </StaggerGrid>
+        ) : null}
 
-        {/* EMPTY */}
-        {!loading &&
-          courses.length ===
-            0 && (
-            <p className="mt-16 text-center text-neutral-500">
-              No courses
-              found.
-            </p>
-          )}
+        {!loading && courses.length === 0 ? (
+          <p className="subtitle-text mt-10 text-center">No courses found.</p>
+        ) : null}
       </div>
     </section>
   );

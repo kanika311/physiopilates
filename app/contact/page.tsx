@@ -18,8 +18,8 @@ export default function ContactPage() {
     <>
     <Navbar/>
       <ContactHero />
-      <section className="relative z-10 -mt-px bg-white px-4 pb-4 pt-14 dark:bg-[#0f172a] md:pt-16 lg:pb-8">
-        <div className="mx-auto grid max-w-6xl gap-14 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-x-14 lg:gap-y-16">
+      <section className="relative z-10 bg-white px-4 py-8 sm:px-6 sm:py-10">
+        <div className="mx-auto grid max-w-6xl gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-8">
           <ContactInformationSection />
           <ContactFormSection />
         </div>

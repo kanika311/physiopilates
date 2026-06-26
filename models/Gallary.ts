@@ -18,6 +18,7 @@ export interface IGallery
   alt: string;
   categories: GalleryCategoryId[];
   badge?: string;
+  isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -56,6 +57,11 @@ const GallerySchema =
       badge: {
         type: String,
         default: "",
+      },
+
+      isActive: {
+        type: Boolean,
+        default: true,
       },
     },
     {

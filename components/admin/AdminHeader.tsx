@@ -84,7 +84,7 @@ const handleLogout = async () => {
             <Menu size={22} style={{ color: "var(--page-fg)" }} />
           </button>
 
-          <div>
+          {/* <div>
             <h1
               className="text-xl font-bold tracking-tight md:text-2xl"
               style={{ color: "var(--page-fg)" }}
@@ -98,7 +98,7 @@ const handleLogout = async () => {
             >
               Welcome back, Admin
             </p>
-          </div>
+          </div> */}
         </div>
 
         {/* Right Side */}
