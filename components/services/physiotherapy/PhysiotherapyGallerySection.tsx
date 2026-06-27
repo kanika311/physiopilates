@@ -1,4 +1,4 @@
-import ServiceGallerySlider from "@/components/ServiceGallerySlider";
+import DynamicServiceGallery from "@/components/services/DynamicServiceGallery";
 import { PHYSIO_GALLERY_IMAGES15 } from "@/lib/siteImages";
 
 const ALTS = [
@@ -19,22 +19,19 @@ const ALTS = [
   "Upper-body therapeutic movement and pacing",
 ] as const;
 
-const slides = PHYSIO_GALLERY_IMAGES15.map((src, i) => ({
+const FALLBACK_SLIDES = PHYSIO_GALLERY_IMAGES15.map((src, i) => ({
   src,
   alt: ALTS[i] ?? "Physiotherapy session",
 }));
 
-const PHYSIO_SLIDE_GROUPS = Array.from({ length: Math.ceil(slides.length / 3) }, (_, row) =>
-  slides.slice(row * 3, row * 3 + 3),
-);
-
 export default function PhysiotherapyGallerySection() {
   return (
-    <ServiceGallerySlider
+    <DynamicServiceGallery
       id="physio-gallery"
       headingId="physio-gallery-heading"
       title="Physiotherapy Gallery"
-      slideGroups={PHYSIO_SLIDE_GROUPS}
+      category="physiotherapy"
+      fallbackSlides={FALLBACK_SLIDES}
       sectionClassName="bg-white dark:bg-[#0f172a]"
     />
   );

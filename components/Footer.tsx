@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import type { IconType } from "react-icons";
 import {
   FaFacebookF,
@@ -17,7 +18,6 @@ import {
   contactAddressPlain,
   contactEmailDisplay,
   contactPhoneDisplay,
-  contactPhoneHref,
 } from "@/lib/contact";
 import { brand } from "@/lib/brand";
 import MailtoLink from "@/components/MailtoLink";
@@ -49,12 +49,25 @@ type SocialItem = {
   label: string;
 };
 
-const socialLinks: SocialItem[] = [
-  { Icon: FaInstagram, href: "https://www.instagram.com/pphysiopilates?igsh=aTN1c3VzNndrdDJ5", label: "Instagram" },
-  { Icon: FaFacebookF, href: "https://www.facebook.com/pphysiopilates/", label: "Facebook" },
-  { Icon: FaLinkedinIn, href: "https://www.linkedin.com/in/dr-surbhi-silori-pt-471630b4?utm_source=share_via&utm_content=profile&utm_medium=member_android", label: "LinkedIn" },
-  { Icon: FaYoutube, href: "https://youtube.com/@physiopilates6321?si=w8CytJCQKXfD-P-f", label: "YouTube" },
-];
+const DEFAULT_SOCIALS = {
+  instagram: "https://www.instagram.com/pphysiopilates?igsh=aTN1c3VzNndrdDJ5",
+  facebook: "https://www.facebook.com/pphysiopilates/",
+  linkedin:
+    "https://www.linkedin.com/in/dr-surbhi-silori-pt-471630b4?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+  youtube: "https://youtube.com/@physiopilates6321?si=w8CytJCQKXfD-P-f",
+};
+
+const DEFAULT_FOOTER = {
+  tagline:
+    "Transform your life through mindful movement, expert care & holistic healing.",
+  address: contactAddressPlain,
+  phone: contactPhoneDisplay,
+  email: contactEmailDisplay,
+  ...DEFAULT_SOCIALS,
+  copyright: "Physio Pilates| Powered by JCRM Technologies",
+};
+
+type FooterContent = typeof DEFAULT_FOOTER;
 
 function FooterLink({ href, label }: { href: string; label: string }) {
   return (
@@ -75,6 +88,45 @@ export default function Footer() {
   const pathname = usePathname() ?? "";
   const isContactPage = pathname === "/contact";
 
+  const [content, setContent] = useState<FooterContent>(DEFAULT_FOOTER);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/footer-settings", { cache: "no-store" });
+        const json = await res.json();
+        if (cancelled || !json?.success || !json.data) return;
+        const d = json.data;
+        setContent({
+          tagline: d.tagline || DEFAULT_FOOTER.tagline,
+          address: d.address || DEFAULT_FOOTER.address,
+          phone: d.phone || DEFAULT_FOOTER.phone,
+          email: d.email || DEFAULT_FOOTER.email,
+          instagram: d.instagram || DEFAULT_FOOTER.instagram,
+          facebook: d.facebook || DEFAULT_FOOTER.facebook,
+          linkedin: d.linkedin || DEFAULT_FOOTER.linkedin,
+          youtube: d.youtube || DEFAULT_FOOTER.youtube,
+          copyright: d.copyright || DEFAULT_FOOTER.copyright,
+        });
+      } catch {
+        /* keep defaults */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const phoneHref = `+${content.phone.replace(/\D/g, "")}`;
+
+  const socialLinks: SocialItem[] = [
+    { Icon: FaInstagram, href: content.instagram, label: "Instagram" },
+    { Icon: FaFacebookF, href: content.facebook, label: "Facebook" },
+    { Icon: FaLinkedinIn, href: content.linkedin, label: "LinkedIn" },
+    { Icon: FaYoutube, href: content.youtube, label: "YouTube" },
+  ].filter((s) => s.href);
+
   return (
     <footer id="contact" className={`relative ${footerSans}`}>
       <div className="h-px w-full" style={{ backgroundColor: brand.border }} aria-hidden />
@@ -84,7 +136,7 @@ export default function Footer() {
           <div className="flex min-w-0 flex-col items-start gap-3 lg:col-span-1">
             <Image src="/logo.png" alt="Physio Pilates" width={140} height={140} className="h-auto w-[120px] sm:w-[132px]" />
             <p className="mt-2 max-w-md body-text !text-[17px]">
-              Transform your life through mindful movement, expert care & holistic healing.
+              {content.tagline}
             </p>
             <div className="mt-4">
               <PremiumButton href="/contact" className="px-6 py-2.5 text-[13px]">
@@ -133,24 +185,24 @@ export default function Footer() {
                   <FiMapPin className="mt-0.5 shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
                   <address className="min-w-0 flex-1 not-italic leading-relaxed [overflow-wrap:anywhere]">
                     <span className="font-semibold text-[14px] sm:text-[15px]" style={{ color: brand.textBody }}>
-                      {contactAddressPlain}
+                      {content.address}
                     </span>
                   </address>
                 </li>
                 <li className="flex min-w-0 items-center gap-3">
                   <FiPhone className="shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
                   <a
-                    href={`tel:${contactPhoneHref}`}
+                    href={`tel:${phoneHref}`}
                     className="min-w-0 font-semibold no-underline transition-colors hover:underline"
                     style={{ color: brand.textBody }}
                   >
-                    {contactPhoneDisplay}
+                    {content.phone}
                   </a>
                 </li>
                 <li className="flex min-w-0 items-start gap-3">
                   <FiMail className="mt-0.5 shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
                   <MailtoLink
-                    email={contactEmailDisplay}
+                    email={content.email}
                     className="min-w-0 flex-1 font-semibold leading-snug text-[#222222] underline underline-offset-4 decoration-neutral-400/80 transition-colors hover:decoration-[#0F6D6D] sm:text-[15px]"
                   />
                 </li>
@@ -183,8 +235,7 @@ export default function Footer() {
         style={{ backgroundColor: brand.primary }}
       >
         <p className="mx-auto max-w-4xl">
-          © {new Date().getFullYear()} Physio Pilates| Powered by{" "}
-          <span className="font-semibold underline underline-offset-2">JCRM Technologies</span>
+          © {new Date().getFullYear()} {content.copyright}
         </p>
       </div>
     </footer>

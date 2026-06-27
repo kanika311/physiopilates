@@ -19,6 +19,10 @@ import {
   Settings,
   Shield,
   GraduationCap,
+  Quote,
+  FileSignature,
+  ImageIcon,
+  PanelBottom,
 } from "lucide-react";
 
 const menuItems = [
@@ -53,7 +57,12 @@ const menuItems = [
   {
     title: "Blog",
     icon: FileText,
-    href: "/admin/blogs/create",
+    href: "/admin/blogs",
+  },
+  {
+    title: "Testimonials",
+    icon: Quote,
+    href: "/admin/testimonials",
   },
   {
     title: "Contact",
@@ -61,11 +70,7 @@ const menuItems = [
     href: "/admin/contact",
   },
 
-  {
-  title: "Services",
-  icon: Briefcase,
-  href: "/admin/services",
-},
+  
   
   {
   title: "Header Settings",
@@ -73,9 +78,24 @@ const menuItems = [
   href: "/admin/header-settings",
 },
   {
+    title: "Page Banners",
+    icon: ImageIcon,
+    href: "/admin/pages",
+  },
+  {
+    title: "Footer Settings",
+    icon: PanelBottom,
+    href: "/admin/footer-settings",
+  },
+  {
     title: "Students",
     icon: GraduationCap,
     href: "/admin/staff",
+  },
+  {
+    title: "Quote Requests",
+    icon: FileSignature,
+    href: "/admin/quotes",
   },
 
 ];

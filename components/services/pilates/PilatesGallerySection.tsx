@@ -1,4 +1,4 @@
-import ServiceGallerySlider from "@/components/ServiceGallerySlider";
+import DynamicServiceGallery from "@/components/services/DynamicServiceGallery";
 import { PILATES_TILES } from "@/lib/siteImages";
 
 const ALTS = [
@@ -13,22 +13,19 @@ const ALTS = [
   "Group Pilates reformer class atmosphere",
 ] as const;
 
-const slides = PILATES_TILES.map((src, i) => ({
+const FALLBACK_SLIDES = PILATES_TILES.map((src, i) => ({
   src,
   alt: ALTS[i] ?? "Pilates session",
 }));
 
-const PILATES_SLIDE_GROUPS = Array.from({ length: Math.ceil(slides.length / 3) }, (_, row) =>
-  slides.slice(row * 3, row * 3 + 3),
-);
-
 export default function PilatesGallerySection() {
   return (
-    <ServiceGallerySlider
+    <DynamicServiceGallery
       id="pilates-gallery"
       headingId="pilates-gallery-heading"
       title="Pilates Gallery"
-      slideGroups={PILATES_SLIDE_GROUPS}
+      category="pilates"
+      fallbackSlides={FALLBACK_SLIDES}
       sectionClassName="bg-[#f8f9fa] dark:bg-[#0f172a]"
     />
   );

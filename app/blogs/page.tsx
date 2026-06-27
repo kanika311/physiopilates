@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 
 import BlogGrid from "@/components/blog/BlogGrid";
 import BlogHero from "@/components/blog/BlogHero";
-import { getSortedPosts } from "@/components/blog/blogData";
+import { getSortedPosts } from "@/lib/blogs";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Reveal from "@/components/luxury/Reveal";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -13,8 +15,8 @@ export const metadata: Metadata = {
     "Expert articles on physiotherapy, Pilates, yoga, and holistic wellness — from Physio Pilates in Delhi NCR.",
 };
 
-export default function BlogsPage() {
-  const posts = getSortedPosts();
+export default async function BlogsPage() {
+  const posts = await getSortedPosts();
 
   return (
     <>

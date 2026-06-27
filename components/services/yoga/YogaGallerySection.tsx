@@ -1,4 +1,4 @@
-import ServiceGallerySlider from "@/components/ServiceGallerySlider";
+import DynamicServiceGallery from "@/components/services/DynamicServiceGallery";
 import { YOGA_TILES } from "@/lib/siteImages";
 
 const ALTS = [
@@ -13,22 +13,19 @@ const ALTS = [
   "Yoga mat work — posture and mobility",
 ] as const;
 
-const slides = YOGA_TILES.map((src, i) => ({
+const FALLBACK_SLIDES = YOGA_TILES.map((src, i) => ({
   src,
   alt: ALTS[i] ?? "Yoga session",
 }));
 
-const YOGA_SLIDE_GROUPS = Array.from({ length: Math.ceil(slides.length / 3) }, (_, row) =>
-  slides.slice(row * 3, row * 3 + 3),
-);
-
 export default function YogaGallerySection() {
   return (
-    <ServiceGallerySlider
+    <DynamicServiceGallery
       id="yoga-gallery"
       headingId="yoga-gallery-heading"
       title="Yoga Gallery"
-      slideGroups={YOGA_SLIDE_GROUPS}
+      category="yoga"
+      fallbackSlides={FALLBACK_SLIDES}
       sectionClassName="bg-white dark:bg-[#0f172a]"
     />
   );

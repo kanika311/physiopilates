@@ -158,7 +158,7 @@ export default function StudentsPage() {
               />
             </AdminField>
 
-            <AdminField label="Number">
+            <AdminField label="Phone Number">
               <AdminInput
                 type="tel"
                 required
@@ -221,7 +221,7 @@ export default function StudentsPage() {
     <>
       <PageHeader
         title="Manage Students"
-        description="Add, edit and manage student records"
+        description=""
         action={<AdminButton onClick={openCreate}>Add New</AdminButton>}
       />
 

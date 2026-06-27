@@ -1,4 +1,4 @@
-import ServiceGallerySlider from "@/components/ServiceGallerySlider";
+import DynamicServiceGallery from "@/components/services/DynamicServiceGallery";
 import { THERAPY_TILES } from "@/lib/siteImages";
 
 const ALTS = [
@@ -13,22 +13,19 @@ const ALTS = [
   "Therapeutic session with supportive clinical care",
 ] as const;
 
-const slides = THERAPY_TILES.map((src, i) => ({
+const FALLBACK_SLIDES = THERAPY_TILES.map((src, i) => ({
   src,
   alt: ALTS[i] ?? "Therapy session",
 }));
 
-const THERAPY_SLIDE_GROUPS = Array.from({ length: Math.ceil(slides.length / 3) }, (_, row) =>
-  slides.slice(row * 3, row * 3 + 3),
-);
-
 export default function TherapyGallerySection() {
   return (
-    <ServiceGallerySlider
+    <DynamicServiceGallery
       id="therapy-gallery"
       headingId="therapy-gallery-heading"
       title="Dry Needling & Cup Therapy Gallery"
-      slideGroups={THERAPY_SLIDE_GROUPS}
+      category="therapy"
+      fallbackSlides={FALLBACK_SLIDES}
       sectionClassName="bg-white dark:bg-[#0f172a]"
     />
   );

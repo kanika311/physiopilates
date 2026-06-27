@@ -101,18 +101,19 @@ export default function ServiceGallerySlider({
                 slideGroups!.map((group, gi) => (
                   <div
                     key={slideKeys[gi]}
-                    className="flex w-full min-w-full shrink-0 gap-3 sm:gap-4 md:gap-6"
+                    className="grid w-full min-w-full shrink-0 grid-cols-3 gap-3 sm:gap-4 md:gap-6"
                     aria-hidden={gi !== index}
                   >
                     {group.map((img, ii) => (
                       <figure
                         key={`${gi}-${ii}`}
-                        className="relative aspect-[4/3] min-h-0 flex-1 overflow-hidden rounded-2xl bg-neutral-200 shadow-[0_12px_40px_-24px_rgba(0,0,0,0.22)] sm:aspect-[5/4] md:rounded-[1.25rem]"
+                        className="relative aspect-[4/3] min-h-0 overflow-hidden rounded-2xl bg-neutral-200 shadow-[0_12px_40px_-24px_rgba(0,0,0,0.22)] sm:aspect-[5/4] md:rounded-[1.25rem]"
                       >
                         <Image
                           src={img.src}
                           alt={img.alt}
                           fill
+                          unoptimized
                           className="object-cover object-center"
                           sizes="(max-width: 640px) 33vw, (max-width: 1200px) 29vw, 360px"
                           priority={gi === 0}

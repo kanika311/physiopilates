@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FiCheck } from "react-icons/fi";
 import { brand } from "@/lib/brand";
 import { THUMB } from "@/lib/siteImages";
+import GetQuoteForm from "@/components/quote/GetQuoteForm";
 
 const GOLD = brand.sage;
 const levels = ["Beginner", "Intermediate", "Expert"] as const;
@@ -68,13 +69,16 @@ export default function YogaDetailSection() {
             ))}
           </ul>
 
-          <Link
-            href="#yoga-gallery"
-            className="mt-4 inline-flex rounded-full px-10 py-3.5 text-[15px] font-semibold text-white shadow-md transition-[filter] hover:brightness-[1.05]"
-            style={{ backgroundColor: GOLD }}
-          >
-            Learn More
-          </Link>
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <Link
+              href="#yoga-gallery"
+              className="inline-flex rounded-full px-10 py-3.5 text-[15px] font-semibold text-white shadow-md transition-[filter] hover:brightness-[1.05]"
+              style={{ backgroundColor: GOLD }}
+            >
+              Learn More
+            </Link>
+            <GetQuoteForm service="Yoga" className="!py-3.5" />
+          </div>
         </div>
       </div>
     </section>

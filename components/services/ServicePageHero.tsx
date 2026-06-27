@@ -14,6 +14,7 @@ type Props = {
   description: string;
   minHeightClass?: string;
   contentPaddingClass?: string;
+  unoptimized?: boolean;
 };
 
 /** Overlay only — text sits directly on the image */
@@ -44,6 +45,7 @@ export default function ServicePageHero({
   description,
   minHeightClass = "min-h-[max(480px,min(820px,78dvh))]",
   contentPaddingClass = "py-16",
+  unoptimized = false,
 }: Props) {
   const reduce = useReducedMotion();
 
@@ -58,7 +60,7 @@ export default function ServicePageHero({
         animate={{ scale: 1 }}
         transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
       >
-        <Image src={image} alt={imageAlt} fill priority sizes="100vw" className={imageClassName} />
+        <Image src={image} alt={imageAlt} fill priority unoptimized={unoptimized} sizes="100vw" className={imageClassName} />
       </motion.div>
 
       <div className="absolute inset-0 z-[1]" style={{ background: IMAGE_SCRIM }} aria-hidden />

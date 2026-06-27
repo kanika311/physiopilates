@@ -21,8 +21,8 @@ export function AdminField({ label, children }: FieldProps) {
   return (
     <div>
       <label
-        className="mb-2 block text-sm font-medium"
-        style={{ color: "var(--page-fg)" }}
+        className="mb-2 block text-sm font-[400] text-black"
+      
       >
         {label}
       </label>

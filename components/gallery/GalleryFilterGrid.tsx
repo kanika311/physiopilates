@@ -166,10 +166,18 @@ export default function GalleryFilterGrid() {
           )}
         </div>
 
-        {/* LOADING */}
+        {/* LOADING SKELETON */}
         {loading && (
-          <div className="mt-12 sm:mt-16 text-center text-sm sm:text-base text-neutral-500">
-            Loading gallery...
+          <div
+            className="mt-8 grid grid-cols-1 gap-4 sm:mt-10 sm:grid-cols-2 sm:gap-5 md:mt-12 lg:grid-cols-3 lg:gap-6"
+            aria-hidden
+          >
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div
+                key={i}
+                className="skeleton aspect-[4/3] rounded-[20px] shadow-[var(--luxury-shadow)] sm:aspect-[5/4]"
+              />
+            ))}
           </div>
         )}
 
