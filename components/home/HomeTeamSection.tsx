@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
 import Reveal from "@/components/luxury/Reveal";
@@ -7,7 +8,14 @@ import SectionHeading from "@/components/luxury/SectionHeading";
 import { brand, SECTION_MAX } from "@/lib/brand";
 import { THUMB } from "@/lib/siteImages";
 
-const EXPERTS = [
+type Expert = {
+  name: string;
+  role: string;
+  bio: string;
+  image: string;
+};
+
+const STATIC_EXPERTS: Expert[] = [
   {
     name: "Dr. Surbhi Silori",
     role: "Lead Physiotherapist & Founder",
@@ -30,6 +38,37 @@ const EXPERTS = [
 
 export default function HomeTeamSection() {
   const reduce = useReducedMotion();
+  const [experts, setExperts] = useState<Expert[]>(STATIC_EXPERTS);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/team", { cache: "no-store" });
+        const json = await res.json();
+        if (cancelled) return;
+        if (json?.success && Array.isArray(json.data)) {
+          const active = json.data
+            .filter((m: { isActive?: boolean }) => m.isActive !== false)
+            .map((m: Expert & { image?: string }) => ({
+              name: m.name,
+              role: m.role,
+              bio: m.bio,
+              image: m.image || THUMB.phyDetail,
+            }));
+          if (active.length > 0) setExperts(active);
+        }
+      } catch {
+        /* keep static fallback */
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <section className="luxury-section px-5 sm:px-8" style={{ backgroundColor: brand.surfaceMuted }}>
@@ -42,8 +81,22 @@ export default function HomeTeamSection() {
           />
         </Reveal>
 
+        {loading ? (
+          <div className="mx-auto mt-12 grid gap-8 md:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="luxury-card overflow-hidden">
+                <div className="skeleton aspect-[4/5] w-full" />
+                <div className="space-y-3 p-6">
+                  <div className="skeleton h-4 w-3/4 rounded" />
+                  <div className="skeleton h-4 w-full rounded" />
+                  <div className="skeleton h-4 w-2/3 rounded" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
         <div className="mx-auto mt-12 grid gap-8 md:grid-cols-3">
-          {EXPERTS.map((expert, i) => (
+          {experts.map((expert, i) => (
             <Reveal key={expert.name} delay={0.1 * i}>
               <motion.article
                 className="luxury-card group overflow-hidden"
@@ -55,6 +108,7 @@ export default function HomeTeamSection() {
                     src={expert.image}
                     alt={expert.name}
                     fill
+                    unoptimized={expert.image.startsWith("data:")}
                     className="object-cover transition duration-700 group-hover:scale-105"
                     sizes="33vw"
                   />
@@ -72,6 +126,7 @@ export default function HomeTeamSection() {
             </Reveal>
           ))}
         </div>
+        )}
       </div>
     </section>
   );

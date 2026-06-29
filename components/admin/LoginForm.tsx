@@ -60,7 +60,7 @@ export default function LoginForm() {
           style={{
             background:
               "linear-gradient(135deg, var(--admin-accent) 0%, var(--admin-accent-muted) 100%)",
-            boxShadow: "0 12px 32px rgb(107 143 113 / 0.3)",
+            boxShadow: "0 12px 32px rgb(15 118 110 / 0.32)",
           }}
         >
           <ShieldCheck size={30} />
@@ -212,7 +212,7 @@ export default function LoginForm() {
           style={{
             background:
               "linear-gradient(135deg, var(--admin-accent) 0%, var(--admin-accent-muted) 100%)",
-            boxShadow: "0 8px 24px rgb(107 143 113 / 0.3)",
+            boxShadow: "0 8px 24px rgb(15 118 110 / 0.3)",
           }}
         >
           {loading ? "Please wait..." : "Login"}

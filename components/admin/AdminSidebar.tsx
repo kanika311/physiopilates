@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import NextImage from "next/image";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
 import {
   LayoutDashboard,
@@ -18,11 +18,13 @@ import {
    Briefcase, 
   Settings,
   Shield,
+  ShieldCheck,
   GraduationCap,
   Quote,
   FileSignature,
   ImageIcon,
   PanelBottom,
+  Users,
 } from "lucide-react";
 
 const menuItems = [
@@ -65,6 +67,11 @@ const menuItems = [
     href: "/admin/testimonials",
   },
   {
+    title: "Team",
+    icon: Users,
+    href: "/admin/team",
+  },
+  {
     title: "Contact",
     icon: Image,
     href: "/admin/contact",
@@ -97,13 +104,53 @@ const menuItems = [
     icon: FileSignature,
     href: "/admin/quotes",
   },
+  {
+    title: "Admins",
+    icon: ShieldCheck,
+    href: "/admin/admins",
+  },
 
 ];
 
 export default function AdminSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
 
   const [isOpen, setIsOpen] = useState(false);
+  const [email, setEmail] = useState("");
+  const [loggingOut, setLoggingOut] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/me", { cache: "no-store" });
+        const json = await res.json();
+        if (!cancelled && json?.success && json.data?.email) {
+          setEmail(json.data.email);
+        }
+      } catch {
+        /* ignore */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    if (loggingOut) return;
+    setLoggingOut(true);
+    try {
+      await fetch("/api/admin/logout", { method: "POST" });
+    } catch {
+      /* ignore */
+    }
+    router.replace("/admin/login");
+    router.refresh();
+  };
+
+  const avatarLetter = email ? email.charAt(0).toUpperCase() : "A";
 
   return (
     <>
@@ -112,8 +159,8 @@ export default function AdminSidebar() {
         className="fixed left-0 top-0 z-50 flex h-16 w-full items-center justify-between border-b px-4 text-white shadow-lg lg:hidden"
         style={{
           backgroundColor: "var(--admin-sidebar)",
-          borderColor: "rgb(107 143 113 / 0.15)",
-          boxShadow: "0 4px 24px rgb(0 0 0 / 0.2)",
+          borderColor: "rgb(255 255 255 / 0.15)",
+          boxShadow: "0 4px 24px rgb(15 118 110 / 0.25)",
         }}
       >
         <div className="flex items-center gap-3">
@@ -171,16 +218,16 @@ export default function AdminSidebar() {
       `}
         style={{
           background:
-            "linear-gradient(180deg, var(--admin-sidebar) 0%, var(--admin-sidebar-elevated) 55%, rgb(23 23 23) 100%)",
-          boxShadow: "4px 0 32px rgb(0 0 0 / 0.15)",
+            "linear-gradient(180deg, var(--admin-sidebar) 0%, var(--admin-sidebar-elevated) 100%)",
+          boxShadow: "4px 0 32px rgb(15 118 110 / 0.18)",
         }}
       >
         {/* Subtle brand glow */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-0 h-48 opacity-40"
+          className="pointer-events-none absolute inset-x-0 top-0 h-48 opacity-50"
           style={{
             background:
-              "radial-gradient(ellipse 80% 60% at 50% -10%, rgb(107 143 113 / 0.35), transparent)",
+              "radial-gradient(ellipse 80% 60% at 50% -10%, rgb(255 255 255 / 0.18), transparent)",
           }}
         />
 
@@ -225,23 +272,20 @@ export default function AdminSidebar() {
                   <Link
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className={`group flex items-center gap-3 rounded-[12px] px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
+                    className={`group flex items-center gap-3 rounded-[14px] px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
                       isActive
                         ? ""
-                        : "hover:bg-white/[0.06] hover:text-white/90"
+                        : "text-white/85 hover:bg-white/10 hover:text-white"
                     }`}
                     style={
                       isActive
                         ? {
-                            backgroundColor:
-                              "var(--admin-accent)",
-                            color: "#ffffff",
+                            backgroundColor: "#ffffff",
+                            color: "var(--admin-accent)",
                             boxShadow:
-                              "0 4px 16px rgb(107 143 113 / 0.35)",
+                              "0 6px 18px rgb(0 0 0 / 0.12)",
                           }
-                        : {
-                            color: "rgb(255 255 255 / 0.55)",
-                          }
+                        : undefined
                     }
                   >
                     <span
@@ -250,13 +294,13 @@ export default function AdminSidebar() {
                         isActive
                           ? {
                               backgroundColor:
-                                "rgb(255 255 255 / 0.2)",
-                              color: "#ffffff",
+                                "var(--admin-accent-soft)",
+                              color: "var(--admin-accent)",
                             }
                           : {
                               backgroundColor:
-                                "rgb(255 255 255 / 0.05)",
-                              color: "rgb(255 255 255 / 0.5)",
+                                "rgb(255 255 255 / 0.12)",
+                              color: "#ffffff",
                             }
                       }
                     >
@@ -274,42 +318,47 @@ export default function AdminSidebar() {
         <div
           className="absolute bottom-0 w-full border-t p-4 backdrop-blur-md"
           style={{
-            borderColor: "rgb(255 255 255 / 0.08)",
-            backgroundColor: "rgb(23 23 23 / 0.85)",
+            borderColor: "rgb(255 255 255 / 0.15)",
+            backgroundColor: "rgb(15 118 110 / 0.55)",
           }}
         >
           <div
             className="flex items-center justify-between rounded-[14px] border p-3"
             style={{
-              borderColor: "rgb(107 143 113 / 0.2)",
-              backgroundColor: "rgb(107 143 113 / 0.08)",
+              borderColor: "rgb(255 255 255 / 0.2)",
+              backgroundColor: "rgb(255 255 255 / 0.12)",
             }}
           >
             <div className="flex items-center gap-3">
               <div
-                className="flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold text-white"
+                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold"
                 style={{
-                  background:
-                    "linear-gradient(135deg, var(--admin-accent) 0%, var(--admin-accent-muted) 100%)",
+                  backgroundColor: "#ffffff",
+                  color: "var(--admin-accent)",
                 }}
               >
-                A
+                {avatarLetter}
               </div>
-              <div>
+              <div className="min-w-0">
                 <h4 className="text-sm font-semibold text-white">
                   Admin
                 </h4>
                 <p
-                  className="text-xs"
+                  className="truncate text-xs"
                   style={{ color: "rgb(255 255 255 / 0.45)" }}
+                  title={email}
                 >
-                  admin@gmail.com
+                  {email || "Loading..."}
                 </p>
               </div>
             </div>
 
             <button
-              className="admin-focus-ring rounded-[10px] p-2 transition-colors duration-200 hover:bg-white/10"
+              onClick={handleLogout}
+              disabled={loggingOut}
+              aria-label="Log out"
+              title="Log out"
+              className="admin-focus-ring rounded-[10px] p-2 transition-colors duration-200 hover:bg-white/10 disabled:opacity-50"
               style={{ color: "rgb(255 255 255 / 0.5)" }}
             >
               <LogOut size={17} />

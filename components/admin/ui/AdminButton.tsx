@@ -20,7 +20,7 @@ const variantStyles: Record<
     style: {
       background:
         "linear-gradient(135deg, var(--admin-accent) 0%, var(--admin-accent-muted) 100%)",
-      boxShadow: "0 4px 16px rgb(107 143 113 / 0.25)",
+      boxShadow: "0 4px 16px rgb(15 118 110 / 0.28)",
     },
   },
   secondary: {

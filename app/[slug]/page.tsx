@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: Props) {
   };
 }
 
-export default async function ServiceDetails({ params }: Props) {
+export default async function TopLevelServicePage({ params }: Props) {
   const { slug } = await params;
   return <DbServicePage slug={slug} />;
 }

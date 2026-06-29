@@ -1,14 +1,6 @@
 "use client";
 
-import {
-  Bell,
-  Search,
-  Menu,
-  ChevronDown,
-  User,
-  Settings,
-  LogOut,
-} from "lucide-react";
+import { Search, Menu, ChevronDown, LogOut } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 
 interface AdminHeaderProps {
@@ -21,7 +13,17 @@ export default function AdminHeader({
   onMenuClick,
 }: AdminHeaderProps) {
   const [profileOpen, setProfileOpen] = useState(false);
+  const [email, setEmail] = useState("");
   const profileRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    fetch("/api/admin/me", { credentials: "include" })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data?.email) setEmail(data.email);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -67,7 +69,7 @@ const handleLogout = async () => {
       style={{
         backgroundColor: "rgb(255 255 255 / 0.82)",
         borderColor: "var(--admin-border)",
-        boxShadow: "0 1px 0 rgb(23 23 23 / 0.04)",
+        boxShadow: "0 1px 0 rgb(15 118 110 / 0.06)",
       }}
     >
       <div className="flex min-h-[72px] items-center justify-between px-4 md:px-6 lg:px-8">
@@ -132,22 +134,6 @@ const handleLogout = async () => {
             }}
           >
             <Search size={18} style={{ color: "var(--admin-text-muted)" }} />
-          </button>
-
-          {/* Notification */}
-          <button
-            className="admin-focus-ring relative rounded-[12px] border p-2.5 transition-all duration-200 hover:shadow-sm"
-            style={{
-              borderColor: "var(--admin-border)",
-              backgroundColor: "var(--admin-surface)",
-            }}
-          >
-            <Bell size={18} style={{ color: "var(--page-fg)" }} />
-
-            <span
-              className="absolute right-2 top-2 h-2 w-2 rounded-full ring-2 ring-white"
-              style={{ backgroundColor: "var(--admin-accent)" }}
-            />
           </button>
 
           {/* Profile Dropdown */}
@@ -217,38 +203,9 @@ const handleLogout = async () => {
                     className="text-sm"
                     style={{ color: "var(--admin-text-muted)" }}
                   >
-                    admin@example.com
+                    {email || "admin@example.com"}
                   </p>
                 </div>
-
-                {/* Profile */}
-                <button
-                  className="flex w-full items-center gap-3 px-4 py-3 text-sm transition hover:bg-slate-50"
-                  onClick={() => {
-                    setProfileOpen(false);
-                    window.location.href = "/admin/profile";
-                  }}
-                >
-                  <User size={18} />
-                  My Profile
-                </button>
-
-                {/* Settings */}
-                <button
-                  className="flex w-full items-center gap-3 px-4 py-3 text-sm transition hover:bg-slate-50"
-                  onClick={() => {
-                    setProfileOpen(false);
-                    window.location.href = "/admin/settings";
-                  }}
-                >
-                  <Settings size={18} />
-                  Settings
-                </button>
-
-                <div
-                  className="mx-3 border-t"
-                  style={{ borderColor: "var(--admin-border)" }}
-                />
 
                 {/* Logout */}
                 <button

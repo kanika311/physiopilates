@@ -8,17 +8,19 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
-const nextDir = path.join(root, ".next");
+const dirs = [path.join(root, ".next"), path.join(root, ".next-dev")];
 
-try {
-  if (existsSync(nextDir)) {
-    rmSync(nextDir, { recursive: true, force: true });
-    console.log("Removed", nextDir);
-  } else {
-    console.log("No .next folder to remove.");
+for (const dir of dirs) {
+  try {
+    if (existsSync(dir)) {
+      rmSync(dir, { recursive: true, force: true });
+      console.log("Removed", dir);
+    } else {
+      console.log("Nothing to remove at", dir);
+    }
+  } catch (err) {
+    console.error(`Could not remove ${dir}:`, err.message);
+    console.error("Close all Next/Node processes, then run this script again.");
+    process.exit(1);
   }
-} catch (err) {
-  console.error("Could not remove .next:", err.message);
-  console.error("Close all Next/Node processes, then run this script again.");
-  process.exit(1);
 }

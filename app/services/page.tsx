@@ -3,6 +3,8 @@ import Image from "next/image";
 import connectDB from "@/lib/mongodb";
 import Service from "@/models/Service";
 
+export const dynamic = "force-dynamic";
+
 export default async function ServicesPage() {
   await connectDB();
 

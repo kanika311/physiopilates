@@ -27,13 +27,14 @@ const TEAL = brand.primary;
 
 const footerSans = "font-[family-name:var(--font-inter),ui-sans-serif,system-ui,sans-serif]";
 
-const servicesLinks = [
+type FooterLinkItem = { label: string; href: string };
+
+const BUILTIN_SERVICE_LINKS: FooterLinkItem[] = [
   { label: "Physiotherapy", href: "/physiotherapy" },
   { label: "Pilates", href: "/pilates" },
   { label: "Yoga", href: "/yoga" },
   { label: "Therapy", href: "/therapy" },
-  { label: "Courses", href: "/courses" },
-] as const;
+];
 const companyLinks = [
   { label: "About Us", href: "/about" },
   { label: "Gallery", href: "/gallery" },
@@ -89,6 +90,10 @@ export default function Footer() {
   const isContactPage = pathname === "/contact";
 
   const [content, setContent] = useState<FooterContent>(DEFAULT_FOOTER);
+  const [serviceLinks, setServiceLinks] = useState<FooterLinkItem[]>([
+    ...BUILTIN_SERVICE_LINKS,
+    { label: "Courses", href: "/courses" },
+  ]);
 
   useEffect(() => {
     let cancelled = false;
@@ -111,6 +116,39 @@ export default function Footer() {
         });
       } catch {
         /* keep defaults */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/services", { cache: "no-store" });
+        const json = await res.json();
+        if (cancelled || !json?.success || !Array.isArray(json.data)) return;
+
+        const links: FooterLinkItem[] = [...BUILTIN_SERVICE_LINKS];
+        const seen = new Set(links.map((l) => l.href.toLowerCase()));
+
+        json.data
+          .filter((s: any) => s?.status !== false && s?.slug)
+          .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0))
+          .forEach((s: any) => {
+            const href = `/${String(s.slug).toLowerCase()}`;
+            if (!seen.has(href)) {
+              links.push({ label: s.name || s.slug, href });
+              seen.add(href);
+            }
+          });
+
+        links.push({ label: "Courses", href: "/courses" });
+        setServiceLinks(links);
+      } catch {
+        /* keep default service links */
       }
     })();
     return () => {
@@ -150,8 +188,8 @@ export default function Footer() {
               Services
             </h3>
             <ul className="mt-5 space-y-3">
-              {servicesLinks.map(({ label, href }) => (
-                <li key={label}>
+              {serviceLinks.map(({ label, href }) => (
+                <li key={href}>
                   <FooterLink href={href} label={label} />
                 </li>
               ))}

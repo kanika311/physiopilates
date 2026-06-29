@@ -38,6 +38,11 @@ export async function PUT(
         title: body.title,
         description: body.description,
         image: body.image,
+        overviewTitle: body.overviewTitle,
+        overviewDescription: body.overviewDescription,
+        overviewImage: body.overviewImage,
+        overviewBullets: body.overviewBullets,
+        overviewLevels: body.overviewLevels,
       },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );

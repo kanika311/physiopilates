@@ -1,14 +1,33 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft, Upload, Trash2 } from "lucide-react";
+
+import { useAdminPage } from "@/components/admin/AdminPageContext";
+import {
+  AdminButton,
+  AdminField,
+  AdminInput,
+  AdminTextarea,
+  LoadingState,
+  PageHeader,
+  SectionCard,
+} from "@/components/admin/ui";
+import ServiceContentFields, {
+  EMPTY_SERVICE_CONTENT,
+  type ServiceContent,
+} from "@/components/admin/ServiceContentFields";
 
 export default function EditService() {
+  useAdminPage("Edit Service");
   const { id } = useParams();
   const router = useRouter();
 
   const [loading, setLoading] = useState(true);
-
+  const [saving, setSaving] = useState(false);
+  const [content, setContent] = useState<ServiceContent>(EMPTY_SERVICE_CONTENT);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -16,6 +35,7 @@ export default function EditService() {
     description: "",
     image: "",
     icon: "",
+    gallery: [] as string[],
     order: 0,
     featured: false,
     status: true,
@@ -26,13 +46,13 @@ export default function EditService() {
 
   useEffect(() => {
     getService();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getService = async () => {
     try {
       const res = await fetch(`/api/services/${id}`);
       const data = await res.json();
-
       setFormData({
         name: data.name || "",
         slug: data.slug || "",
@@ -40,6 +60,7 @@ export default function EditService() {
         description: data.description || "",
         image: data.image || "",
         icon: data.icon || "",
+        gallery: Array.isArray(data.gallery) ? data.gallery : [],
         order: data.order || 0,
         featured: data.featured || false,
         status: data.status,
@@ -47,195 +68,393 @@ export default function EditService() {
         seoDescription: data.seoDescription || "",
         seoKeywords: data.seoKeywords || "",
       });
-
-      setLoading(false);
+      setContent({
+        heroEyebrow: data.heroEyebrow || "",
+        heroTitle: data.heroTitle || "",
+        heroDescription: data.heroDescription || "",
+        heroImage: data.heroImage || "",
+        overviewTitle: data.overviewTitle || "",
+        overviewDescription: data.overviewDescription || "",
+        overviewImage: data.overviewImage || "",
+        overviewBullets: Array.isArray(data.overviewBullets)
+          ? data.overviewBullets
+          : [],
+        overviewLevels: Array.isArray(data.overviewLevels)
+          ? data.overviewLevels
+          : [],
+      });
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleChange = (e: any) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCheckbox = (e: any) => {
+  const handleCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
-
-    setFormData((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: checked }));
   };
 
-  const updateService = async (e: any) => {
-    e.preventDefault();
+  const handleFileUpload = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "image" | "icon"
+  ) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onloadend = () =>
+      setFormData((prev) => ({ ...prev, [field]: reader.result as string }));
+    reader.readAsDataURL(file);
+  };
 
-    const res = await fetch(`/api/services/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
+  const handleGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () =>
+        setFormData((prev) => ({
+          ...prev,
+          gallery: [...prev.gallery, reader.result as string],
+        }));
+      reader.readAsDataURL(file);
     });
+    e.target.value = "";
+  };
 
-    const data = await res.json();
+  const removeGalleryImage = (index: number) =>
+    setFormData((prev) => ({
+      ...prev,
+      gallery: prev.gallery.filter((_, i) => i !== index),
+    }));
 
-    if (data._id) {
-      alert("Service Updated Successfully");
-      router.push("/admin/services");
+  const updateService = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      setSaving(true);
+      const payload = {
+        ...formData,
+        ...content,
+        overviewBullets: content.overviewBullets
+          .map((b) => b.trim())
+          .filter(Boolean),
+        overviewLevels: content.overviewLevels
+          .map((l) => l.trim())
+          .filter(Boolean),
+      };
+      const res = await fetch(`/api/services/${id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
+      if (data._id) {
+        alert("Service Updated Successfully");
+        router.push("/admin/services");
+      } else {
+        alert("Something went wrong");
+      }
+    } catch {
+      alert("Something went wrong");
+    } finally {
+      setSaving(false);
     }
   };
 
   if (loading) {
-    return (
-      <div className="p-10 text-center">
-        Loading...
-      </div>
-    );
+    return <LoadingState message="Loading service..." />;
   }
 
   return (
-    <div className="max-w-5xl mx-auto p-8">
+    <>
+      <PageHeader
+        title="Edit Service"
+        description="Update this service's details, media and gallery"
+        action={
+          <AdminButton
+            variant="outline"
+            onClick={() => router.push("/admin/services")}
+          >
+            <ArrowLeft size={15} />
+            Back
+          </AdminButton>
+        }
+      />
 
-      <h1 className="text-3xl font-bold mb-8">
-        Edit Service
-      </h1>
+      <form onSubmit={updateService} className="mt-5 flex flex-col gap-5">
+        <SectionCard title="Service Details">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <AdminField label="Name">
+              <AdminInput
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+              />
+            </AdminField>
+            <AdminField label="Slug">
+              <AdminInput
+                name="slug"
+                value={formData.slug}
+                onChange={handleChange}
+                required
+              />
+            </AdminField>
+          </div>
 
-      <form
-        onSubmit={updateService}
-        className="space-y-5"
-      >
+          <div className="mt-4">
+            <AdminField label="Short Description">
+              <AdminTextarea
+                name="shortDescription"
+                rows={2}
+                value={formData.shortDescription}
+                onChange={handleChange}
+              />
+            </AdminField>
+          </div>
 
-        <input
-          type="text"
-          name="name"
-          placeholder="Service Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
+          <div className="mt-4">
+            <AdminField label="Description">
+              <AdminTextarea
+                name="description"
+                rows={6}
+                value={formData.description}
+                onChange={handleChange}
+              />
+            </AdminField>
+          </div>
 
-        <input
-          type="text"
-          name="slug"
-          placeholder="Slug"
-          value={formData.slug}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
+          <div className="mt-4 max-w-[200px]">
+            <AdminField label="Order">
+              <AdminInput
+                type="number"
+                name="order"
+                value={formData.order}
+                onChange={handleChange}
+              />
+            </AdminField>
+          </div>
 
-        <textarea
-          name="shortDescription"
-          placeholder="Short Description"
-          value={formData.shortDescription}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
+          <div className="mt-5 flex flex-wrap gap-8">
+            <label className="flex items-center gap-2 text-sm font-medium" style={{ color: "var(--page-fg)" }}>
+              <input
+                type="checkbox"
+                name="featured"
+                checked={formData.featured}
+                onChange={handleCheckbox}
+                className="size-4 accent-[#0F6D6D]"
+              />
+              Featured
+            </label>
+            <label className="flex items-center gap-2 text-sm font-medium" style={{ color: "var(--page-fg)" }}>
+              <input
+                type="checkbox"
+                name="status"
+                checked={formData.status}
+                onChange={handleCheckbox}
+                className="size-4 accent-[#0F6D6D]"
+              />
+              Active
+            </label>
+          </div>
+        </SectionCard>
 
-        <textarea
-          rows={6}
-          name="description"
-          placeholder="Description"
-          value={formData.description}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
-
-        <input
-          type="text"
-          name="image"
-          placeholder="Image URL"
-          value={formData.image}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
-
-        <input
-          type="text"
-          name="icon"
-          placeholder="Icon"
-          value={formData.icon}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
-
-        <input
-          type="number"
-          name="order"
-          value={formData.order}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
-
-        <div className="flex gap-8">
-
-          <label className="flex items-center gap-2">
-
-            <input
-              type="checkbox"
-              name="featured"
-              checked={formData.featured}
-              onChange={handleCheckbox}
+        <SectionCard title="Media">
+          <div className="grid gap-6 sm:grid-cols-2">
+            <MediaUploader
+              label="Service Image"
+              value={formData.image}
+              onUpload={(e) => handleFileUpload(e, "image")}
+              onUrlChange={(v) => setFormData((p) => ({ ...p, image: v }))}
+              onClear={() => setFormData((p) => ({ ...p, image: "" }))}
+              previewClass="h-40 w-full object-cover"
             />
-
-            Featured
-
-          </label>
-
-          <label className="flex items-center gap-2">
-
-            <input
-              type="checkbox"
-              name="status"
-              checked={formData.status}
-              onChange={handleCheckbox}
+            <MediaUploader
+              label="Icon"
+              value={formData.icon}
+              onUpload={(e) => handleFileUpload(e, "icon")}
+              onUrlChange={(v) => setFormData((p) => ({ ...p, icon: v }))}
+              onClear={() => setFormData((p) => ({ ...p, icon: "" }))}
+              previewClass="h-20 w-20 object-contain"
             />
+          </div>
 
-            Active
+          <div className="mt-6">
+            <label className="mb-2 block text-sm font-medium text-black">
+              Service Gallery
+            </label>
+            <p className="mb-3 text-xs" style={{ color: "var(--admin-text-muted)" }}>
+              Add multiple images to build a gallery shown on this service&apos;s
+              page.
+            </p>
 
-          </label>
+            <label
+              className="admin-focus-ring flex cursor-pointer items-center justify-center gap-2 rounded-[12px] border border-dashed p-4 text-sm font-medium transition-colors hover:bg-[rgba(15,109,109,0.04)]"
+              style={{
+                borderColor: "var(--admin-border)",
+                color: "var(--admin-accent)",
+              }}
+            >
+              <Upload size={16} />
+              Upload gallery images (you can select multiple)
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleGalleryUpload}
+                className="hidden"
+              />
+            </label>
 
+            {formData.gallery.length > 0 && (
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                {formData.gallery.map((img, i) => (
+                  <div
+                    key={i}
+                    className="group relative aspect-square overflow-hidden rounded-[12px] border"
+                    style={{ borderColor: "var(--admin-border)" }}
+                  >
+                    <Image
+                      src={img}
+                      alt={`Gallery ${i + 1}`}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(i)}
+                      aria-label="Remove image"
+                      className="absolute right-1.5 top-1.5 flex size-7 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </SectionCard>
+
+        {/* Hero banner + overview (point to point) */}
+        <ServiceContentFields value={content} onChange={setContent} />
+
+        <SectionCard title="SEO">
+          <div className="flex flex-col gap-4">
+            <AdminField label="SEO Title">
+              <AdminInput
+                name="seoTitle"
+                value={formData.seoTitle}
+                onChange={handleChange}
+              />
+            </AdminField>
+            <AdminField label="SEO Description">
+              <AdminTextarea
+                name="seoDescription"
+                rows={2}
+                value={formData.seoDescription}
+                onChange={handleChange}
+              />
+            </AdminField>
+            <AdminField label="SEO Keywords">
+              <AdminInput
+                name="seoKeywords"
+                value={formData.seoKeywords}
+                onChange={handleChange}
+              />
+            </AdminField>
+          </div>
+        </SectionCard>
+
+        <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
+          <AdminButton
+            type="button"
+            variant="outline"
+            onClick={() => router.push("/admin/services")}
+          >
+            Cancel
+          </AdminButton>
+          <AdminButton
+            type="submit"
+            disabled={saving}
+            className="!text-white"
+            style={{
+              background: "linear-gradient(135deg, #0F6D6D 0%, #0c5757 100%)",
+              boxShadow: "0 4px 16px rgb(15 109 109 / 0.25)",
+            }}
+          >
+            {saving ? "Saving..." : "Update Service"}
+          </AdminButton>
         </div>
-
-        <input
-          type="text"
-          name="seoTitle"
-          placeholder="SEO Title"
-          value={formData.seoTitle}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
-
-        <textarea
-          name="seoDescription"
-          placeholder="SEO Description"
-          value={formData.seoDescription}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
-
-        <input
-          type="text"
-          name="seoKeywords"
-          placeholder="SEO Keywords"
-          value={formData.seoKeywords}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-        />
-
-        <button
-          className="bg-blue-600 text-white px-6 py-3 rounded"
-        >
-          Update Service
-        </button>
-
       </form>
+    </>
+  );
+}
 
+function MediaUploader({
+  label,
+  value,
+  onUpload,
+  onUrlChange,
+  onClear,
+  previewClass,
+}: {
+  label: string;
+  value: string;
+  onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onUrlChange: (v: string) => void;
+  onClear: () => void;
+  previewClass: string;
+}) {
+  return (
+    <div>
+      <label className="mb-2 block text-sm font-medium text-black">{label}</label>
+
+      <label
+        className="admin-focus-ring flex cursor-pointer items-center justify-center gap-2 rounded-[12px] border border-dashed p-4 text-sm font-medium transition-colors hover:bg-[rgba(15,109,109,0.04)]"
+        style={{ borderColor: "var(--admin-border)", color: "var(--admin-accent)" }}
+      >
+        <Upload size={16} />
+        Upload from device
+        <input type="file" accept="image/*" onChange={onUpload} className="hidden" />
+      </label>
+
+      <div className="mt-2">
+        <AdminInput
+          placeholder="...or paste an image URL"
+          value={value.startsWith("data:") ? "" : value}
+          onChange={(e) => onUrlChange(e.target.value)}
+        />
+      </div>
+
+      {value && (
+        <div className="mt-3 flex items-center gap-3">
+          <div
+            className="overflow-hidden rounded-[12px] border bg-white p-1"
+            style={{ borderColor: "var(--admin-border)" }}
+          >
+            <Image
+              src={value}
+              alt={`${label} preview`}
+              width={200}
+              height={160}
+              unoptimized
+              className={`rounded-[8px] ${previewClass}`}
+            />
+          </div>
+          <AdminButton variant="ghost" onClick={onClear} className="!text-red-600">
+            <Trash2 size={15} />
+            Remove
+          </AdminButton>
+        </div>
+      )}
     </div>
   );
 }

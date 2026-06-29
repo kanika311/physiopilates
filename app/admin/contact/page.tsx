@@ -5,7 +5,6 @@ import axios from "axios";
 
 import { useAdminPage } from "@/components/admin/AdminPageContext";
 import {
-  AdminBadge,
   AdminButton,
   AdminModal,
   DataTable,
@@ -88,7 +87,6 @@ export default function ContactPage() {
                   <DataTable.HeaderCell>Email</DataTable.HeaderCell>
                   <DataTable.HeaderCell>Phone</DataTable.HeaderCell>
                   <DataTable.HeaderCell>Service</DataTable.HeaderCell>
-                  <DataTable.HeaderCell>Status</DataTable.HeaderCell>
                   <DataTable.HeaderCell>Date</DataTable.HeaderCell>
                   <DataTable.HeaderCell className="text-center">
                     Action
@@ -101,11 +99,6 @@ export default function ContactPage() {
                       <DataTable.Cell>{contact.email}</DataTable.Cell>
                       <DataTable.Cell>{contact.phone}</DataTable.Cell>
                       <DataTable.Cell>{contact.service}</DataTable.Cell>
-                      <DataTable.Cell>
-                        <AdminBadge variant="success">
-                          {contact.status}
-                        </AdminBadge>
-                      </DataTable.Cell>
                       <DataTable.Cell>
                         {new Date(contact.createdAt).toLocaleDateString()}
                       </DataTable.Cell>

@@ -36,6 +36,51 @@ const ServiceSchema = new Schema(
       default: "",
     },
 
+    gallery: {
+      type: [String],
+      default: [],
+    },
+
+    // Hero banner (top of the public service page)
+    heroEyebrow: {
+      type: String,
+      default: "",
+    },
+    heroTitle: {
+      type: String,
+      default: "",
+    },
+    heroDescription: {
+      type: String,
+      default: "",
+    },
+    heroImage: {
+      type: String,
+      default: "",
+    },
+
+    // Overview section (below the banner)
+    overviewTitle: {
+      type: String,
+      default: "",
+    },
+    overviewDescription: {
+      type: String,
+      default: "",
+    },
+    overviewImage: {
+      type: String,
+      default: "",
+    },
+    overviewBullets: {
+      type: [String],
+      default: [],
+    },
+    overviewLevels: {
+      type: [String],
+      default: [],
+    },
+
     order: {
       type: Number,
       default: 0,

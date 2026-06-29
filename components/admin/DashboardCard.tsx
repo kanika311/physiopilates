@@ -20,28 +20,28 @@ const variantStyles: Record<
     iconBg: "var(--admin-accent-soft)",
     iconColor: "var(--admin-accent)",
     accent:
-      "linear-gradient(135deg, rgb(107 143 113 / 0.06) 0%, transparent 60%)",
+      "linear-gradient(135deg, rgb(15 118 110 / 0.06) 0%, transparent 60%)",
     trendColor: "var(--admin-accent)",
   },
   teal: {
     iconBg: "var(--admin-teal-soft)",
     iconColor: "var(--admin-teal)",
     accent:
-      "linear-gradient(135deg, rgb(72 207 203 / 0.07) 0%, transparent 60%)",
+      "linear-gradient(135deg, rgb(20 184 166 / 0.08) 0%, transparent 60%)",
     trendColor: "var(--admin-teal)",
   },
   gold: {
     iconBg: "var(--admin-gold-soft)",
     iconColor: "var(--admin-gold)",
     accent:
-      "linear-gradient(135deg, rgb(192 158 107 / 0.07) 0%, transparent 60%)",
+      "linear-gradient(135deg, rgb(15 118 110 / 0.07) 0%, transparent 60%)",
     trendColor: "var(--admin-gold)",
   },
   sageMuted: {
-    iconBg: "rgb(90 122 95 / 0.12)",
+    iconBg: "rgb(20 184 166 / 0.12)",
     iconColor: "var(--admin-accent-muted)",
     accent:
-      "linear-gradient(135deg, rgb(90 122 95 / 0.06) 0%, transparent 60%)",
+      "linear-gradient(135deg, rgb(20 184 166 / 0.06) 0%, transparent 60%)",
     trendColor: "var(--admin-accent-muted)",
   },
 };

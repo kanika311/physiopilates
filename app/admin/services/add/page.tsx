@@ -14,12 +14,17 @@ import {
   PageHeader,
   SectionCard,
 } from "@/components/admin/ui";
+import ServiceContentFields, {
+  EMPTY_SERVICE_CONTENT,
+  type ServiceContent,
+} from "@/components/admin/ServiceContentFields";
 
 export default function AddService() {
   useAdminPage("Add Service");
   const router = useRouter();
 
   const [saving, setSaving] = useState(false);
+  const [content, setContent] = useState<ServiceContent>(EMPTY_SERVICE_CONTENT);
   const [formData, setFormData] = useState({
     name: "",
     slug: "",
@@ -27,6 +32,7 @@ export default function AddService() {
     description: "",
     image: "",
     icon: "",
+    gallery: [] as string[],
     order: 0,
     featured: false,
     status: true,
@@ -59,14 +65,45 @@ export default function AddService() {
     reader.readAsDataURL(file);
   };
 
+  const handleGalleryUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files ?? []);
+    if (!files.length) return;
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onloadend = () =>
+        setFormData((prev) => ({
+          ...prev,
+          gallery: [...prev.gallery, reader.result as string],
+        }));
+      reader.readAsDataURL(file);
+    });
+    e.target.value = "";
+  };
+
+  const removeGalleryImage = (index: number) =>
+    setFormData((prev) => ({
+      ...prev,
+      gallery: prev.gallery.filter((_, i) => i !== index),
+    }));
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       setSaving(true);
+      const payload = {
+        ...formData,
+        ...content,
+        overviewBullets: content.overviewBullets
+          .map((b) => b.trim())
+          .filter(Boolean),
+        overviewLevels: content.overviewLevels
+          .map((l) => l.trim())
+          .filter(Boolean),
+      };
       const res = await fetch("/api/services", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data.success) {
@@ -201,7 +238,66 @@ export default function AddService() {
               previewClass="h-20 w-20 object-contain"
             />
           </div>
+
+          <div className="mt-6">
+            <label className="mb-2 block text-sm font-medium text-black">
+              Service Gallery
+            </label>
+            <p className="mb-3 text-xs" style={{ color: "var(--admin-text-muted)" }}>
+              Add multiple images to build a gallery shown on this service&apos;s
+              page.
+            </p>
+
+            <label
+              className="admin-focus-ring flex cursor-pointer items-center justify-center gap-2 rounded-[12px] border border-dashed p-4 text-sm font-medium transition-colors hover:bg-[rgba(15,109,109,0.04)]"
+              style={{
+                borderColor: "var(--admin-border)",
+                color: "var(--admin-accent)",
+              }}
+            >
+              <Upload size={16} />
+              Upload gallery images (you can select multiple)
+              <input
+                type="file"
+                accept="image/*"
+                multiple
+                onChange={handleGalleryUpload}
+                className="hidden"
+              />
+            </label>
+
+            {formData.gallery.length > 0 && (
+              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4">
+                {formData.gallery.map((img, i) => (
+                  <div
+                    key={i}
+                    className="group relative aspect-square overflow-hidden rounded-[12px] border"
+                    style={{ borderColor: "var(--admin-border)" }}
+                  >
+                    <Image
+                      src={img}
+                      alt={`Gallery ${i + 1}`}
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeGalleryImage(i)}
+                      aria-label="Remove image"
+                      className="absolute right-1.5 top-1.5 flex size-7 items-center justify-center rounded-full bg-black/60 text-white opacity-0 transition-opacity group-hover:opacity-100"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
         </SectionCard>
+
+        {/* Hero banner + overview (point to point) */}
+        <ServiceContentFields value={content} onChange={setContent} />
 
         {/* SEO */}
         <SectionCard title="SEO">

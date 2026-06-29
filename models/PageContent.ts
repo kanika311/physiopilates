@@ -7,6 +7,11 @@ const PageContentSchema = new Schema(
     title: { type: String },
     description: { type: String },
     image: { type: String },
+    overviewTitle: { type: String },
+    overviewDescription: { type: String },
+    overviewImage: { type: String },
+    overviewBullets: { type: [String] },
+    overviewLevels: { type: [String] },
   },
   { timestamps: true }
 );

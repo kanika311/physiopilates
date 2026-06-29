@@ -5,11 +5,7 @@ import mongoose, {
   Document,
 } from "mongoose";
 
-export type GalleryCategoryId =
-  | "physiotherapy"
-  | "pilates"
-  | "yoga"
-  | "therapy";
+export type GalleryCategoryId = string;
 
 export interface IGallery
   extends Document {
@@ -45,12 +41,6 @@ const GallerySchema =
       categories: [
         {
           type: String,
-          enum: [
-            "physiotherapy",
-            "pilates",
-            "yoga",
-            "therapy",
-          ],
         },
       ],
 

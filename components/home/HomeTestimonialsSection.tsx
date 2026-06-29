@@ -1,11 +1,14 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Quote as QuoteIcon } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Reveal from "@/components/luxury/Reveal";
 import SectionHeading from "@/components/luxury/SectionHeading";
 import { brand, SECTION_MAX } from "@/lib/brand";
+
+const PER_PAGE = 3;
 
 type T = {
   quote: string;
@@ -50,11 +53,11 @@ const AUTO_MS = 6000;
 
 function StarRating({ reduce, count = 5 }: { reduce: boolean; count?: number }) {
   return (
-    <div className="flex gap-1" aria-label={`${count} out of 5 stars`}>
+    <div className="flex justify-center gap-1" aria-label={`${count} out of 5 stars`}>
       {Array.from({ length: count }).map((_, i) => (
         <motion.span
           key={i}
-          className="text-2xl text-[#0F6D6D]"
+          className="text-xl text-[#0F6D6D]"
           initial={reduce ? false : { opacity: 0, scale: 0.4, rotate: -20 }}
           animate={{ opacity: 1, scale: 1, rotate: 0 }}
           transition={{ delay: 0.08 * i, type: "spring", stiffness: 320, damping: 16 }}
@@ -75,27 +78,47 @@ function Card({ t }: { t: T }) {
     .slice(0, 2);
 
   return (
-    <article className="flex h-full flex-col rounded-[20px] border border-[rgb(18_52_77/0.08)] bg-white p-8 shadow-[0_16px_48px_-20px_rgb(15_109_109/0.15)] md:p-9">
+    <article className="relative flex h-full flex-col items-center rounded-[24px] border border-[rgb(18_52_77/0.08)] bg-white px-6 pb-8 pt-12 text-center shadow-[0_24px_60px_-28px_rgb(15_109_109/0.28)] sm:px-7">
+      <span
+        aria-hidden
+        className="absolute -top-6 flex size-14 items-center justify-center rounded-full shadow-lg"
+        style={{ backgroundColor: brand.primary }}
+      >
+        <QuoteIcon size={22} className="text-white" fill="currentColor" />
+      </span>
+
       <StarRating reduce={!!reduce} count={t.rating || 5} />
-      <p className="body-text mt-6 flex-1 font-medium" style={{ color: brand.textBody }}>
+
+      <p
+        className="mt-6 text-[15px] font-medium leading-relaxed sm:text-base"
+        style={{ color: brand.textBody }}
+      >
         &ldquo;{t.quote}&rdquo;
       </p>
-      <div className="mt-8 flex items-center gap-4 border-t pt-6" style={{ borderColor: brand.border }}>
+
+      <div className="mt-auto flex items-center gap-3 pt-8">
         <div
-          className="relative flex size-16 items-center justify-center overflow-hidden rounded-full text-lg font-bold shadow-md"
+          className="relative flex size-12 items-center justify-center overflow-hidden rounded-full text-base font-bold"
           style={{ backgroundColor: brand.mintBg, color: brand.primary }}
         >
           {t.image ? (
-            <Image src={t.image} alt={t.name} fill sizes="64px" className="object-cover" />
+            <Image
+              src={t.image}
+              alt={t.name}
+              fill
+              sizes="48px"
+              unoptimized={t.image.startsWith("data:")}
+              className="object-cover"
+            />
           ) : (
             initials
           )}
         </div>
-        <div>
-          <p className="text-xl font-semibold" style={{ color: brand.navy }}>
+        <div className="text-left">
+          <p className="font-semibold" style={{ color: brand.navy }}>
             {t.name}
           </p>
-          <p className="text-base" style={{ color: brand.textSubtitle }}>
+          <p className="text-sm" style={{ color: brand.textSubtitle }}>
             {t.role}
           </p>
         </div>
@@ -138,22 +161,26 @@ export default function HomeTestimonialsSection() {
     };
   }, []);
 
-  const pairs: { left: T; right?: T }[] = [];
-  for (let i = 0; i < items.length; i += 2) {
-    pairs.push({ left: items[i], right: items[i + 1] });
-  }
+  const pages = useMemo(() => {
+    const chunks: T[][] = [];
+    for (let i = 0; i < items.length; i += PER_PAGE) {
+      chunks.push(items.slice(i, i + PER_PAGE));
+    }
+    return chunks;
+  }, [items]);
 
-  const safeIndex = pairs.length ? index % pairs.length : 0;
-  const pair = pairs[safeIndex];
+  const pageCount = pages.length;
+  const safeIndex = pageCount ? index % pageCount : 0;
+  const currentPage = pages[safeIndex] ?? [];
 
   useEffect(() => {
-    if (pairs.length < 2) return;
+    if (pageCount < 2) return;
     const t = window.setInterval(
-      () => setIndex((p) => (p + 1) % pairs.length),
+      () => setIndex((p) => (p + 1) % pageCount),
       AUTO_MS
     );
     return () => clearInterval(t);
-  }, [pairs.length]);
+  }, [pageCount]);
 
   return (
     <section className="luxury-section relative overflow-hidden px-5 sm:px-8" style={{ backgroundColor: brand.surfaceMuted }}>
@@ -167,51 +194,57 @@ export default function HomeTestimonialsSection() {
         </Reveal>
 
         {loading ? (
-          <div className="mx-auto mt-12 grid gap-6 lg:grid-cols-2 lg:gap-8" aria-hidden>
-            {Array.from({ length: 2 }).map((_, i) => (
+          <div
+            className="mt-14 grid gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+            aria-hidden
+          >
+            {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
-                className="rounded-[20px] border border-[rgb(18_52_77/0.08)] bg-white p-8 shadow-[0_16px_48px_-20px_rgb(15_109_109/0.15)] md:p-9"
+                className="rounded-[24px] border border-[rgb(18_52_77/0.08)] bg-white px-6 pb-9 pt-12 shadow-[0_24px_60px_-28px_rgb(15_109_109/0.28)]"
               >
-                <div className="skeleton h-6 w-32 rounded-full" />
+                <div className="mx-auto skeleton h-5 w-28 rounded-full" />
                 <div className="mt-6 space-y-3">
                   <div className="skeleton h-4 w-full rounded" />
-                  <div className="skeleton h-4 w-11/12 rounded" />
-                  <div className="skeleton h-4 w-4/5 rounded" />
+                  <div className="skeleton mx-auto h-4 w-11/12 rounded" />
+                  <div className="skeleton mx-auto h-4 w-4/5 rounded" />
                 </div>
-                <div className="mt-8 flex items-center gap-4 border-t pt-6" style={{ borderColor: brand.border }}>
-                  <div className="skeleton size-16 rounded-full" />
+                <div className="mt-8 flex items-center justify-center gap-3">
+                  <div className="skeleton size-12 rounded-full" />
                   <div className="space-y-2">
-                    <div className="skeleton h-5 w-32 rounded" />
-                    <div className="skeleton h-4 w-20 rounded" />
+                    <div className="skeleton h-4 w-28 rounded" />
+                    <div className="skeleton h-3 w-16 rounded" />
                   </div>
                 </div>
               </div>
             ))}
           </div>
-        ) : pair ? (
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={safeIndex}
-              initial={reduce ? false : { opacity: 0, x: 40 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={reduce ? undefined : { opacity: 0, x: -40 }}
-              transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
-              className="mx-auto mt-12 grid gap-6 lg:grid-cols-2 lg:gap-8"
-            >
-              <Card t={pair.left} />
-              {pair.right ? <Card t={pair.right} /> : null}
-            </motion.div>
-          </AnimatePresence>
+        ) : currentPage.length ? (
+          <div className="mt-14">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={safeIndex}
+                initial={reduce ? false : { opacity: 0, x: 40 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={reduce ? undefined : { opacity: 0, x: -40 }}
+                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="grid items-stretch gap-6 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8"
+              >
+                {currentPage.map((t, i) => (
+                  <Card key={`${safeIndex}-${i}`} t={t} />
+                ))}
+              </motion.div>
+            </AnimatePresence>
+          </div>
         ) : null}
 
-        {pairs.length > 1 && !loading && (
-          <div className="mt-10 flex justify-center gap-2">
-            {pairs.map((_, i) => (
+        {pageCount > 1 && !loading && (
+          <div className="mt-9 flex justify-center gap-2">
+            {pages.map((_, i) => (
               <button
                 key={i}
                 type="button"
-                aria-label={`Testimonial set ${i + 1}`}
+                aria-label={`Testimonials page ${i + 1}`}
                 onClick={() => setIndex(i)}
                 className="h-1.5 rounded-full transition-all"
                 style={{

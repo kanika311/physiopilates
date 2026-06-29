@@ -32,10 +32,42 @@ export default function EditGalleryPage() {
     categories: "",
     TitleOverImage: "",
   });
+  const [categoryOptions, setCategoryOptions] = useState<
+    { value: string; label: string }[]
+  >([
+    { value: "physiotherapy", label: "Physiotherapy" },
+    { value: "pilates", label: "Pilates" },
+    { value: "yoga", label: "Yoga" },
+    { value: "therapy", label: "Therapy" },
+  ]);
 
   useEffect(() => {
     if (id) fetchGallery();
+    fetchCategories();
   }, [id]);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await axios.get("/api/services");
+      const services = res.data?.data || [];
+      const base = [
+        { value: "physiotherapy", label: "Physiotherapy" },
+        { value: "pilates", label: "Pilates" },
+        { value: "yoga", label: "Yoga" },
+        { value: "therapy", label: "Therapy" },
+      ];
+      const seen = new Set(base.map((b) => b.value));
+      for (const s of services) {
+        if (s.slug && !seen.has(s.slug)) {
+          base.push({ value: s.slug, label: s.name || s.slug });
+          seen.add(s.slug);
+        }
+      }
+      setCategoryOptions(base);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const fetchGallery = async () => {
     try {
@@ -170,10 +202,11 @@ export default function EditGalleryPage() {
             }
           >
             <option value="">Select Category</option>
-            <option value="physiotherapy">Physiotherapy</option>
-            <option value="pilates">Pilates</option>
-            <option value="yoga">Yoga</option>
-            <option value="therapy">Therapy</option>
+            {categoryOptions.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
           </AdminSelect>
         </AdminField>
 

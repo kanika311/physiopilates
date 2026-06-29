@@ -20,7 +20,7 @@ export default function LoginPage() {
           className="absolute inset-0"
           style={{
             background:
-              "linear-gradient(to top, rgb(23 23 23 / 0.88) 0%, rgb(23 23 23 / 0.45) 50%, rgb(107 143 113 / 0.15) 100%)",
+              "linear-gradient(to top, rgb(15 118 110 / 0.92) 0%, rgb(15 118 110 / 0.5) 50%, rgb(20 184 166 / 0.18) 100%)",
           }}
         />
 
@@ -28,8 +28,8 @@ export default function LoginPage() {
           <div
             className="mb-4 inline-flex rounded-full border px-4 py-1.5 text-xs font-medium backdrop-blur-sm"
             style={{
-              borderColor: "rgb(107 143 113 / 0.35)",
-              backgroundColor: "rgb(107 143 113 / 0.15)",
+              borderColor: "rgb(255 255 255 / 0.4)",
+              backgroundColor: "rgb(255 255 255 / 0.18)",
               color: "rgb(255 255 255 / 0.9)",
             }}
           >

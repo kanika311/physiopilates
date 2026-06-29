@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
-import { RotateCcw, ImageIcon } from "lucide-react";
+import { RotateCcw, ImageIcon, Plus, Trash2 } from "lucide-react";
 
 import { useAdminPage } from "@/components/admin/AdminPageContext";
 import {
@@ -14,34 +14,51 @@ import {
   SectionCard,
 } from "@/components/admin/ui";
 import { PAGE_HERO_LIST, PAGE_HEROES } from "@/lib/pageHeroes";
+import { SERVICE_OVERVIEWS } from "@/lib/serviceOverviews";
+
+// Service pages (Physiotherapy, Pilates, Yoga, Therapy) are managed in the
+// Services tab now, so they're excluded from this Page Banners admin.
+const PAGES = PAGE_HERO_LIST.filter((p) => !SERVICE_OVERVIEWS[p.page]);
 
 type Banner = {
   eyebrow: string;
   title: string;
   description: string;
   image: string;
+  overviewTitle: string;
+  overviewDescription: string;
+  overviewImage: string;
+  overviewBullets: string[];
+  overviewLevels: string[];
 };
 
 function defaultsFor(page: string): Banner {
   const cfg = PAGE_HEROES[page];
+  const ov = SERVICE_OVERVIEWS[page];
   return {
     eyebrow: cfg?.eyebrow ?? "",
     title: cfg?.title ?? "",
     description: cfg?.description ?? "",
     image: cfg?.image ?? "",
+    overviewTitle: ov?.title ?? "",
+    overviewDescription: ov?.description ?? "",
+    overviewImage: ov?.image ?? "",
+    overviewBullets: ov?.bullets ?? [],
+    overviewLevels: ov?.levels ?? [],
   };
 }
 
 export default function PageBannersAdmin() {
   useAdminPage("Page Banners");
 
-  const [active, setActive] = useState(PAGE_HERO_LIST[0]?.page ?? "physiotherapy");
+  const [active, setActive] = useState(PAGES[0]?.page ?? "gallery");
   const [form, setForm] = useState<Banner>(() => defaultsFor(active));
   const [overrides, setOverrides] = useState<Record<string, Banner>>({});
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   const activeCfg = useMemo(() => PAGE_HEROES[active], [active]);
+  const hasOverview = !!SERVICE_OVERVIEWS[active];
 
   useEffect(() => {
     (async () => {
@@ -56,6 +73,15 @@ export default function PageBannersAdmin() {
               title: d.title ?? "",
               description: d.description ?? "",
               image: d.image ?? "",
+              overviewTitle: d.overviewTitle ?? "",
+              overviewDescription: d.overviewDescription ?? "",
+              overviewImage: d.overviewImage ?? "",
+              overviewBullets: Array.isArray(d.overviewBullets)
+                ? d.overviewBullets
+                : [],
+              overviewLevels: Array.isArray(d.overviewLevels)
+                ? d.overviewLevels
+                : [],
             };
           }
           setOverrides(map);
@@ -77,27 +103,84 @@ export default function PageBannersAdmin() {
       title: ov?.title || def.title,
       description: ov?.description || def.description,
       image: ov?.image || def.image,
+      overviewTitle: ov?.overviewTitle || def.overviewTitle,
+      overviewDescription: ov?.overviewDescription || def.overviewDescription,
+      overviewImage: ov?.overviewImage || def.overviewImage,
+      overviewBullets:
+        ov?.overviewBullets && ov.overviewBullets.length
+          ? ov.overviewBullets
+          : def.overviewBullets,
+      overviewLevels:
+        ov?.overviewLevels && ov.overviewLevels.length
+          ? ov.overviewLevels
+          : def.overviewLevels,
     });
   }, [active, overrides]);
 
   const setField = <K extends keyof Banner>(key: K, value: Banner[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const fileToField = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    field: "image" | "overviewImage"
+  ) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onloadend = () => setField("image", reader.result as string);
+    reader.onloadend = () => setField(field, reader.result as string);
     reader.readAsDataURL(file);
   };
+
+  // Bullet helpers
+  const updateBullet = (i: number, value: string) =>
+    setForm((prev) => {
+      const next = [...prev.overviewBullets];
+      next[i] = value;
+      return { ...prev, overviewBullets: next };
+    });
+  const addBullet = () =>
+    setForm((prev) => ({
+      ...prev,
+      overviewBullets: [...prev.overviewBullets, ""],
+    }));
+  const removeBullet = (i: number) =>
+    setForm((prev) => ({
+      ...prev,
+      overviewBullets: prev.overviewBullets.filter((_, idx) => idx !== i),
+    }));
+
+  // Level helpers
+  const updateLevel = (i: number, value: string) =>
+    setForm((prev) => {
+      const next = [...prev.overviewLevels];
+      next[i] = value;
+      return { ...prev, overviewLevels: next };
+    });
+  const addLevel = () =>
+    setForm((prev) => ({
+      ...prev,
+      overviewLevels: [...prev.overviewLevels, ""],
+    }));
+  const removeLevel = (i: number) =>
+    setForm((prev) => ({
+      ...prev,
+      overviewLevels: prev.overviewLevels.filter((_, idx) => idx !== i),
+    }));
 
   const handleSave = async () => {
     try {
       setSaving(true);
+      const payload = {
+        ...form,
+        overviewBullets: form.overviewBullets
+          .map((b) => b.trim())
+          .filter(Boolean),
+        overviewLevels: form.overviewLevels.map((l) => l.trim()).filter(Boolean),
+      };
       const res = await fetch(`/api/page-content/${active}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify(payload),
       });
       const data = await res.json();
       if (data.success) {
@@ -114,7 +197,7 @@ export default function PageBannersAdmin() {
   const handleReset = async () => {
     if (
       !window.confirm(
-        "Reset this page's banner to the original default? This removes your custom banner for this page."
+        "Reset this page's content to the original default? This removes your custom banner and overview for this page."
       )
     )
       return;
@@ -138,15 +221,15 @@ export default function PageBannersAdmin() {
   return (
     <>
       <PageHeader
-        title="Page Banners"
-        description="Change the hero banner image, heading and text for every page"
+        title="Page Content"
+        description="Change the hero banner for these pages. Service pages are edited in the Services tab."
       />
 
       <div className="mt-5 grid gap-5 lg:grid-cols-[260px_1fr]">
         {/* Page selector */}
         <SectionCard title="Pages">
           <div className="flex flex-col gap-1.5">
-            {PAGE_HERO_LIST.map((p) => {
+            {PAGES.map((p) => {
               const isActive = p.page === active;
               const customized = !!overrides[p.page];
               return (
@@ -190,7 +273,7 @@ export default function PageBannersAdmin() {
                 <input
                   type="file"
                   accept="image/*"
-                  onChange={handleImageUpload}
+                  onChange={(e) => fileToField(e, "image")}
                   className="admin-focus-ring w-full rounded-[12px] border p-3 text-sm"
                   style={{
                     borderColor: "var(--admin-border)",
@@ -234,8 +317,8 @@ export default function PageBannersAdmin() {
             </div>
           </SectionCard>
 
-          {/* Live preview */}
-          <SectionCard title="Live Preview">
+          {/* Banner live preview */}
+          <SectionCard title="Banner Preview">
             <div
               className="relative overflow-hidden rounded-[14px] border"
               style={{ borderColor: "var(--admin-border)" }}
@@ -275,13 +358,167 @@ export default function PageBannersAdmin() {
             </div>
           </SectionCard>
 
+          {/* Overview section editor (service pages only) */}
+          {hasOverview && (
+            <SectionCard title="Overview Section">
+              <p
+                className="mb-4 text-xs"
+                style={{ color: "var(--admin-text-muted)" }}
+              >
+                The detailed section below the banner — image, heading, paragraph,
+                bullet points and level tags.
+              </p>
+
+              <div className="flex flex-col gap-4">
+                <AdminField label="Overview Image">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => fileToField(e, "overviewImage")}
+                    className="admin-focus-ring w-full rounded-[12px] border p-3 text-sm"
+                    style={{
+                      borderColor: "var(--admin-border)",
+                      backgroundColor: "var(--admin-muted)",
+                    }}
+                  />
+                </AdminField>
+
+                {form.overviewImage && (
+                  <div
+                    className="relative h-40 w-32 overflow-hidden rounded-[12px] border"
+                    style={{ borderColor: "var(--admin-border)" }}
+                  >
+                    <Image
+                      src={form.overviewImage}
+                      alt="Overview preview"
+                      fill
+                      unoptimized
+                      className="object-cover"
+                    />
+                  </div>
+                )}
+
+                <AdminField label="Overview Image URL (optional)">
+                  <AdminInput
+                    placeholder="https://... or leave the default"
+                    value={
+                      form.overviewImage.startsWith("data:")
+                        ? ""
+                        : form.overviewImage
+                    }
+                    onChange={(e) => setField("overviewImage", e.target.value)}
+                  />
+                </AdminField>
+
+                <AdminField label="Overview Title">
+                  <AdminInput
+                    value={form.overviewTitle}
+                    onChange={(e) => setField("overviewTitle", e.target.value)}
+                  />
+                </AdminField>
+
+                <AdminField label="Overview Description">
+                  <AdminTextarea
+                    rows={4}
+                    value={form.overviewDescription}
+                    onChange={(e) =>
+                      setField("overviewDescription", e.target.value)
+                    }
+                  />
+                </AdminField>
+
+                {/* Bullets */}
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <label className="block text-sm font-medium text-black">
+                      Bullet Points
+                    </label>
+                    <AdminButton variant="outline" onClick={addBullet}>
+                      <Plus size={14} />
+                      Add
+                    </AdminButton>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {form.overviewBullets.map((b, i) => (
+                      <div key={i} className="flex items-start gap-2">
+                        <AdminTextarea
+                          rows={2}
+                          value={b}
+                          onChange={(e) => updateBullet(i, e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeBullet(i)}
+                          aria-label="Remove bullet"
+                          className="admin-focus-ring mt-1 flex size-9 shrink-0 items-center justify-center rounded-[10px] text-red-600 hover:bg-red-50"
+                          style={{ backgroundColor: "rgb(254 242 242)" }}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    ))}
+                    {form.overviewBullets.length === 0 && (
+                      <p
+                        className="text-xs"
+                        style={{ color: "var(--admin-text-muted)" }}
+                      >
+                        No bullet points.
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Levels */}
+                <div>
+                  <div className="mb-2 flex items-center justify-between">
+                    <label className="block text-sm font-medium text-black">
+                      Level Tags
+                    </label>
+                    <AdminButton variant="outline" onClick={addLevel}>
+                      <Plus size={14} />
+                      Add
+                    </AdminButton>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {form.overviewLevels.map((l, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <AdminInput
+                          value={l}
+                          placeholder="e.g. Beginner"
+                          onChange={(e) => updateLevel(i, e.target.value)}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => removeLevel(i)}
+                          aria-label="Remove level"
+                          className="admin-focus-ring flex size-9 shrink-0 items-center justify-center rounded-[10px] text-red-600 hover:bg-red-50"
+                          style={{ backgroundColor: "rgb(254 242 242)" }}
+                        >
+                          <Trash2 size={15} />
+                        </button>
+                      </div>
+                    ))}
+                    {form.overviewLevels.length === 0 && (
+                      <p
+                        className="text-xs"
+                        style={{ color: "var(--admin-text-muted)" }}
+                      >
+                        No level tags.
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </SectionCard>
+          )}
+
           <div className="flex flex-col gap-3 sm:flex-row sm:justify-end">
             <AdminButton variant="outline" onClick={handleReset} disabled={saving}>
               <RotateCcw size={15} />
               Reset to Default
             </AdminButton>
             <AdminButton onClick={handleSave} disabled={saving || loading}>
-              {saving ? "Saving..." : "Save Banner"}
+              {saving ? "Saving..." : "Save Changes"}
             </AdminButton>
           </div>
         </div>
