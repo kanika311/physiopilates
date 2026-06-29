@@ -68,7 +68,7 @@ useEffect(() => {
 
 async function fetchHeader() {
 
-  const res = await fetch("/api/header-settings");
+  const res = await fetch("/api/header-settings", { cache: "no-store" });
 
   const data = await res.json();
 
@@ -102,6 +102,18 @@ const otherLinks =
 const ACCENT =
   headerSettings?.activeMenuColor ||
   brand.sage;
+
+const HEADER_BG = headerSettings?.headerBgColor;
+const MENU_TEXT = headerSettings?.menuTextColor;
+const MENU_HOVER = headerSettings?.menuHoverColor || headerSettings?.activeMenuColor;
+
+const headerStyle: React.CSSProperties = {
+  ...(HEADER_BG ? { backgroundColor: HEADER_BG } : {}),
+  ...(MENU_TEXT ? ({ ["--nav-text"]: MENU_TEXT } as React.CSSProperties) : {}),
+  ...(MENU_HOVER
+    ? ({ ["--nav-hover"]: MENU_HOVER } as React.CSSProperties)
+    : {}),
+};
 
 
   const railRef = useRef<HTMLDivElement | null>(null);
@@ -274,6 +286,7 @@ const ACCENT =
   return (
     <header
       ref={headerRef}
+      style={headerStyle}
       className={[
         "sticky top-0 z-[100] w-full overflow-visible border-b border-[rgb(18_52_77/0.08)] bg-white/95 shadow-sm backdrop-blur-md",
         "transition-shadow duration-200 ease-out",

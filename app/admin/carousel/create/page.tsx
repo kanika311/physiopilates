@@ -3,6 +3,8 @@
 import { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 import { useAdminPage } from "@/components/admin/AdminPageContext";
 import {
@@ -27,6 +29,7 @@ interface CarouselForm {
 export default function CreateCarousel() {
   useAdminPage("Create Carousel");
 
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [form, setForm] = useState<CarouselForm>({
     title: "",
@@ -91,6 +94,15 @@ export default function CreateCarousel() {
       title="Create Carousel"
       description="Add a new banner slider"
       maxWidth="2xl"
+      action={
+        <AdminButton
+          variant="outline"
+          onClick={() => router.push("/admin/carousel")}
+        >
+          <ArrowLeft size={15} />
+          Back to Carousel
+        </AdminButton>
+      }
     >
       <form onSubmit={submit} className="space-y-5">
         <AdminField label="Title">

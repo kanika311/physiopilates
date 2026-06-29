@@ -39,7 +39,7 @@ export default function ServicePageHero({
   id,
   image,
   imageAlt,
-  imageClassName = "object-cover object-center",
+  imageClassName = "object-contain object-center",
   eyebrow = "Our service",
   title,
   description,
@@ -54,6 +54,19 @@ export default function ServicePageHero({
       className={`surface-dark relative isolate flex ${minHeightClass} flex-col items-center justify-center overflow-hidden px-4 text-center sm:px-6 ${contentPaddingClass}`}
       aria-labelledby={id}
     >
+      {/* Blurred fill so the full image is always visible without cropping */}
+      <div className="absolute inset-0 z-0" aria-hidden>
+        <Image
+          src={image}
+          alt=""
+          fill
+          priority
+          unoptimized={unoptimized}
+          sizes="100vw"
+          className="scale-110 object-cover object-center blur-2xl"
+        />
+      </div>
+
       <motion.div
         className="absolute inset-0 z-0"
         initial={reduce ? false : { scale: 1.06 }}
@@ -78,14 +91,14 @@ export default function ServicePageHero({
         <motion.h1
           id={id}
           variants={reduce ? undefined : itemVariants}
-          className="heading-on-dark hero-heading-on-dark mt-5 !text-[clamp(2rem,4.5vw,3.25rem)]"
+          className="heading-on-dark hero-heading-on-dark mt-5 !text-[clamp(2rem,4.5vw,3.25rem)] [overflow-wrap:anywhere]"
         >
           {title}
         </motion.h1>
 
         <motion.p
           variants={reduce ? undefined : itemVariants}
-          className="subtitle-on-dark hero-subtitle-on-dark mx-auto mt-5 max-w-3xl !text-[clamp(1rem,2vw,1.2rem)]"
+          className="subtitle-on-dark hero-subtitle-on-dark mx-auto mt-5 max-w-3xl !text-[clamp(1rem,2vw,1.2rem)] [overflow-wrap:anywhere]"
         >
           {description}
         </motion.p>

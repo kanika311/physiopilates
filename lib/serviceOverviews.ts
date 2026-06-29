@@ -51,7 +51,7 @@ export const SERVICE_OVERVIEWS: Record<string, ServiceOverviewConfig> = {
       "Suitable for all ages and fitness levels — from beginners to professional athletes.",
     ],
     levels: ["Beginner", "Intermediate", "Expert"],
-    learnMoreHref: "#pilates-gallery",
+    learnMoreHref: "/contact",
     quoteService: "Pilates",
   },
   yoga: {
@@ -70,7 +70,7 @@ export const SERVICE_OVERVIEWS: Record<string, ServiceOverviewConfig> = {
       "Experience the benefits of holistic healing through movement, breath, and mindfulness.",
     ],
     levels: ["Beginner", "Intermediate", "Expert"],
-    learnMoreHref: "#yoga-gallery",
+    learnMoreHref: "/contact",
     quoteService: "Yoga",
   },
   therapy: {
@@ -89,7 +89,7 @@ export const SERVICE_OVERVIEWS: Record<string, ServiceOverviewConfig> = {
       "These treatments complement physiotherapy for faster healing and better overall recovery.",
     ],
     levels: ["Beginner", "Intermediate", "Expert"],
-    learnMoreHref: "#therapy-gallery",
+    learnMoreHref: "/contact",
     quoteService: "Dry Needling & Cup Therapy",
   },
 };

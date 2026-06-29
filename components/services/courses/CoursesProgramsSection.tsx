@@ -75,13 +75,16 @@ export default function CoursesProgramsSection() {
                   whileHover={reduce ? undefined : { y: -4, scale: 1.01 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="relative aspect-[5/3] w-full shrink-0 overflow-hidden">
+                  <div
+                    className="relative aspect-[5/3] w-full shrink-0 overflow-hidden"
+                    style={{ backgroundColor: brand.mintBg }}
+                  >
                     <Image
                       src={course.image}
                       alt={course.imageAlt}
                       fill
                       unoptimized
-                      className="object-cover object-center"
+                      className="object-contain object-center"
                       sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     />
                   </div>

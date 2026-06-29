@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
 
 import { useAdminPage } from "@/components/admin/AdminPageContext";
 import {
@@ -32,6 +33,7 @@ export default function AdminsPage() {
   const [saving, setSaving] = useState(false);
   const [form, setForm] = useState(emptyForm);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const fetchAdmins = async () => {
     try {
@@ -107,13 +109,35 @@ export default function AdminsPage() {
               />
             </AdminField>
             <AdminField label="Password">
-              <AdminInput
-                type="password"
-                required
-                placeholder="Set a password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-              />
+              <div style={{ position: "relative" }}>
+                <AdminInput
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder="Set a password"
+                  value={form.password}
+                  onChange={(e) =>
+                    setForm({ ...form, password: e.target.value })
+                  }
+                  className="pr-11"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  className="admin-focus-ring flex items-center justify-center rounded-[8px] transition-colors hover:bg-[var(--admin-muted)]"
+                  style={{
+                    position: "absolute",
+                    right: 8,
+                    top: "50%",
+                    transform: "translateY(-50%)",
+                    height: 32,
+                    width: 32,
+                    color: "var(--admin-text-muted)",
+                  }}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
             </AdminField>
             <AdminButton type="submit" disabled={saving} fullWidth>
               {saving ? "Creating..." : "Create Admin"}

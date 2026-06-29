@@ -178,7 +178,7 @@ export default function GalleryPage() {
   if (view === "create") {
     return (
       <>
-        <div className="mb-5">
+        <div className="mb-5 flex justify-end">
           <AdminButton variant="ghost" onClick={backToList}>
             <ArrowLeft size={16} />
             Back to Gallery

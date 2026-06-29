@@ -47,7 +47,7 @@ export default function CoursesOverviewSection() {
           </ul>
 
           <div className="mt-8">
-            <PremiumButton href="#courses-programs" className="px-8 py-2.5">
+            <PremiumButton href="/contact" className="px-8 py-2.5">
               Learn More
             </PremiumButton>
           </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { FiX, FiCheckCircle } from "react-icons/fi";
 import { brand } from "@/lib/brand";
@@ -35,10 +36,22 @@ export default function GetQuoteForm({
   className = "",
 }: Props) {
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
   const [form, setForm] = useState({ ...emptyForm, service });
+
+  useEffect(() => setMounted(true), []);
+
+  useEffect(() => {
+    if (!open) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   const openModal = () => {
     setForm({ ...emptyForm, service });
@@ -87,20 +100,22 @@ export default function GetQuoteForm({
         {buttonLabel}
       </button>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            className="fixed inset-0 z-[600] flex items-center justify-center p-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-          >
-            <button
-              type="button"
-              aria-label="Close"
-              onClick={closeModal}
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-            />
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {open && (
+              <motion.div
+                className="fixed inset-0 z-[600] flex items-center justify-center p-4"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <button
+                  type="button"
+                  aria-label="Close"
+                  onClick={closeModal}
+                  className="absolute inset-0 bg-black/50 backdrop-blur-md"
+                />
 
             <motion.div
               role="dialog"
@@ -266,8 +281,10 @@ export default function GetQuoteForm({
               )}
             </motion.div>
           </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body,
         )}
-      </AnimatePresence>
     </>
   );
 }

@@ -4,6 +4,7 @@ import { useState } from "react";
 import axios from "axios";
 import { Eye, EyeOff, ShieldCheck, Mail, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -196,13 +197,13 @@ export default function LoginForm() {
             Remember Me
           </label>
 
-          <button
-            type="button"
+          <Link
+            href="/admin/forgot-password"
             className="font-medium transition hover:underline"
             style={{ color: "var(--admin-accent)" }}
           >
             Forgot Password?
-          </button>
+          </Link>
         </div>
 
         <button

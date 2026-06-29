@@ -12,7 +12,7 @@ export default function BlogHero(props: Props) {
         id="blog-hero-heading"
         image={HERO_BLOG_LIST}
         imageAlt="Wellness and therapy insights"
-        imageClassName="object-cover object-[center_38%]"
+        imageClassName="object-contain object-center"
         eyebrow="Wellness insights"
         title="Our Blog"
         description="Stay informed with the latest health, fitness, and wellness insights from our experts — empowering you to live a stronger, balanced life."
@@ -26,7 +26,7 @@ export default function BlogHero(props: Props) {
       id="blog-hero-heading"
       image={props.imageSrc}
       imageAlt={props.imageAlt}
-      imageClassName="object-cover object-center"
+      imageClassName="object-contain object-center"
       eyebrow="Article"
       title={props.title}
       description={props.subtitle}

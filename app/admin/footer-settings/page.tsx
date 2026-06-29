@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { RotateCcw } from "lucide-react";
+import { RotateCcw, Plus, Trash2 } from "lucide-react";
 import {
   FaFacebookF,
   FaInstagram,
@@ -19,6 +19,8 @@ import {
   SectionCard,
 } from "@/components/admin/ui";
 
+type FooterLink = { label: string; href: string };
+
 type FooterForm = {
   tagline: string;
   address: string;
@@ -29,7 +31,20 @@ type FooterForm = {
   linkedin: string;
   youtube: string;
   copyright: string;
+  servicesHeading: string;
+  companyHeading: string;
+  contactHeading: string;
+  companyLinks: FooterLink[];
 };
+
+const DEFAULT_COMPANY_LINKS: FooterLink[] = [
+  { label: "About Us", href: "/about" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Contact", href: "/contact" },
+  { label: "Blog", href: "/blogs" },
+  { label: "Privacy Policy", href: "/privacy-policy" },
+  { label: "Terms of Service", href: "/terms-of-service" },
+];
 
 const DEFAULT_PRESET: FooterForm = {
   tagline:
@@ -44,6 +59,10 @@ const DEFAULT_PRESET: FooterForm = {
     "https://www.linkedin.com/in/dr-surbhi-silori-pt-471630b4?utm_source=share_via&utm_content=profile&utm_medium=member_android",
   youtube: "https://youtube.com/@physiopilates6321?si=w8CytJCQKXfD-P-f",
   copyright: "Physio Pilates| Powered by JCRM Technologies",
+  servicesHeading: "Services",
+  companyHeading: "Company",
+  contactHeading: "Contact Us",
+  companyLinks: DEFAULT_COMPANY_LINKS,
 };
 
 const SOCIAL_FIELDS: {
@@ -80,6 +99,17 @@ export default function FooterSettingsPage() {
             linkedin: d.linkedin || DEFAULT_PRESET.linkedin,
             youtube: d.youtube || DEFAULT_PRESET.youtube,
             copyright: d.copyright || DEFAULT_PRESET.copyright,
+            servicesHeading:
+              d.servicesHeading || DEFAULT_PRESET.servicesHeading,
+            companyHeading: d.companyHeading || DEFAULT_PRESET.companyHeading,
+            contactHeading: d.contactHeading || DEFAULT_PRESET.contactHeading,
+            companyLinks:
+              Array.isArray(d.companyLinks) && d.companyLinks.length > 0
+                ? d.companyLinks.map((l: FooterLink) => ({
+                    label: l.label || "",
+                    href: l.href || "",
+                  }))
+                : DEFAULT_PRESET.companyLinks,
           });
         }
       } catch (err) {
@@ -90,6 +120,26 @@ export default function FooterSettingsPage() {
 
   const setField = <K extends keyof FooterForm>(key: K, value: FooterForm[K]) =>
     setForm((prev) => ({ ...prev, [key]: value }));
+
+  const updateLink = (index: number, key: keyof FooterLink, value: string) =>
+    setForm((prev) => ({
+      ...prev,
+      companyLinks: prev.companyLinks.map((l, i) =>
+        i === index ? { ...l, [key]: value } : l
+      ),
+    }));
+
+  const addLink = () =>
+    setForm((prev) => ({
+      ...prev,
+      companyLinks: [...prev.companyLinks, { label: "", href: "" }],
+    }));
+
+  const removeLink = (index: number) =>
+    setForm((prev) => ({
+      ...prev,
+      companyLinks: prev.companyLinks.filter((_, i) => i !== index),
+    }));
 
   const resetToDefault = () => {
     if (
@@ -163,6 +213,86 @@ export default function FooterSettingsPage() {
                 onChange={(e) => setField("email", e.target.value)}
               />
             </AdminField>
+          </div>
+        </SectionCard>
+      </div>
+
+      <div className="mt-5">
+        <SectionCard title="Column Headings">
+          <div className="grid gap-4 sm:grid-cols-3">
+            <AdminField label="Services column heading">
+              <AdminInput
+                value={form.servicesHeading}
+                onChange={(e) => setField("servicesHeading", e.target.value)}
+              />
+            </AdminField>
+            <AdminField label="Company column heading">
+              <AdminInput
+                value={form.companyHeading}
+                onChange={(e) => setField("companyHeading", e.target.value)}
+              />
+            </AdminField>
+            <AdminField label="Contact column heading">
+              <AdminInput
+                value={form.contactHeading}
+                onChange={(e) => setField("contactHeading", e.target.value)}
+              />
+            </AdminField>
+          </div>
+          <p className="mt-2 text-xs" style={{ color: "var(--admin-text-muted)" }}>
+            The Services column links are managed automatically from your
+            Services (the names you set there appear here).
+          </p>
+        </SectionCard>
+      </div>
+
+      <div className="mt-5">
+        <SectionCard title="Company / Quick Links">
+          <p className="mb-4 text-xs" style={{ color: "var(--admin-text-muted)" }}>
+            Edit the links shown in the Company column. You can rename labels
+            (e.g. &ldquo;Terms of Service&rdquo; → &ldquo;Terms &amp;
+            Conditions&rdquo;) and change where they point.
+          </p>
+          <div className="flex flex-col gap-3">
+            {form.companyLinks.map((link, index) => (
+              <div
+                key={index}
+                className="grid items-end gap-3 sm:grid-cols-[1fr_1fr_auto]"
+              >
+                <AdminField label="Label">
+                  <AdminInput
+                    placeholder="Terms & Conditions"
+                    value={link.label}
+                    onChange={(e) => updateLink(index, "label", e.target.value)}
+                  />
+                </AdminField>
+                <AdminField label="Link (URL or path)">
+                  <AdminInput
+                    placeholder="/terms-of-service"
+                    value={link.href}
+                    onChange={(e) => updateLink(index, "href", e.target.value)}
+                  />
+                </AdminField>
+                <button
+                  type="button"
+                  onClick={() => removeLink(index)}
+                  aria-label="Remove link"
+                  className="mb-1 flex size-10 shrink-0 items-center justify-center rounded-[10px] border transition-colors hover:bg-red-50"
+                  style={{
+                    borderColor: "rgb(254 202 202)",
+                    color: "rgb(220 38 38)",
+                  }}
+                >
+                  <Trash2 size={16} />
+                </button>
+              </div>
+            ))}
+          </div>
+          <div className="mt-4">
+            <AdminButton variant="outline" onClick={addLink}>
+              <Plus size={15} />
+              Add Link
+            </AdminButton>
           </div>
         </SectionCard>
       </div>

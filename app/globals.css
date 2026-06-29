@@ -22,6 +22,8 @@
   --admin-muted: #f1faf8;
   --admin-sidebar: #0f766e;
   --admin-sidebar-elevated: #14b8a6;
+  --admin-sidebar-text: #ffffff;
+  --admin-sidebar-text-strong: #ffffff;
   --admin-accent: #0f766e;
   --admin-accent-muted: #14b8a6;
   --admin-accent-soft: rgb(15 118 110 / 0.12);
@@ -160,14 +162,14 @@ h3 {
 }
 
 .nav-link {
-  color: var(--heading-navy);
+  color: var(--nav-text, var(--heading-navy));
   transition: color 0.2s ease;
 }
 
 .nav-link:hover,
 .nav-link:focus-visible,
 .nav-link[data-active="true"] {
-  color: var(--label-teal);
+  color: var(--nav-hover, var(--label-teal));
 }
 
 p {
@@ -611,20 +613,83 @@ span.ripple-burst {
 /* —— Admin panel —— */
 .admin-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: rgb(107 143 113 / 0.25) transparent;
+  scrollbar-color: rgb(255 255 255 / 0.3) transparent;
 }
 
 .admin-scrollbar::-webkit-scrollbar {
-  width: 5px;
+  width: 6px;
 }
 
 .admin-scrollbar::-webkit-scrollbar-thumb {
   border-radius: 9999px;
-  background: rgb(107 143 113 / 0.25);
+  background: rgb(255 255 255 / 0.3);
 }
 
 .admin-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgb(107 143 113 / 0.4);
+  background: rgb(255 255 255 / 0.5);
+}
+
+/* Sidebar nav links — white text on the teal sidebar */
+.admin-nav-link {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  line-height: 26px;
+  color: var(--admin-sidebar-text);
+  border: 1px solid transparent;
+  transition:
+    background-color 250ms ease,
+    color 250ms ease,
+    transform 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.admin-nav-link:hover {
+  color: #f5d384;
+  background-color: rgb(245 211 132 / 0.12);
+  transform: scale(1.02);
+}
+
+.admin-nav-icon {
+  background-color: rgb(255 255 255 / 0.14);
+  color: var(--admin-sidebar-text);
+  transition:
+    background-color 250ms ease,
+    color 250ms ease;
+}
+
+.admin-nav-link:hover .admin-nav-icon {
+  color: #f5d384;
+  background-color: rgb(245 211 132 / 0.22);
+}
+
+/* Active sidebar item — glassmorphism */
+.admin-nav-link-active {
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  line-height: 26px;
+  color: var(--admin-sidebar-text-strong);
+  background-color: rgb(255 255 255 / 0.18);
+  border: 1px solid rgb(255 255 255 / 0.25);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition:
+    background-color 250ms ease,
+    transform 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.admin-nav-link-active:hover {
+  transform: scale(1.02);
+}
+
+.admin-nav-icon-active {
+  background-color: rgb(255 255 255 / 0.28);
+  color: var(--admin-sidebar-text-strong);
 }
 
 .admin-card {

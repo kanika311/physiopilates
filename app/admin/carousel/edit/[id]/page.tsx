@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useRouter } from "next/navigation";
 import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
 
 import { useAdminPage } from "@/components/admin/AdminPageContext";
 import {
@@ -51,14 +52,15 @@ export default function EditCarousel() {
   const getCarousel = async () => {
     try {
       const res = await axios.get(`/api/carousel/${id}`);
+      const item = res.data?.data ?? res.data;
       setForm({
-        title: res.data.title || "",
-        subtitle: res.data.subtitle || "",
-        image: res.data.image || "",
-        buttonText: res.data.buttonText || "",
-        buttonLink: res.data.buttonLink || "",
-        order: res.data.order || 1,
-        status: res.data.status ?? true,
+        title: item.title || "",
+        subtitle: item.subtitle || "",
+        image: item.image || "",
+        buttonText: item.buttonText || "",
+        buttonLink: item.buttonLink || "",
+        order: item.order || 1,
+        status: item.status ?? true,
       });
     } catch (error) {
       console.error(error);
@@ -117,6 +119,15 @@ export default function EditCarousel() {
       title="Edit Carousel"
       description="Update banner details"
       maxWidth="2xl"
+      action={
+        <AdminButton
+          variant="outline"
+          onClick={() => router.push("/admin/carousel")}
+        >
+          <ArrowLeft size={15} />
+          Back to Carousel
+        </AdminButton>
+      }
     >
       <form onSubmit={submit} className="space-y-5">
         <AdminField label="Title">

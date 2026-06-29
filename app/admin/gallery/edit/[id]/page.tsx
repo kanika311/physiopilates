@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
 import { useParams, useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 import { useAdminPage } from "@/components/admin/AdminPageContext";
 import {
@@ -138,6 +139,15 @@ export default function EditGalleryPage() {
     <FormCard
       title="Edit Gallery Image"
       description="Update gallery image details"
+      action={
+        <AdminButton
+          variant="outline"
+          onClick={() => router.push("/admin/gallery")}
+        >
+          <ArrowLeft size={15} />
+          Back to Gallery
+        </AdminButton>
+      }
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <AdminField label="Title">

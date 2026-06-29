@@ -138,10 +138,10 @@ export default async function DbServicePage({ slug }: { slug: string }) {
           </div>
 
           <div>
-            <h2 className="text-2xl font-bold tracking-tight text-neutral-900 sm:text-4xl md:text-[2.35rem] md:leading-tight">
+            <h2 className="text-2xl font-bold tracking-tight text-neutral-900 [overflow-wrap:anywhere] sm:text-4xl md:text-[2.35rem] md:leading-tight">
               {overviewTitle}
             </h2>
-            <p className="mt-4 whitespace-pre-line text-[16px] leading-relaxed text-neutral-600 md:text-[17px]">
+            <p className="mt-4 whitespace-pre-line text-[16px] leading-relaxed text-neutral-600 [overflow-wrap:anywhere] md:text-[17px]">
               {overviewDescription}
             </p>
 

@@ -3,6 +3,8 @@
 import { useState } from "react";
 import axios from "axios";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 import { useAdminPage } from "@/components/admin/AdminPageContext";
 import {
@@ -17,6 +19,7 @@ import {
 export default function CreateCoursePage() {
   useAdminPage("Create Course");
 
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [preview, setPreview] = useState("");
   const [formData, setFormData] = useState({
@@ -84,6 +87,15 @@ export default function CreateCoursePage() {
     <FormCard
       title="Create Course"
       description="Add new training course"
+      action={
+        <AdminButton
+          variant="outline"
+          onClick={() => router.push("/admin/courses")}
+        >
+          <ArrowLeft size={15} />
+          Back to Courses
+        </AdminButton>
+      }
     >
       <form onSubmit={handleSubmit} className="space-y-5">
         <AdminField label="Course Title">

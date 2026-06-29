@@ -12,6 +12,14 @@ export function middleware(
   const pathname =
     request.nextUrl.pathname;
 
+  // Public admin pages that don't require a logged-in session.
+  const publicAdminPaths = [
+    "/admin/login",
+    "/admin/forgot-password",
+    "/admin/reset-password",
+  ];
+  const isPublicAdminPath = publicAdminPaths.includes(pathname);
+
   // Logged in user cannot access login page
   if (
     pathname === "/admin/login" &&
@@ -30,8 +38,7 @@ export function middleware(
     pathname.startsWith(
       "/admin"
     ) &&
-    pathname !==
-      "/admin/login" &&
+    !isPublicAdminPath &&
     !token
   ) {
     return NextResponse.redirect(

@@ -8,6 +8,15 @@ export async function POST(request: Request) {
     await connectDB();
     const body = await request.json();
 
+    const companyLinks = Array.isArray(body.companyLinks)
+      ? body.companyLinks
+          .map((l: { label?: string; href?: string }) => ({
+            label: String(l?.label || "").trim(),
+            href: String(l?.href || "").trim(),
+          }))
+          .filter((l: { label: string; href: string }) => l.label && l.href)
+      : undefined;
+
     const doc = await FooterSettings.findOneAndUpdate(
       { key: "default" },
       {
@@ -21,6 +30,10 @@ export async function POST(request: Request) {
         linkedin: body.linkedin,
         youtube: body.youtube,
         copyright: body.copyright,
+        servicesHeading: body.servicesHeading,
+        companyHeading: body.companyHeading,
+        contactHeading: body.contactHeading,
+        ...(companyLinks ? { companyLinks } : {}),
       },
       { new: true, upsert: true, setDefaultsOnInsert: true }
     );

@@ -35,14 +35,14 @@ const BUILTIN_SERVICE_LINKS: FooterLinkItem[] = [
   { label: "Yoga", href: "/yoga" },
   { label: "Therapy", href: "/therapy" },
 ];
-const companyLinks = [
+const DEFAULT_COMPANY_LINKS: FooterLinkItem[] = [
   { label: "About Us", href: "/about" },
   { label: "Gallery", href: "/gallery" },
   { label: "Contact", href: "/contact" },
   { label: "Blog", href: "/blogs" },
   { label: "Privacy Policy", href: "/privacy-policy" },
   { label: "Terms of Service", href: "/terms-of-service" },
-] as const;
+];
 
 type SocialItem = {
   Icon: IconType;
@@ -66,6 +66,9 @@ const DEFAULT_FOOTER = {
   email: contactEmailDisplay,
   ...DEFAULT_SOCIALS,
   copyright: "Physio Pilates| Powered by JCRM Technologies",
+  servicesHeading: "Services",
+  companyHeading: "Company",
+  contactHeading: "Contact Us",
 };
 
 type FooterContent = typeof DEFAULT_FOOTER;
@@ -90,6 +93,8 @@ export default function Footer() {
   const isContactPage = pathname === "/contact";
 
   const [content, setContent] = useState<FooterContent>(DEFAULT_FOOTER);
+  const [companyLinks, setCompanyLinks] =
+    useState<FooterLinkItem[]>(DEFAULT_COMPANY_LINKS);
   const [serviceLinks, setServiceLinks] = useState<FooterLinkItem[]>([
     ...BUILTIN_SERVICE_LINKS,
     { label: "Courses", href: "/courses" },
@@ -113,7 +118,17 @@ export default function Footer() {
           linkedin: d.linkedin || DEFAULT_FOOTER.linkedin,
           youtube: d.youtube || DEFAULT_FOOTER.youtube,
           copyright: d.copyright || DEFAULT_FOOTER.copyright,
+          servicesHeading: d.servicesHeading || DEFAULT_FOOTER.servicesHeading,
+          companyHeading: d.companyHeading || DEFAULT_FOOTER.companyHeading,
+          contactHeading: d.contactHeading || DEFAULT_FOOTER.contactHeading,
         });
+        if (Array.isArray(d.companyLinks) && d.companyLinks.length > 0) {
+          setCompanyLinks(
+            d.companyLinks
+              .filter((l: FooterLinkItem) => l?.label && l?.href)
+              .map((l: FooterLinkItem) => ({ label: l.label, href: l.href }))
+          );
+        }
       } catch {
         /* keep defaults */
       }
@@ -185,7 +200,7 @@ export default function Footer() {
 
           <div id="services" className="min-w-0">
             <h3 className={`${footerSans} text-base font-semibold`} style={{ color: brand.navy }}>
-              Services
+              {content.servicesHeading}
             </h3>
             <ul className="mt-5 space-y-3">
               {serviceLinks.map(({ label, href }) => (
@@ -198,11 +213,11 @@ export default function Footer() {
 
           <div id="company" className="min-w-0">
             <h3 className={`${footerSans} text-base font-semibold`} style={{ color: brand.navy }}>
-              Company
+              {content.companyHeading}
             </h3>
             <ul className="mt-5 space-y-3">
               {companyLinks.map(({ label, href }) => (
-                <li key={label}>
+                <li key={`${label}-${href}`}>
                   <FooterLink href={href} label={label} />
                 </li>
               ))}
@@ -211,7 +226,7 @@ export default function Footer() {
 
           <div className="min-w-0">
             <h3 className={`${footerSans} text-base font-semibold`} style={{ color: brand.navy }}>
-              {isContactPage ? "Connect with us" : "Contact Us"}
+              {isContactPage ? "Connect with us" : content.contactHeading}
             </h3>
             {isContactPage ? (
               <p className={`${footerSans} mt-5 max-w-sm text-[15px] font-medium leading-relaxed`} style={{ color: brand.textMuted }}>

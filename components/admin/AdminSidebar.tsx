@@ -17,7 +17,6 @@ import {
   X,
    Briefcase, 
   Settings,
-  Shield,
   ShieldCheck,
   GraduationCap,
   Quote,
@@ -164,20 +163,33 @@ export default function AdminSidebar() {
         }}
       >
         <div className="flex items-center gap-3">
-          <div
-            className="flex h-9 w-9 items-center justify-center rounded-xl"
-            style={{
-              backgroundColor: "var(--admin-accent)",
-              color: "#fff",
-            }}
-          >
-            <Shield size={18} />
+          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-white shadow-[0_4px_14px_rgb(0_0_0_/0.12)]">
+            <NextImage
+              src="/logo.png"
+              alt="Physio Pilates"
+              width={64}
+              height={64}
+              className="h-auto w-[34px] object-contain"
+              priority
+            />
           </div>
-          <div className="flex ">
-            <NextImage src="/logo.png" alt="logo" width={32} height={32} />
-          <h2 className="text-md font-bold tracking-tight text-tale">
-            Admin
-          </h2>
+          <div className="flex flex-col leading-tight">
+            <span
+              className="text-base font-bold tracking-tight"
+              style={{
+                fontFamily:
+                  "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
+                color: "var(--admin-sidebar-text)",
+              }}
+            >
+              Admin
+            </span>
+            <span
+              className="text-[11px] font-medium"
+              style={{ color: "rgb(255 255 255 / 0.8)" }}
+            >
+              Management Panel
+            </span>
           </div>
         </div>
 
@@ -233,25 +245,42 @@ export default function AdminSidebar() {
 
         {/* Logo */}
         <div
-          className="relative border-b p-4"
-          style={{ borderColor: "rgb(255 255 255 / 0.08)" }}
+          className="relative border-b p-5"
+          style={{ borderColor: "rgb(255 255 255 / 0.12)" }}
           >
-          <div className="flex items-center gap-2.5">
-            <div className="shrink-0 rounded-lg bg-white p-1 shadow-md">
+          <div className="flex items-center gap-4">
+            <div className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-2xl bg-white shadow-[0_6px_20px_rgb(0_0_0_/0.12)]">
               <NextImage
                 src="/logo.png"
                 alt="Physio Pilates"
-                width={70}
-                height={70}
-                className="h-auto w-[52px] object-contain"
+                width={80}
+                height={80}
+                className="h-auto w-[46px] object-contain"
                 priority
               />
             </div>
-            <div className="flex flex-col leading-tight">
-              <span className="text-base font-bold leading-none text-white">Admin</span>
+            <div className="flex flex-col">
               <span
-                className="mt-1 text-[11px] font-medium"
-                style={{ color: "rgb(255 255 255 / 0.45)" }}
+                className="font-bold leading-tight"
+                style={{
+                  fontFamily:
+                    "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
+                  fontSize: "24px",
+                  fontWeight: 700,
+                  color: "var(--admin-sidebar-text)",
+                }}
+              >
+                Admin
+              </span>
+              <span
+                className="leading-tight"
+                style={{
+                  fontFamily:
+                    "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
+                  fontSize: "14px",
+                  fontWeight: 500,
+                  color: "rgb(255 255 255 / 0.85)",
+                }}
               >
                 Management Panel
               </span>
@@ -272,39 +301,17 @@ export default function AdminSidebar() {
                   <Link
                     href={item.href}
                     onClick={() => setIsOpen(false)}
-                    className={`group flex items-center gap-3 rounded-[14px] px-3 py-2.5 text-sm font-medium transition-all duration-200 ${
-                      isActive
-                        ? ""
-                        : "text-white/85 hover:bg-white/10 hover:text-white"
+                    aria-current={isActive ? "page" : undefined}
+                    className={`group flex items-center gap-4 rounded-[14px] px-4 py-3.5 ${
+                      isActive ? "admin-nav-link-active" : "admin-nav-link"
                     }`}
-                    style={
-                      isActive
-                        ? {
-                            backgroundColor: "#ffffff",
-                            color: "var(--admin-accent)",
-                            boxShadow:
-                              "0 6px 18px rgb(0 0 0 / 0.12)",
-                          }
-                        : undefined
-                    }
                   >
                     <span
-                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] transition-all duration-200"
-                      style={
-                        isActive
-                          ? {
-                              backgroundColor:
-                                "var(--admin-accent-soft)",
-                              color: "var(--admin-accent)",
-                            }
-                          : {
-                              backgroundColor:
-                                "rgb(255 255 255 / 0.12)",
-                              color: "#ffffff",
-                            }
-                      }
+                      className={`flex h-[42px] w-[42px] shrink-0 items-center justify-center rounded-[12px] ${
+                        isActive ? "admin-nav-icon-active" : "admin-nav-icon"
+                      }`}
                     >
-                      <Icon size={17} />
+                      <Icon size={22} strokeWidth={2.2} />
                     </span>
                     <span className="truncate">{item.title}</span>
                   </Link>
@@ -318,20 +325,23 @@ export default function AdminSidebar() {
         <div
           className="absolute bottom-0 w-full border-t p-4 backdrop-blur-md"
           style={{
-            borderColor: "rgb(255 255 255 / 0.15)",
-            backgroundColor: "rgb(15 118 110 / 0.55)",
+            borderColor: "rgb(255 255 255 / 0.12)",
+            backgroundColor: "rgb(15 118 110 / 0.45)",
           }}
         >
           <div
-            className="flex items-center justify-between rounded-[14px] border p-3"
+            className="flex items-center justify-between gap-3 border p-3"
             style={{
-              borderColor: "rgb(255 255 255 / 0.2)",
+              borderRadius: "18px",
+              borderColor: "rgb(255 255 255 / 0.18)",
               backgroundColor: "rgb(255 255 255 / 0.12)",
+              backdropFilter: "blur(8px)",
+              WebkitBackdropFilter: "blur(8px)",
             }}
           >
-            <div className="flex items-center gap-3">
+            <div className="flex min-w-0 items-center gap-3">
               <div
-                className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-base font-bold"
                 style={{
                   backgroundColor: "#ffffff",
                   color: "var(--admin-accent)",
@@ -340,12 +350,26 @@ export default function AdminSidebar() {
                 {avatarLetter}
               </div>
               <div className="min-w-0">
-                <h4 className="text-sm font-semibold text-white">
+                <h4
+                  className="leading-tight"
+                  style={{
+                    fontFamily:
+                      "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
+                    fontSize: "16px",
+                    fontWeight: 700,
+                    color: "var(--admin-sidebar-text)",
+                  }}
+                >
                   Admin
                 </h4>
                 <p
-                  className="truncate text-xs"
-                  style={{ color: "rgb(255 255 255 / 0.45)" }}
+                  className="truncate leading-tight"
+                  style={{
+                    fontFamily:
+                      "var(--font-inter), ui-sans-serif, system-ui, sans-serif",
+                    fontSize: "13px",
+                    color: "rgb(255 255 255 / 0.8)",
+                  }}
                   title={email}
                 >
                   {email || "Loading..."}
@@ -358,10 +382,9 @@ export default function AdminSidebar() {
               disabled={loggingOut}
               aria-label="Log out"
               title="Log out"
-              className="admin-focus-ring rounded-[10px] p-2 transition-colors duration-200 hover:bg-white/10 disabled:opacity-50"
-              style={{ color: "rgb(255 255 255 / 0.5)" }}
+              className="admin-focus-ring flex h-10 w-10 shrink-0 items-center justify-center rounded-[12px] text-white transition-colors duration-200 hover:bg-white/15 disabled:opacity-50"
             >
-              <LogOut size={17} />
+              <LogOut size={20} strokeWidth={2.2} />
             </button>
           </div>
         </div>

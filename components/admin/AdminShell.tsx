@@ -12,7 +12,13 @@ export default function AdminShell({
 }) {
   const pathname = usePathname();
 
-  if (pathname === "/admin/login") {
+  const standalone = [
+    "/admin/login",
+    "/admin/forgot-password",
+    "/admin/reset-password",
+  ];
+
+  if (standalone.includes(pathname)) {
     return <>{children}</>;
   }
 

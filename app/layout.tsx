@@ -5,6 +5,8 @@ import FloatingActions from "@/components/FloatingActions";
 import SiteChrome from "@/components/luxury/SiteChrome";
 import MotionProviders from "@/components/providers/MotionProviders";
 import ThemeProvider from "@/components/providers/ThemeProvider";
+import AuthProvider from "@/components/providers/AuthProvider";
+import ToastProvider from "@/components/providers/ToastProvider";
 import "./globals.css";
 
 const inter = Inter({
@@ -39,12 +41,16 @@ export default function RootLayout({
         className={`${inter.className} flex min-h-dvh min-w-0 flex-col bg-white antialiased text-[#374151]`}
       >
         <ThemeProvider>
-          <SiteChrome />
-          <main className="min-w-0 flex-1">
-            <MotionProviders>{children}</MotionProviders>
-          </main>
-         
-          <FloatingActions />
+          <ToastProvider>
+            <AuthProvider>
+              <SiteChrome />
+              <main className="min-w-0 flex-1">
+                <MotionProviders>{children}</MotionProviders>
+              </main>
+
+              <FloatingActions />
+            </AuthProvider>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>

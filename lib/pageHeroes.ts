@@ -128,6 +128,31 @@ export const PAGE_HEROES: Record<string, PageHeroConfig> = {
     minHeightClass: "min-h-[max(300px,min(420px,42dvh))]",
     contentPaddingClass: "py-10 sm:py-12",
   },
+  terms: {
+    page: "terms",
+    label: "Terms & Conditions",
+    id: "terms-of-service-heading",
+    image: HERO_CONTACT,
+    imageAlt: "Physio Pilates studio",
+    imageClassName: "object-cover object-[center_42%]",
+    eyebrow: "Legal",
+    title: "Terms & Conditions",
+    description: "Terms and conditions for using our website and services.",
+    minHeightClass: "min-h-[max(380px,min(520px,55dvh))]",
+  },
+  privacy: {
+    page: "privacy",
+    label: "Privacy Policy",
+    id: "privacy-policy-heading",
+    image: HERO_CONTACT,
+    imageAlt: "Physio Pilates studio",
+    imageClassName: "object-cover object-[center_42%]",
+    eyebrow: "Legal",
+    title: "Privacy Policy",
+    description:
+      "How we collect, use, and protect your personal information.",
+    minHeightClass: "min-h-[max(380px,min(520px,55dvh))]",
+  },
 };
 
 export const PAGE_HERO_LIST: PageHeroConfig[] = Object.values(PAGE_HEROES);

@@ -26,12 +26,13 @@ export default function BlogCard({ post }: Props) {
       <Link
         href={`/blogs/${post.slug}`}
         className="relative block aspect-[16/11] shrink-0 overflow-hidden"
+        style={{ backgroundColor: brand.mintBg }}
       >
         <Image
           src={thumb}
           alt={post.title}
           fill
-          className="object-cover object-center transition duration-700 hover:scale-105"
+          className="object-contain object-center transition duration-700 hover:scale-105"
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
         />
         <div

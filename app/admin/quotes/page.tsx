@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import type { ComponentType } from "react";
 import axios from "axios";
+import {
+  Mail,
+  Phone,
+  Briefcase,
+  CalendarDays,
+  Clock,
+  FileText,
+} from "lucide-react";
 
 import { useAdminPage } from "@/components/admin/AdminPageContext";
 import {
@@ -216,39 +225,51 @@ export default function QuotesPage() {
             </>
           }
         >
-          <div
-            className="grid grid-cols-1 overflow-hidden rounded-[12px] border sm:grid-cols-2"
-            style={{ borderColor: "var(--admin-border)" }}
-          >
-            <Detail label="Email" value={selected.email} href={`mailto:${selected.email}`} />
-            <Detail label="Phone" value={selected.phone} href={`tel:${selected.phone}`} />
-            <Detail label="Service" value={selected.service} />
+          <div className="grid gap-3 sm:grid-cols-2">
             <Detail
+              icon={Mail}
+              label="Email"
+              value={selected.email}
+              href={`mailto:${selected.email}`}
+            />
+            <Detail
+              icon={Phone}
+              label="Phone"
+              value={selected.phone}
+              href={`tel:${selected.phone}`}
+            />
+            <Detail icon={Briefcase} label="Service" value={selected.service} />
+            <Detail
+              icon={CalendarDays}
               label="Preferred Date"
               value={selected.preferredDate || "—"}
             />
-            <Detail
-              label="Submitted"
-              value={formatDate(selected.createdAt)}
-              full
-            />
+          </div>
+
+          <div
+            className="mt-3 flex items-center gap-2 text-[12px]"
+            style={{ color: "var(--admin-text-muted)" }}
+          >
+            <Clock size={14} />
+            <span>Submitted {formatDate(selected.createdAt)}</span>
           </div>
 
           {selected.message ? (
             <div
-              className="mt-4 rounded-[12px] border p-4"
+              className="mt-4 rounded-[14px] border p-4"
               style={{
                 borderColor: "var(--admin-border)",
                 backgroundColor: "var(--admin-muted)",
               }}
             >
-              <p
-                className="text-[11px] font-semibold uppercase tracking-wide"
+              <div
+                className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-wide"
                 style={{ color: "var(--admin-text-muted)" }}
               >
+                <FileText size={14} />
                 Requirements
-              </p>
-              <p className="mt-1.5 whitespace-pre-wrap text-sm leading-relaxed">
+              </div>
+              <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed [overflow-wrap:anywhere]">
                 {selected.message}
               </p>
             </div>
@@ -260,42 +281,57 @@ export default function QuotesPage() {
 }
 
 function Detail({
+  icon: Icon,
   label,
   value,
   href,
-  full,
 }: {
+  icon: ComponentType<{ size?: number }>;
   label: string;
   value: string;
   href?: string;
-  full?: boolean;
 }) {
   return (
     <div
-      className={`border-b px-4 py-3 sm:[&:nth-last-child(-n+1)]:border-b-0 ${
-        full ? "sm:col-span-2" : "sm:odd:border-r"
-      }`}
-      style={{ borderColor: "var(--admin-border)" }}
+      className="flex items-start gap-3 rounded-[14px] border p-3.5"
+      style={{
+        borderColor: "var(--admin-border)",
+        backgroundColor: "var(--admin-surface)",
+      }}
     >
-      <p
-        className="text-[11px] font-semibold uppercase tracking-wide"
-        style={{ color: "var(--admin-text-muted)" }}
+      <span
+        className="flex size-9 shrink-0 items-center justify-center rounded-[10px]"
+        style={{
+          backgroundColor: "var(--admin-accent-soft)",
+          color: "var(--admin-accent)",
+        }}
       >
-        {label}
-      </p>
-      {href ? (
-        <a
-          href={href}
-          className="mt-0.5 block truncate text-sm font-medium hover:underline"
-          style={{ color: "var(--admin-accent)" }}
+        <Icon size={16} />
+      </span>
+      <div className="min-w-0">
+        <p
+          className="text-[11px] font-semibold uppercase tracking-wide"
+          style={{ color: "var(--admin-text-muted)" }}
         >
-          {value}
-        </a>
-      ) : (
-        <p className="mt-0.5 text-sm font-medium" style={{ color: "var(--page-fg)" }}>
-          {value}
+          {label}
         </p>
-      )}
+        {href ? (
+          <a
+            href={href}
+            className="mt-0.5 block truncate text-sm font-semibold hover:underline"
+            style={{ color: "var(--admin-accent)" }}
+          >
+            {value}
+          </a>
+        ) : (
+          <p
+            className="mt-0.5 truncate text-sm font-semibold"
+            style={{ color: "var(--page-fg)" }}
+          >
+            {value}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

@@ -1,6 +1,7 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { createPortal } from "react-dom";
 import { X } from "lucide-react";
 
 import AdminButton from "@/components/admin/ui/AdminButton";
@@ -25,15 +26,44 @@ export default function AdminModal({
   onClose,
   footer,
 }: AdminModalProps) {
-  return (
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Lock body scroll + close on Escape while the modal is open.
+  useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      document.body.style.overflow = prev;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [onClose]);
+
+  if (!mounted) return null;
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+      className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-black/60 p-4 backdrop-blur-sm"
       onClick={onClose}
     >
       <div
-        className="admin-card admin-fade-in flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden"
-        style={{ borderRadius: "var(--admin-radius-lg)" }}
+        className="admin-card admin-fade-in my-auto flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden"
+        style={{
+          borderRadius: "var(--admin-radius-lg)",
+          boxShadow: "var(--admin-shadow-lg)",
+        }}
         onClick={(e) => e.stopPropagation()}
+        role="dialog"
+        aria-modal="true"
       >
         {/* Header */}
         <div
@@ -77,7 +107,7 @@ export default function AdminModal({
 
         {/* Body */}
         <div
-          className="flex-1 overflow-y-auto px-6 py-5 text-sm"
+          className="admin-scrollbar flex-1 overflow-y-auto px-6 py-5 text-sm"
           style={{ color: "var(--page-fg)" }}
         >
           {children}
@@ -95,6 +125,7 @@ export default function AdminModal({
           )}
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

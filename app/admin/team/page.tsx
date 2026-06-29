@@ -156,7 +156,7 @@ export default function TeamPage() {
   if (view === "form") {
     return (
       <>
-        <div className="mb-5">
+        <div className="mb-5 flex justify-end">
           <AdminButton variant="ghost" onClick={backToList}>
             <ArrowLeft size={16} />
             Back to Team
