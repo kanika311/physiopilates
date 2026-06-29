@@ -65,8 +65,10 @@ const DEFAULT_PRESET: FooterForm = {
   companyLinks: DEFAULT_COMPANY_LINKS,
 };
 
+type SocialKey = "instagram" | "facebook" | "linkedin" | "youtube";
+
 const SOCIAL_FIELDS: {
-  key: keyof FooterForm;
+  key: SocialKey;
   label: string;
   Icon: typeof FaInstagram;
 }[] = [

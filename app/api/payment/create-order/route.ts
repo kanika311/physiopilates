@@ -107,16 +107,17 @@ export async function POST(req: Request) {
     }
 
     // Create Razorpay order (amount in paise).
+    const receipt = genOrderNumber();
     const razorpay = getRazorpay();
     const rzpOrder = await razorpay.orders.create({
       amount: total * 100,
       currency: "INR",
-      receipt: genOrderNumber(),
+      receipt,
     });
 
     const order = await Order.create({
       user: session.id,
-      orderNumber: rzpOrder.receipt,
+      orderNumber: receipt,
       items,
       subtotal,
       shipping,

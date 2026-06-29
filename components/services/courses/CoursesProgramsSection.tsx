@@ -3,14 +3,13 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "framer-motion";
-import { FiCheck, FiClock, FiPhone } from "react-icons/fi";
+import { FiCheck, FiClock, FiShoppingBag } from "react-icons/fi";
 
 import PremiumButton from "@/components/luxury/PremiumButton";
 import Reveal from "@/components/luxury/Reveal";
 import SectionHeading from "@/components/luxury/SectionHeading";
 import { StaggerGrid, StaggerItem } from "@/components/luxury/Stagger";
 import { brand, SECTION_MAX } from "@/lib/brand";
-import { contactPhoneHref } from "@/lib/contact";
 
 type Course = {
   _id: string;
@@ -116,10 +115,10 @@ export default function CoursesProgramsSection() {
                       <p className="text-xl font-bold" style={{ color: brand.gold }}>
                         {course.price}
                       </p>
-                      <PremiumButton href={`tel:${contactPhoneHref}`} external className="px-5 py-2 text-[13px]">
-                        <FiPhone className="size-4" aria-hidden />
-                        Call Now
-                      </PremiumButton>
+                  <PremiumButton href={`/checkout?courseId=${course._id}`} className="px-5 py-2 text-[13px]">
+                    <FiShoppingBag className="size-4" aria-hidden />
+                    Buy Now
+                  </PremiumButton>
                     </div>
                   </div>
                 </motion.article>

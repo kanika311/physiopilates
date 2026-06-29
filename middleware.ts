@@ -12,6 +12,21 @@ export function middleware(
   const pathname =
     request.nextUrl.pathname;
 
+  // Customer (e-commerce) protected routes.
+  const customerProtected = ["/orders", "/profile", "/checkout"];
+  if (customerProtected.some((p) => pathname === p || pathname.startsWith(`${p}/`))) {
+    const userToken = request.cookies.get("user_token")?.value;
+    if (!userToken) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set(
+        "redirect",
+        pathname + (request.nextUrl.search || "")
+      );
+      return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next();
+  }
+
   // Public admin pages that don't require a logged-in session.
   const publicAdminPaths = [
     "/admin/login",
@@ -53,5 +68,10 @@ export function middleware(
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: [
+    "/admin/:path*",
+    "/orders/:path*",
+    "/profile/:path*",
+    "/checkout/:path*",
+  ],
 };

@@ -49,7 +49,7 @@ export default function DynamicPageHero({ page }: { page: string }) {
       id={cfg.id}
       image={content.image}
       imageAlt={cfg.imageAlt}
-      imageClassName={cfg.imageClassName}
+      imageClassName="object-contain object-center"
       eyebrow={content.eyebrow}
       title={content.title}
       description={content.description}

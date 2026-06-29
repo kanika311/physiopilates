@@ -19,6 +19,7 @@ const SEARCH_PAGES: { label: string; href: string; keywords?: string }[] = [
   { label: "Testimonials", href: "/admin/testimonials", keywords: "reviews" },
   { label: "Team", href: "/admin/team", keywords: "staff members" },
   { label: "Contact", href: "/admin/contact", keywords: "messages leads" },
+  { label: "Contact Info", href: "/admin/contact-info", keywords: "address phone email hours" },
   { label: "Header Settings", href: "/admin/header-settings", keywords: "nav menu" },
   { label: "Page Banners", href: "/admin/pages", keywords: "banner hero" },
   { label: "Footer Settings", href: "/admin/footer-settings" },

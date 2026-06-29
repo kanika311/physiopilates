@@ -7,12 +7,23 @@ export async function GET() {
   try {
     await connectDB();
 
-    const services = await Service.find().sort({ order: 1 });
+    const services = await Service.find().sort({ order: 1 }).lean();
 
-    return NextResponse.json({
-      success: true,
-      data: services,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        data: services,
+      },
+      {
+        headers: {
+          // Cache at the edge/browser for a short window so repeated page
+          // navigations don't hit the DB every time, but admin edits still
+          // show up quickly.
+          "Cache-Control":
+            "public, max-age=0, s-maxage=60, stale-while-revalidate=300",
+        },
+      }
+    );
 
   } catch (error) {
     return NextResponse.json(

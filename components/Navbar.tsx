@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { FiChevronDown, FiMenu, FiX } from "react-icons/fi";
 import { brand } from "@/lib/brand";
 import { usePrefersReducedMotion } from "@/hooks/usePrefersReducedMotion";
+import AccountMenu, { MobileAccountLinks } from "@/components/account/AccountMenu";
 
 
 
@@ -464,6 +465,7 @@ const headerStyle: React.CSSProperties = {
         </nav>
 
         <div className="relative z-[2] flex min-h-8 shrink-0 items-center justify-end gap-1.5 lg:col-start-3 lg:row-start-1 lg:justify-self-end">
+          <AccountMenu />
           <button
             type="button"
             className="inline-flex min-h-8 min-w-8 shrink-0 items-center justify-center rounded-lg border border-neutral-200 bg-white text-neutral-800 shadow-sm transition-colors hover:bg-neutral-50 dark:border-slate-500 dark:bg-slate-800 dark:text-white dark:hover:bg-slate-700 lg:hidden mi-hover"
@@ -612,6 +614,7 @@ const headerStyle: React.CSSProperties = {
     </Link>
   );
 })}
+                      <MobileAccountLinks onNavigate={() => setMobileOpen(false)} />
                     </nav>
                   </motion.aside>
                 </div>

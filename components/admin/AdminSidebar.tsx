@@ -17,6 +17,7 @@ import {
   X,
    Briefcase, 
   Settings,
+  Phone,
   ShieldCheck,
   GraduationCap,
   Quote,
@@ -74,6 +75,11 @@ const menuItems = [
     title: "Contact",
     icon: Image,
     href: "/admin/contact",
+  },
+  {
+    title: "Contact Info",
+    icon: Phone,
+    href: "/admin/contact-info",
   },
 
   

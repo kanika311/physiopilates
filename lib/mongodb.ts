@@ -24,12 +24,25 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(
-      MONGODB_URI
-    );
+    cached.promise = mongoose.connect(MONGODB_URI, {
+      // Keep a warm pool of sockets so requests don't re-handshake.
+      maxPoolSize: 10,
+      minPoolSize: 1,
+      // Fail fast instead of hanging if the cluster is unreachable.
+      serverSelectionTimeoutMS: 8000,
+      socketTimeoutMS: 45000,
+      // Don't queue queries before the connection is ready — surface errors.
+      bufferCommands: false,
+    });
   }
 
-  cached.conn = await cached.promise;
+  try {
+    cached.conn = await cached.promise;
+  } catch (err) {
+    // Reset so the next request can retry instead of reusing a rejected promise.
+    cached.promise = null;
+    throw err;
+  }
 
   return cached.conn;
 }

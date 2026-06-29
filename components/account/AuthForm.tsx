@@ -164,11 +164,12 @@ export default function AuthForm({ initialMode = "login" }: { initialMode?: Mode
           </div>
         )}
 
-        <div className={inputWrap}>
+        <div style={{ position: "relative" }}>
           <Lock size={18} className={iconCls} />
           <input
             type={showPass ? "text" : "password"}
-            className={inputCls + " pr-11"}
+            className={inputCls}
+            style={{ paddingRight: 42 }}
             placeholder="Password"
             value={form.password}
             onChange={(e) => set("password", e.target.value)}
@@ -179,7 +180,15 @@ export default function AuthForm({ initialMode = "login" }: { initialMode?: Mode
             type="button"
             onClick={() => setShowPass((v) => !v)}
             aria-label={showPass ? "Hide password" : "Show password"}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9aa6ad] hover:text-[#12344D]"
+            className="text-[#9aa6ad] hover:text-[#12344D]"
+            style={{
+              position: "absolute",
+              right: 12,
+              top: "50%",
+              transform: "translateY(-50%)",
+              display: "flex",
+              alignItems: "center",
+            }}
           >
             {showPass ? <EyeOff size={18} /> : <Eye size={18} />}
           </button>

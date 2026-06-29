@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import type { IconType } from "react-icons";
 import {
@@ -89,9 +88,6 @@ function FooterLink({ href, label }: { href: string; label: string }) {
 }
 
 export default function Footer() {
-  const pathname = usePathname() ?? "";
-  const isContactPage = pathname === "/contact";
-
   const [content, setContent] = useState<FooterContent>(DEFAULT_FOOTER);
   const [companyLinks, setCompanyLinks] =
     useState<FooterLinkItem[]>(DEFAULT_COMPANY_LINKS);
@@ -226,41 +222,35 @@ export default function Footer() {
 
           <div className="min-w-0">
             <h3 className={`${footerSans} text-base font-semibold`} style={{ color: brand.navy }}>
-              {isContactPage ? "Connect with us" : content.contactHeading}
+              {content.contactHeading}
             </h3>
-            {isContactPage ? (
-              <p className={`${footerSans} mt-5 max-w-sm text-[15px] font-medium leading-relaxed`} style={{ color: brand.textMuted }}>
-                Address, phone, and email are listed in the section above — follow us below for updates and reels.
-              </p>
-            ) : (
-              <ul className="mt-5 space-y-4 text-[15px] leading-relaxed">
-                <li className="flex gap-3">
-                  <FiMapPin className="mt-0.5 shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
-                  <address className="min-w-0 flex-1 not-italic leading-relaxed [overflow-wrap:anywhere]">
-                    <span className="font-semibold text-[14px] sm:text-[15px]" style={{ color: brand.textBody }}>
-                      {content.address}
-                    </span>
-                  </address>
-                </li>
-                <li className="flex min-w-0 items-center gap-3">
-                  <FiPhone className="shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
-                  <a
-                    href={`tel:${phoneHref}`}
-                    className="min-w-0 font-semibold no-underline transition-colors hover:underline"
-                    style={{ color: brand.textBody }}
-                  >
-                    {content.phone}
-                  </a>
-                </li>
-                <li className="flex min-w-0 items-start gap-3">
-                  <FiMail className="mt-0.5 shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
-                  <MailtoLink
-                    email={content.email}
-                    className="min-w-0 flex-1 font-semibold leading-snug text-[#222222] underline underline-offset-4 decoration-neutral-400/80 transition-colors hover:decoration-[#0F6D6D] sm:text-[15px]"
-                  />
-                </li>
-              </ul>
-            )}
+            <ul className="mt-5 space-y-4 text-[15px] leading-relaxed">
+              <li className="flex gap-3">
+                <FiMapPin className="mt-0.5 shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
+                <address className="min-w-0 flex-1 not-italic leading-relaxed [overflow-wrap:anywhere]">
+                  <span className="font-semibold text-[14px] sm:text-[15px]" style={{ color: brand.textBody }}>
+                    {content.address}
+                  </span>
+                </address>
+              </li>
+              <li className="flex min-w-0 items-center gap-3">
+                <FiPhone className="shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
+                <a
+                  href={`tel:${phoneHref}`}
+                  className="min-w-0 font-semibold no-underline transition-colors hover:underline"
+                  style={{ color: brand.textBody }}
+                >
+                  {content.phone}
+                </a>
+              </li>
+              <li className="flex min-w-0 items-start gap-3">
+                <FiMail className="mt-0.5 shrink-0 text-lg" style={{ color: TEAL }} aria-hidden />
+                <MailtoLink
+                  email={content.email}
+                  className="min-w-0 flex-1 font-semibold leading-snug text-[#222222] underline underline-offset-4 decoration-neutral-400/80 transition-colors hover:decoration-[#0F6D6D] sm:text-[15px]"
+                />
+              </li>
+            </ul>
 
             <div className="mt-8 flex flex-wrap gap-3">
               {socialLinks.map(({ Icon, href, label }) => (
